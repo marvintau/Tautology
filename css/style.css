@@ -1,0 +1,38 @@
+@font-face {
+    font-family: TheSans;
+    src: url("../fonts/TMonoOf5.ttf");
+}
+
+
+body {
+	font-family: TheSans;
+	margin:0;
+}
+canvas{
+	width: 100%;
+	height: 100%
+}
+
+textarea{
+	position : absolute;
+	left	 : 30px;
+	bottom   : 20px;
+
+	border 	 : none;
+	outline  : none;
+	resize   : none;
+    border-radius: 5px;
+	background-color:rgba(239,239,239,0.5);
+	
+	font-family: TheSans;
+	font-size: 15px;
+	letter-spacing: -0.02em;
+	line-height: 1.2 !important;
+
+	transition: height 0.15s;
+	-webkit-transition: height 0.15s; 
+	-moz-transition: height 0.15s; 
+	margin 	 : 5px;
+	padding  : 15px 10px 0 10px;
+
+}
