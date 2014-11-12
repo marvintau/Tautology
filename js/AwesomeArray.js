@@ -1,3 +1,18 @@
+// Only executed one time, when initiating an AwesomePointSet
+// (needed to change name) instance. 
+Matcher = function(pattern){
+	this.patt = pattern;
+	this.funcs = [];
+	this.matcher = null;
+}
+
+Matcher.prototype = {
+	constructor : Matcher,
+	register : function(type_func, res_func){
+		this.funcs
+	}
+}
+
 AwesomeElem = function(index, object){
 	this.index  = index;
 	this.object = object;
@@ -24,13 +39,12 @@ AwesomeElem.prototype = {
 		var outcome = true;
 		if(patt !== undefined){
 			for(var i = 0; i < patt.length; i++){
-				outcome = outcome && (patt[i]==="d") ? true : (this.index[i]===patt[i]);
+				outcome = outcome && (patt[i]==="d") ? true : ((patt[i].length===2) ? (this.index[i] >=patt[i][0] && this.index[i] <patt[i][1]) : (this.index[i]===patt[i]));
 			}
 		}
 
 		// If outcome is true means all matched.
 		if(outcome){
-			console.log();
 			this.operator();
 		}
 		delete this.constructor.prototype.operator;
@@ -49,14 +63,14 @@ AwesomeElem.prototype = {
 	},
 
 	sum_index : function(shape){
-
 		var sum = 0;
 		for(var i = 0; i < this.index.length-1; i++){
 			sum = (sum + this.index[i]) * shape[i+1];
 		}
 		sum = sum + this.index[this.index.length-1];
 		return sum;
-	}
+	},
+
 }
 
 AwesomeArray = function(){
@@ -140,18 +154,20 @@ AwesomeArray.prototype = {
 		for(var i = 0; i < this.elems.length; i++){
 			this.elems[i].part_index(n);
 		}
-		this.shape = [removed_modulo/n, n].concat(this.shape.slice(1));
+		this.shape = [this.shape[0]/n, n].concat(this.shape.slice(1));
+
 	},
 	transpose : function(patt){
 		var _this = this;
 		for(var i = 0; i < this.elems.length; i++){
 			this.elems[i].index = this.permute(this.elems[i].index,patt);
 		}
+		this.shape = this.permute(this.shape, patt);
 		this.elems.sort(function(a, b){
 
 			return a.sum_index(_this.shape) - b.sum_index(_this.shape);
 		});
-		this.shape = this.permute(this.shape, patt);
+
 		
 	},
 	apply_func : function(pattern, func){
@@ -163,6 +179,6 @@ AwesomeArray.prototype = {
 
 	output : function(){
 		var _this = this;
-		return this.elems.map(function(elem){return [elem.index]});
+		return this.elems.map(function(elem){return [elem.index]}).join("\n");
 	}
 }

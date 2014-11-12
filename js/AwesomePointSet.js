@@ -5,8 +5,8 @@ var AwesomePointSet = function(scene){
 	this.geom = new THREE.Geometry();
 	this.geom.verticesNeedsUpdate = true;
 	this.cloud = new THREE.PointCloud(this.geom);
+	this.scene.add(this.cloud);
 	
-
 	this.update = function(){
 		var vertices_array = this.array.elems.map(function(elem){return elem.object});
 		this.geom.dispose();
@@ -55,13 +55,35 @@ AwesomePointSet.prototype ={
 		this.update();
 	},
 
+	rotate_existing: function(vec, angle){
+		var normal_vec = vec.clone(),
+			shape = this.array.shape;
+		normal_vec.normalize();
+
+		this.array.apply_func(function(){
+			this.object.applyAxisAngle(normal_vec, this.index[0]/(shape[0]-1)*angle);
+		});
+		this.update();
+
+	},
+
 	flatten : function(){
 		this.array.flatten();
 	},
 
+	transpose : function(patt){
+		this.array.transpose(patt);
+	},
+
+	partition : function(num){
+		this.array.partition(num);
+	},
+
 	output: function(){
+		var shape = this.array.shape;
+		console.log(shape);
 		console.log(this.array.elems.map(function(elem){
-			return "["+elem.index.join(",")+"] {"+elem.object.toArray().join(", ")+"}";
-		}));
+			return "["+elem.index.join(",")+"] " +elem.sum_index(shape)+ " {"+elem.object.toArray().map(function(elem){return elem.toPrecision(4)}).join(", ")+"}";
+		}).join("\n"));
 	}
 }

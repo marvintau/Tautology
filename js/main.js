@@ -1,4 +1,4 @@
-// (function(window, document, Math, undef){
+(function(window, document, Math, undef){
 	var camera, scene, renderer;
 
 	var ControlManager = (function(){
@@ -63,14 +63,8 @@
 
 		scene = new THREE.Scene();
 
-		a = new AwesomePointSet(scene);
-		a.init([new THREE.Vector3(0,0,0)]);
-		a.translate_dup(new THREE.Vector3(0, 10, 0), 5);
-		a.flatten();
-		a.translate_dup(new THREE.Vector3(10,0,0), 5);
 
 		// scene.add(cube);
-		scene.add(a.cloud);
 		scene.add(camera);
 
 		renderer = new THREE.WebGLRenderer({alpha:true, antialias: true });
@@ -101,9 +95,26 @@
 	$(document).ready( function(){
 		$('#commandline').autosize();
 		$('#commandline').addClass('textarea-transition');
-
+		test(scene);
 	});
 
-// })(window, window.document, Math);
+})(window, window.document, Math);
 
-
+function test(scene){
+	a = new AwesomePointSet(scene);
+	a.init([new THREE.Vector3(0,0,0)]);
+	a.translate_dup(new THREE.Vector3(0, 1.2, 0), 1);
+	a.flatten();
+	// a.translate(new THREE.Vector3(0, 1, 0), [1]);
+	a.translate(new THREE.Vector3(0, 4, 0));
+	a.dup(4);
+	a.rotate_dup(new THREE.Vector3(-1, 0, 0), Math.PI*2, 16);
+	a.transpose([1,2,0]);
+	a.flatten();
+	a.translate(new THREE.Vector3(0, 10, 0));
+	a.rotate_existing(new THREE.Vector3(0, 0, 1), Math.PI/4);
+	a.partition(2);
+	a.transpose([1,0,2]);
+	a.rotate_existing(new THREE.Vector3(0, 0, 1), Math.PI/128);
+	a.output();
+}
