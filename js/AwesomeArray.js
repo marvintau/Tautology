@@ -7,6 +7,8 @@ AwesomeElem.prototype = {
 	constructor : AwesomeElem,
 
 	clone : function(copy_method){
+		// we don't know if it's called "clone" or "copy" or whatever, just leave it
+		// to the real user.
 		this.object.constructor.prototype.copy_method = copy_method;
 		var new_obj_clone = this.object.copy_method();
 		delete this.object.constructor.prototype.copy_method;
@@ -14,13 +16,19 @@ AwesomeElem.prototype = {
 	},
 
 	apply_func : function(func, patt){
+		// here the function passed as parameter will be added to the prototype of AwesomeElem,
+		// since the index might be useful for the operation. 
 		this.constructor.prototype.operator = func;
+
+		// Matching the index with pattern. the "d" in the pattern means "don't care" item.
 		var outcome = true;
 		if(patt !== undefined){
 			for(var i = 0; i < patt.length; i++){
 				outcome = outcome && (patt[i]==="d") ? true : (this.index[i]===patt[i]);
 			}
 		}
+
+		// If outcome is true means all matched.
 		if(outcome){
 			console.log();
 			this.operator();
@@ -59,16 +67,26 @@ AwesomeArray = function(){
 	this.shape = [];
 
 	this.dup_elems = function(elems, copy_method){
+
+		// create a deepcopy of the array of object references.
 		var new_elems = elems.slice();
+
+		// create deepcopy for all object refered in the array.
 		for(var i = 0; i< new_elems.length; i++){
 			new_elems[i] = elems[i].clone(copy_method);
 		}
+
+		// then a deepcopy of the elems is formed.
 		return new_elems;
 	};
 
 	this.dup_new_dimension = function(elems, value, copy_method){
+
+		// get a new copy of object array
 		var new_elems = this.dup_elems(elems, copy_method);
 
+		// add new dimension for each entry,  which conceptually forms
+		// a matrix of objects (or matrix of submatrices of objects)
 		for(var i = 0; i<new_elems.length; i++){
 			new_elems[i].index = [value].concat(new_elems[i].index);
 		}
@@ -77,6 +95,10 @@ AwesomeArray = function(){
 	};
 
 	this.permute = function(index, pattern){
+
+		// rearranging the index according to the pattern. The pattern
+		// is an array that each element denotes its original position
+		// in the orignal array.
 		var temp = index.slice();
 		var new_index = [];
 		for(var i = 0; i < index.length; i++){
@@ -88,6 +110,7 @@ AwesomeArray = function(){
 
 AwesomeArray.prototype = {
 	constructor : AwesomeArray,
+
 	init : function(array){
 		for(var i = 0; i < array.length; i++){
 			this.elems.push(new AwesomeElem([i], array[i]))			
@@ -110,7 +133,7 @@ AwesomeArray.prototype = {
 		}
 		this.shape = [this.shape[0]*this.shape[1]].concat(this.shape.slice(2));
 	},
-	// will be discarded, and replace with more advanced searching technique
+
 	partition : function(n){
 		var removed_modulo = this.elems.length - this.elems.length % n;
 		this.elems = this.elems.slice(0, removed_modulo);
@@ -125,7 +148,7 @@ AwesomeArray.prototype = {
 			this.elems[i].index = this.permute(this.elems[i].index,patt);
 		}
 		this.elems.sort(function(a, b){
-			// console.log(a.index+" "+a.sum_index(_this.shape));
+
 			return a.sum_index(_this.shape) - b.sum_index(_this.shape);
 		});
 		this.shape = this.permute(this.shape, patt);

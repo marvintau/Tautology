@@ -37,9 +37,20 @@ AwesomePointSet.prototype ={
 	},
 
 	translate_dup : function(vec, step){
-		this.dup(step);
+		this.dup(step+1);
 		this.array.apply_func(function(){
-			this.object.add(vec.clone().multiplyScalar(this.index[0]/(step-1)));
+			this.object.add(vec.clone().multiplyScalar(this.index[0]/step));
+		});
+		this.update();
+	},
+
+	rotate_dup : function(vec, angle, step){
+		var normal_vec = vec.clone();
+		normal_vec.normalize();
+
+		this.dup(step+1);
+		this.array.apply_func(function(){
+			this.object.applyAxisAngle(normal_vec, this.index[0]/step*angle);
 		});
 		this.update();
 	},
