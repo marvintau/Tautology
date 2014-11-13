@@ -101,20 +101,32 @@
 })(window, window.document, Math);
 
 function test(scene){
-	a = new AwesomePointSet(scene);
-	a.init([new THREE.Vector3(0,0,0)]);
-	a.translate_dup(new THREE.Vector3(0, 1.2, 0), 1);
-	a.flatten();
-	// a.translate(new THREE.Vector3(0, 1, 0), [1]);
-	a.translate(new THREE.Vector3(0, 4, 0));
-	a.dup(4);
-	a.rotate_dup(new THREE.Vector3(-1, 0, 0), Math.PI*2, 16);
-	a.transpose([1,2,0]);
-	a.flatten();
-	a.translate(new THREE.Vector3(0, 10, 0));
-	a.rotate_existing(new THREE.Vector3(0, 0, 1), Math.PI/4);
-	a.partition(2);
-	a.transpose([1,0,2]);
-	a.rotate_existing(new THREE.Vector3(0, 0, 1), Math.PI/128);
+	a = new Tautology.VectorArray(scene);
+	a.init([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0)]);
+
+	a.query.register(
+		function(q){return Number.isInteger(q);},
+		function(i, q){return i == q;}
+	);
+	a.query.register(
+		function(q){return q.length == 2},
+		function(i, q){return q[0]>=q[1] ? (i < q[0] || i >= q[1]) : (i >= q[0] && i <q[1])}
+	);
+	a.query.register(
+		function(q){return q==="d";},
+		function(i, q){return true;}
+	);
+	// console.log(p.match([0,1], [0,[0,1]]));
+
+	a.dup(2);
+	a.dup(2);
+	// a.output();
+	a.applyFunc(function(){this.object.setX(1);}, [1, "d", "d"]);
+	a.applyFunc(function(){this.object.setY(1);}, ["d", 1, "d"]);
+	a.applyFunc(function(){this.object.setZ(1);}, ["d", "d", 1]);
 	a.output();
+
+	// a.reshapeIndex(2);
+	// console.log(a.sumIndex([2,2,2]));
+	// console.log(a.index);
 }

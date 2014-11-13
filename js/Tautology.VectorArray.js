@@ -1,5 +1,6 @@
-var AwesomePointSet = function(scene){
-	this.array = new AwesomeArray();
+Tautology.VectorArray = function(scene){
+	this.array = new Tautology.Array();
+	this.query = new Tautology.Query();
 
 	this.scene = scene;
 	this.geom = new THREE.Geometry();
@@ -21,10 +22,10 @@ var AwesomePointSet = function(scene){
 	}
 }
 
-AwesomePointSet.prototype ={
-	constructor : AwesomePointSet,
+Tautology.VectorArray.prototype ={
+	constructor : Tautology.VectorArray,
 	init : function(array){
-		this.array.init(array);
+		this.array.init(array, this.query);
 		this.update();
 	},
 	dup : function(ntimes){
@@ -32,39 +33,37 @@ AwesomePointSet.prototype ={
 		this.update();
 	},
 	translate : function(vec, patt){
-		this.array.apply_func(function(){this.object.add(vec)}, patt);
+		this.array.applyFunc(function(){this.object.add(vec);}, patt);
 		this.update();
 	},
 
-	translate_dup : function(vec, step){
+	rotate: function(vec, angle){
+		var normal_vec = vec.clone(),
+			shape = this.array.shape;
+		normal_vec.normalize();
+
+		this.array.applyFunc(function(){this.object.applyAxisAngle(normal_vec, angle);}, patt);
+		this.update();
+
+	},
+
+	translateStepwise : function(vec, step){
 		this.dup(step+1);
-		this.array.apply_func(function(){
+		this.array.applyFunc(function(){
 			this.object.add(vec.clone().multiplyScalar(this.index[0]/step));
 		});
 		this.update();
 	},
 
-	rotate_dup : function(vec, angle, step){
+	rotateStepwise : function(vec, angle, step){
 		var normal_vec = vec.clone();
 		normal_vec.normalize();
 
 		this.dup(step+1);
-		this.array.apply_func(function(){
+		this.array.applyFunc(function(){
 			this.object.applyAxisAngle(normal_vec, this.index[0]/step*angle);
 		});
 		this.update();
-	},
-
-	rotate_existing: function(vec, angle){
-		var normal_vec = vec.clone(),
-			shape = this.array.shape;
-		normal_vec.normalize();
-
-		this.array.apply_func(function(){
-			this.object.applyAxisAngle(normal_vec, this.index[0]/(shape[0]-1)*angle);
-		});
-		this.update();
-
 	},
 
 	flatten : function(){
@@ -79,11 +78,15 @@ AwesomePointSet.prototype ={
 		this.array.partition(num);
 	},
 
+	applyFunc : function(func, query){
+		this.array.applyFunc(func, query);
+	},
+
 	output: function(){
 		var shape = this.array.shape;
 		console.log(shape);
 		console.log(this.array.elems.map(function(elem){
-			return "["+elem.index.join(",")+"] " +elem.sum_index(shape)+ " {"+elem.object.toArray().map(function(elem){return elem.toPrecision(4)}).join(", ")+"}";
+			return "["+elem.index.join(",")+"] " +elem.sumIndex(shape)+ " {"+elem.object.toArray().map(function(elem){return elem.toPrecision(4)}).join(", ")+"}";
 		}).join("\n"));
 	}
 }
