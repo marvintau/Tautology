@@ -125,7 +125,7 @@ function test(scene){
 	a.applyFunc(function(){this.object.setY(1);}, ["d", 1, "d"]);
 	a.applyFunc(function(){this.object.setZ(1);}, ["d", "d", 1]);
 	a.output();
-
+	// a.updateLabel();
 	// a.reshapeIndex(2);
 	// console.log(a.sumIndex([2,2,2]));
 	// console.log(a.index);

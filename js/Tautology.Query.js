@@ -16,7 +16,6 @@ Tautology.Query.prototype = {
 			} else {
 				this.matcher = function(index, query){
 					for(var i = 0; i < table.length; i++){
-					console.log(query +" "+ table[i].cond(index)+ " " + table[i].check(index, query));
 						if(table[i].cond(query) && table[i].check(index, query)){
 							return true;
 						}
