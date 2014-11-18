@@ -47,8 +47,8 @@
 	})();
 
 	function init(){
-		camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
-		camera.position.set(0, 0, 5);
+		camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
+		camera.position.set(0, 0, 10);
 
 	    var light = new THREE.PointLight( 0xffffff, 1, 0);
 	        light.position.copy( camera.position );
@@ -56,7 +56,7 @@
 
 		var geometry = new THREE.BoxGeometry( 1, 1, 1 );
 	    var material = new THREE.MeshLambertMaterial({ color:0xaaaaaa,
-	                                                   opacity: 0.6,
+	                                                   opacity: 0.5,
 	                                                   transparent: true,
 	                                                   _needsUpdate: true}); 
 		var cube = new THREE.Mesh( geometry, material );
@@ -69,7 +69,7 @@
 
 		renderer = new THREE.WebGLRenderer({alpha:true, antialias: true });
 		renderer.setSize( window.innerWidth, window.innerHeight );
-		// renderer.autoClear = false;
+		renderer.sortObjects = true;
 		document.body.appendChild( renderer.domElement );
 
 		// ControlManager();
@@ -101,32 +101,54 @@
 })(window, window.document, Math);
 
 function test(scene){
+	// a.query.register(
+	// 	function(q){return Number.isInteger(q);},
+	// 	function(i, q){return i == q;}
+	// );
+	// a.query.register(
+	// 	function(q){return q.length == 2},
+	// 	function(i, q){return q[0]>=q[1] ? (i < q[0] || i >= q[1]) : (i >= q[0] && i <q[1])}
+	// );
+	// a.query.register(
+	// 	function(q){return q==="d";},
+	// 	function(i, q){return true;}
+	// );
+
+
 	a = new Tautology.VectorArray(scene);
-	a.init([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0)]);
+	a.init([new THREE.Vector3(0, 0, 0)]);
 
-	a.query.register(
-		function(q){return Number.isInteger(q);},
-		function(i, q){return i == q;}
-	);
-	a.query.register(
-		function(q){return q.length == 2},
-		function(i, q){return q[0]>=q[1] ? (i < q[0] || i >= q[1]) : (i >= q[0] && i <q[1])}
-	);
-	a.query.register(
-		function(q){return q==="d";},
-		function(i, q){return true;}
-	);
-	// console.log(p.match([0,1], [0,[0,1]]));
+	a.translateStepwise(new THREE.Vector3(4, 0, 0), 4);
+	a.flatten();
+	a.translate(new THREE.Vector3(0, 0, 0.5));
+	a.rotateStepwise(new THREE.Vector3(1, 0, 0), Math.PI*2, 16);
+	// a.rotate(new THREE.Vector3(1,0,0), Math.PI/2);
+	a.translate(new THREE.Vector3(0,-.5,0));
+	
+	
+	// b = new Tautology.VectorArray(scene);
+	// b.init([new THREE.Vector3(0, 0, 0)]);
 
-	a.dup(2);
-	a.dup(2);
+	// b.translateStepwise(new THREE.Vector3(3, 0, 0), 3);
+	// b.flatten();
+	// b.translate(new THREE.Vector3(0, .5, 0));
+	// b.rotateStepwise(new THREE.Vector3(1, 0, 0), Math.PI, 6);
+	// b.translate(new THREE.Vector3(0,-.5,0));
+	geoms = a.generateGeometry();
+
+	scene.add(geoms);
+	// scene.add(new THREE.Mesh(c, m));
+
+	// scene.add(new THREE.Mesh(c, n));
+	// var mesh;
+	// for(var i = 0; i < geoms.length; i++){
+	// 	mesh = new THREE.Mesh(geoms[i], material);	
+	// 	scene.add(mesh);	
+	// }
+
+	// geoms = b.generateGeometry();	
+	
+	
+	
 	// a.output();
-	a.applyFunc(function(){this.object.setX(1);}, [1, "d", "d"]);
-	a.applyFunc(function(){this.object.setY(1);}, ["d", 1, "d"]);
-	a.applyFunc(function(){this.object.setZ(1);}, ["d", "d", 1]);
-	a.output();
-	// a.updateLabel();
-	// a.reshapeIndex(2);
-	// console.log(a.sumIndex([2,2,2]));
-	// console.log(a.index);
 }

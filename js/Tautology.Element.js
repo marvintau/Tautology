@@ -35,7 +35,9 @@ Tautology.Element.prototype = {
 	},
 
 	flatten : function(dim){
-		this.index = [this.index[0]*dim + this.index[1]].concat(this.index.slice(2));
+		// if(this.index.length > 1){
+			this.index = [this.index[0]*dim + this.index[1]].concat(this.index.slice(2));	
+		// }
 	},
 
 	reshapeIndex : function(dim){

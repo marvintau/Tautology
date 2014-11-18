@@ -29,7 +29,7 @@ Tautology.Query.prototype = {
 	match : function(indexArray, queryArray){
 
 		var outcome = true;
-		if(indexArray.length == queryArray.length){
+		if(queryArray != undefined && indexArray.length == queryArray.length){
 			for(var i = 0; i < indexArray.length; i++){
 				outcome = outcome && this.matcher(indexArray[i], queryArray[i]);
 			}
