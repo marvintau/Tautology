@@ -1,5 +1,30 @@
 (function(window, document, Math, undef){
-	var camera, scene, renderer;
+	var camera, scene, renderer, canvas;
+
+	var setup_canvas = function(){
+		canvas = new fabric.Canvas('viewport');
+
+	    if( window.devicePixelRatio !== 1 ){
+	        var c = canvas.getElement(); // canvas = fabric.Canvas
+	        
+	        var w = c.width, h = c.height;
+	 
+	        c.setAttribute('width', w*window.devicePixelRatio);
+	        c.setAttribute('height', h*window.devicePixelRatio);
+	        c.getContext('2d').scale(window.devicePixelRatio, window.devicePixelRatio);
+	 
+	    }
+
+		var rect = new fabric.Rect({
+			left: 100,
+			top: 100,
+			fill: 'red',
+			width: 50,
+			height: 40
+		});
+
+		canvas.add(rect);
+	};
 
 	var ControlManager = (function(){
 
@@ -26,51 +51,29 @@
 		return ControlManager;
 	})();
 
-	var CameraManager = (function(){
-		function CameraManager(){
-			this.camera = new THREE.PerspectiveCamera();
-			this.camera.position.set(0, 0, 5);
-			this.camera.fov = 45;
-			this.camera.aspect = window.innerWidth / window.innerHight;
-			this.camera.near = 0.1;
-			this.camera.far = 1000;
-		}
-
-		CameraManager.prototype = {
-			light: function(light){
-				light.position.copy(this.camera.position);
-				this.camera.add(light);
-			}
-		}
-
-		return CameraManager;
-	})();
-
 	function init(){
+		setup_canvas();
+
+		texture = new THREE.Texture( canvas.getElement() );
+		texture.repeat = new THREE.Vector2(-1, -1);
+		texture.offset = new THREE.Vector2(1,1);
+		texture.needsUpdate = true;
+
 		camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
-		camera.position.set(0, 0, 10);
+		camera.position.set(0, 0, 200);
 
-	    var light = new THREE.PointLight( 0xffffff, 1, 0);
-	        light.position.copy( camera.position );
-	        camera.add( light );
-
-		var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-	    var material = new THREE.MeshLambertMaterial({ color:0xaaaaaa,
-	                                                   opacity: 0.5,
-	                                                   transparent: true,
-	                                                   _needsUpdate: true}); 
-		var cube = new THREE.Mesh( geometry, material );
+		light = new THREE.PointLight( 0xf2f2f2, 1 );
+        // light.shadowCameraVisible = true;
+        light.position = camera.position;
+        camera.add( light );
 
 		scene = new THREE.Scene();
-
-
-		// scene.add(cube);
 		scene.add(camera);
 
 		renderer = new THREE.WebGLRenderer({alpha:true, antialias: true });
 		renderer.setSize( window.innerWidth, window.innerHeight );
 		renderer.sortObjects = true;
-		document.body.appendChild( renderer.domElement );
+		$("#threeport").get(0).appendChild( renderer.domElement );
 
 		// ControlManager();
 		control = new ControlManager(camera, renderer.domElement);
@@ -86,6 +89,7 @@
 	}
 
 	function render() {
+		texture.needsUpdate = true;
 		renderer.render( scene, camera );
 	}
 
@@ -93,62 +97,42 @@
 	animate();
 
 	$(document).ready( function(){
+		$('viewport').attr('width', window.innerWidth);
 		$('#commandline').autosize();
 		$('#commandline').addClass('textarea-transition');
+		
 		test(scene);
+
+		renderer.render( scene, camera );
+		canvas.backgroundColor = 'rgba(255,255,255, 1)';
 	});
 
 })(window, window.document, Math);
 
 function test(scene){
-	// a.query.register(
-	// 	function(q){return Number.isInteger(q);},
-	// 	function(i, q){return i == q;}
-	// );
-	// a.query.register(
-	// 	function(q){return q.length == 2},
-	// 	function(i, q){return q[0]>=q[1] ? (i < q[0] || i >= q[1]) : (i >= q[0] && i <q[1])}
-	// );
-	// a.query.register(
-	// 	function(q){return q==="d";},
-	// 	function(i, q){return true;}
-	// );
+	q = new Tautology.Query();
 
+	q.register(function(q){return q == "X";},
+					 function(i, q){return true;});
+
+	q.register(function(q){return q == "even"},
+			   function(i, q){return i % 2 == 0});
 
 	a = new Tautology.VectorArray(scene);
-	a.init([new THREE.Vector3(0, 0, 0)]);
 
-	a.translateStepwise(new THREE.Vector3(4, 0, 0), 4);
+	a.init([new THREE.Vector3(0, 0, 3)]);
+	a.translateStepwise(new THREE.Vector3(.4, 0, -.6), 1);
 	a.flatten();
-	a.translate(new THREE.Vector3(0, 0, 0.5));
 	a.rotateStepwise(new THREE.Vector3(1, 0, 0), Math.PI*2, 16);
-	// a.rotate(new THREE.Vector3(1,0,0), Math.PI/2);
-	a.translate(new THREE.Vector3(0,-.5,0));
-	
-	
-	// b = new Tautology.VectorArray(scene);
-	// b.init([new THREE.Vector3(0, 0, 0)]);
+	a.translate(new THREE.Vector3(0, 10, 0));
+	a.rotateStepwise(new THREE.Vector3(0, 0, 1), -Math.PI/3, 12);
+	a.transpose([0, 2, 1]);
+	a.flatten();
+	a.transpose([1,0]);
+	a.output();
 
-	// b.translateStepwise(new THREE.Vector3(3, 0, 0), 3);
-	// b.flatten();
-	// b.translate(new THREE.Vector3(0, .5, 0));
-	// b.rotateStepwise(new THREE.Vector3(1, 0, 0), Math.PI, 6);
-	// b.translate(new THREE.Vector3(0,-.5,0));
-	geoms = a.generateGeometry();
-
-	scene.add(geoms);
-	// scene.add(new THREE.Mesh(c, m));
-
-	// scene.add(new THREE.Mesh(c, n));
-	// var mesh;
-	// for(var i = 0; i < geoms.length; i++){
-	// 	mesh = new THREE.Mesh(geoms[i], material);	
-	// 	scene.add(mesh);	
-	// }
-
-	// geoms = b.generateGeometry();	
+	geom = a.generateMesh(texture);
+	scene.add(geom);
 	
 	
-	
-	// a.output();
 }

@@ -1,96 +1,128 @@
+// Tautological Array organizes the Elements. The Array needs to maintain and
+// manipulate the structure of the matrix, and apply operations over specific
+// Elements.
+
 Tautology.Array = function(){
 
 	this.elems = [];
-	this.shape = [];
+	this.shape = null;
 	this.query = null;
 
-	this.duplicate = function(elems, copyMethod, newDimension){
-
+	this.deepcopy = function(elems, copyMethod, newDimension){
+		
 		var newElems = elems.slice();
 
 		for(var i = 0; i< newElems.length; i++){
 			newElems[i] = elems[i].clone(copyMethod);
-			if(newDimension !== undefined){
-				newElems[i].index = [newDimension].concat(newElems[i].index);
-			}
+			(newDimension !== undefined) && newElems[i].index.prepend(newDimension);
 		}
 
 		return newElems;
-	};
-
-	this.permute = function(index, pattern){
-
-		// rearranging the index according to the pattern. The pattern
-		// is an array that each element denotes its original position
-		// in the orignal array, which means the pattern should contain
-		// all element in range(length(index))
-		var temp = index.slice();
-		var newIndex = [];
-		for(var i = 0; i < index.length; i++){
-			newIndex.push(temp[pattern[i]]);
-		}
-		return newIndex;
 	};
 }
 
 Tautology.Array.prototype = {
 	constructor : Tautology.Array,
 
+	// Initialize the array in the Tautology array with given array and query.
+	// By pushing the elements into the array, an 1-dimensional index is also
+	// assigned.
 	init : function(array, query){
-		this.shape = [array.length];
+		this.shape = new Tautology.Shape([array.length]);
 		this.query = query;
 
 		for(var i = 0; i < array.length; i++){
-			this.elems.push(new Tautology.Element([i], array[i], this.query));
+			this.elems.push(new Tautology.Element(new Tautology.Index([i], this.query), array[i]));
 		}
 	},
 
+	// Duplicate the current whole elements. Meanwhile extends 1 dimension from
+	// original list (matrix). 
 	dup : function(n, copy_method){
-		var new_elems = this.duplicate(this.elems, copy_method);
+		var new_elems = this.deepcopy(this.elems, copy_method);
 		this.elems = [];
 		for(var i = 0; i < n; i++){
-			this.elems = this.elems.concat(this.duplicate(new_elems, copy_method, i));
+			this.elems = this.elems.concat(this.deepcopy(new_elems, copy_method, i));
 		}
-		this.shape = [n].concat(this.shape);
+		this.shape.prepend(n);
+	},
+
+	// Concatenate two Tautological Array together, (so no need to implement
+	// the prepending/appending submatrix separately.) The submatrix should
+	// have different length on only one dimension.
+
+	// Concatenation changes the shape of matrix, splice the array with objects,
+	// so no need to specify the method about object disposal.
+	concatenate : function(array){
+
+		// i represents the ith dimension that two matrices differ. if the two
+		// matrices are structurally identical, then i will be set back to 0,
+		// to join the matrices at the highest level.
+
+		var i = 0;
+		for(; i <= this.shape.length; i++){
+			if(i == this.shape.length){
+				i = 0;
+				break;
+			}
+			if(this.shape[i] != array.shape[i]) break;
+		}
+
+		// increase the index on that dimension
+		for(var n = 0; n < array.elems.length; n++){
+			array.elems.index.index[i] += this.shape[i];
+		}
+
+		this.elems.concat(array.elems);
+
+		delete array;
 	},
 
 	flatten : function(){
 		for(var i = 0; i < this.elems.length; i++){
-			this.elems[i].flatten(this.shape[1]);
+			this.elems[i].index.flatten(this.shape.shape[1]);
 		}
-		this.shape = [this.shape[0]*this.shape[1]].concat(this.shape.slice(2));
+		this.shape.flatten();
 	},
 
-	partition : function(n){
-		var removed_modulo = this.elems.length - this.elems.length % n;
-		this.elems = this.elems.slice(0, removed_modulo);
-		for(var i = 0; i < this.elems.length; i++){
-			this.elems[i].part_index(n);
+	partition : function(n, disposeMethod){
+
+		var most = this.elems.length - this.elems.length % n;
+
+		if(disposeMethod != undefined){
+			for(var i = most; i < this.elems.length; i++){
+				this.elems[i].disposeMethod();
+			}	
 		}
-		this.shape = [this.shape[0]/n, n].concat(this.shape.slice(1));
+
+		this.elems.length = most;
+
+		for(var i = 0; i < this.elems.length; i++){
+			this.elems[i].index.partition(n);
+		}
+		this.shape.partition();
 
 	},
 	transpose : function(patt){
 		var _this = this;
 		for(var i = 0; i < this.elems.length; i++){
-			this.elems[i].index = this.permute(this.elems[i].index,patt);
+			this.elems[i].index.transpose(patt);
 		}
-		this.shape = this.permute(this.shape, patt);
+		this.shape.transpose(patt);
+
 		this.elems.sort(function(a, b){
-
-			return a.sum_index(_this.shape) - b.sum_index(_this.shape);
+			return a.index.sum(_this.shape) - b.index.sum(_this.shape);
 		});
-
 		
 	},
-	applyFunc : function(func, pattern){
+	apply : function(func, pattern){
 		for(var i = 0; i < this.elems.length; i++){
-			this.elems[i].applyFunc(func, pattern);
+			this.elems[i].apply(func, pattern);
 		}
 	},
 
 	output : function(){
 		var _this = this;
-		console.log(this.elems.map(function(elem){return [elem.index+" "+elem.object]}).join("\n"));
+		console.log(this.elems.map(function(elem){return [elem.index.index+" "+elem.object]}).join("\n"));
 	}
 }

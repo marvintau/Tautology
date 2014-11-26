@@ -69,8 +69,9 @@ Tautology.VectorArray.prototype ={
 		this.updateLabel();
 		// this.update();
 	},
+
 	translate : function(vec, patt){
-		this.array.applyFunc(function(){this.object.add(vec);}, patt);
+		this.array.apply(function(){this.object.add(vec);}, patt);
 		this.updateLabel();
 		// this.update();
 	},
@@ -80,7 +81,7 @@ Tautology.VectorArray.prototype ={
 			shape = this.array.shape;
 		normal_vec.normalize();
 
-		this.array.applyFunc(function(){this.object.applyAxisAngle(normal_vec, angle);}, patt);
+		this.array.apply(function(){this.object.applyAxisAngle(normal_vec, angle);}, patt);
 		this.updateLabel();
 		// this.update();
 
@@ -88,20 +89,22 @@ Tautology.VectorArray.prototype ={
 
 	translateStepwise : function(vec, step){
 		this.dup(step+1);
-		this.array.applyFunc(function(){
-			this.object.add(vec.clone().multiplyScalar(this.index[0]/step));
+		this.array.apply(function(){
+			this.object.add(vec.clone().multiplyScalar(this.index.index[0]/step));
 		});
 		this.updateLabel();
 		// this.update();
 	},
+
+
 
 	rotateStepwise : function(vec, angle, step){
 		var normal_vec = vec.clone();
 		normal_vec.normalize();
 
 		this.dup(step+1);
-		this.array.applyFunc(function(){
-			this.object.applyAxisAngle(normal_vec, this.index[0]/step*angle);
+		this.array.apply(function(){
+			this.object.applyAxisAngle(normal_vec, this.index.index[0]/step*angle);
 		});
 		this.updateLabel();
 	},
@@ -133,7 +136,7 @@ Tautology.VectorArray.prototype ={
 			return ((num<0) ? "" : " ") + num.toFixed(precision);
 		}
 		console.log(this.array.elems.map(function(elem){
-			var s = "["+elem.index.join(",")+"] " +elem.sumIndex(shape);
+			var s = "["+elem.index.index.join(",")+"] " +elem.index.sum(shape);
 				s += " {"+elem.object.toArray().map(function(elem){return num(elem,3)}).join(", ")+"}";
 			return s;
 		}).join("\n"));
@@ -143,14 +146,15 @@ Tautology.VectorArray.prototype ={
 		for(var i = 0; i < this.labels.length; i++){
 			delete this.labels[i].material.map.image;
 			this.labels[i].material.map.dispose();
-			this.labels[i].material.dispose();
+			this.labels[i].material.dispose(); 
 			this.scene.remove(this.labels[i]);
 		}
 		this.labels = [];
 
 		if(this.isShowinglabel){
 			for(var i = 0; i < a.array.elems.length; i++){
-				this.labels.push(a.makeTextSprite(a.array.elems[i].index.join(",")));
+				// console.log(a.array.elems[i].index);
+				this.labels.push(a.makeTextSprite(a.array.elems[i].index.index.join(",")));
 				this.labels[i].position.copy(a.array.elems[i].object);
 				this.scene.add(this.labels[i]);
 			}	
@@ -164,11 +168,10 @@ Tautology.VectorArray.prototype ={
 	},
 
 	//Need to validate the dimensions
-	generateGeometry : function(){
+	generateMesh : function(){
 		var index = {};
-		// var geoms = []; // to be returned
 		var geom = new THREE.Geometry();
-		var PackedGeom = new THREE.Object3D();
+		var packedGeom = new THREE.Object3D();
 
 		var findTextureCoords = function(){
 
@@ -198,17 +201,18 @@ Tautology.VectorArray.prototype ={
 			}
 
 			with({elems : this.array.elems}){
-				for(var i = 0; i < this.array.shape[0]; i++){
-					for(var j = 0; j < this.array.shape[1]; j++){
+				for(var i = 0; i < this.array.shape.shape[0]; i++){
+					for(var j = 0; j < this.array.shape.shape[1]; j++){
 						updateElems(elems);
 					}						
 				}
 
-				last = (this.array.shape[0]-1)+","+(this.array.shape[1]-1);
-				for(var i = 0; i < this.array.shape[0]; i++){
-					for(var j = 0; j < this.array.shape[1]; j++){
-						index[i+","+j].tCoord.x /= index[last].tCoord.x;
-						index[i+","+j].tCoord.y /= index[last].tCoord.y;
+				lastX = this.array.shape.shape[0]-1;
+				lastY = this.array.shape.shape[1]-1;
+				for(var i = 0; i < this.array.shape.shape[0]; i++){
+					for(var j = 0; j < this.array.shape.shape[1]; j++){
+						index[i+","+j].tCoord.x /= index[i+","+lastY].tCoord.x;
+						index[i+","+j].tCoord.y /= index[lastX+","+j].tCoord.y;
 					}						
 				}
 			}	
@@ -217,9 +221,9 @@ Tautology.VectorArray.prototype ={
 
 		var output = function(){
 			s = "";
-			last = (this.array.shape[0]-1)+","+(this.array.shape[1]-1);
-			for(var i = 0; i < this.array.shape[0]; i++){
-				for(var j = 0; j < this.array.shape[1]; j++){
+			last = (this.array.shape.shape[0]-1)+","+(this.array.shape.shape[1]-1);
+			for(var i = 0; i < this.array.shape.shape[0]; i++){
+				for(var j = 0; j < this.array.shape.shape[1]; j++){
 					s += ((j==0)?"":" ")+"["+i+","+j+"] ";
 					s += index[i+","+j].i+" "+Array((index[last].i+"").length - (index[i+","+j].i+"").length+1).join(" ");
 					s += index[i+","+j].tCoord.x.toFixed(3)+" "+index[i+","+j].tCoord.y.toFixed(3);
@@ -230,18 +234,17 @@ Tautology.VectorArray.prototype ={
 		}.bind(this);
 
 		for (var i = 0; i < this.array.elems.length; i++){
-			index[this.array.elems[i].index.toString()] = {'i':i};
+			index[this.array.elems[i].index.index.toString()] = {'i':i};
 		}
 
 		findTextureCoords();
-		output();
+		// output();
 
 		var pushVertex = function(goem, i, j){
 			geom.vertices.push(this.array.elems[index[i+","+j].i].object);
-			// geom.vertices.push(this.array.elems[index[(i+1)+","+j].i].object);
-			// geom.vertices.push(this.array.elems[index[i+","+(j+1)].i].object);
-			// geom.vertices.push(this.array.elems[index[(i+1)+","+(j+1)].i].object);
 		}.bind(this);
+
+		console.log(geom.vertices);
 
 		var pushFace = function(geom, a, b, c, u){
 			// u ? (geom.faces.push(new THREE.Face3(0, 1, 2))) : (geom.faces.push(new THREE.Face3(2, 1, 3)));
@@ -258,40 +261,51 @@ Tautology.VectorArray.prototype ={
 			pushFace(geom, index[i+","+(j+1)], index[(i+1)+","+j], index[(i+1)+","+(j+1)], false);
 		}
 
-		for(var i = 0; i < this.array.shape[0]; i++){
-			for(var j = 0; j < this.array.shape[1]; j++){
+		for(var i = 0; i < this.array.shape.shape[0]; i++){
+			for(var j = 0; j < this.array.shape.shape[1]; j++){
 				pushVertex(geom, i, j);
 			}
 		}
 
-	    var m = new THREE.MeshLambertMaterial({ color:0xaaaaaa,
-                                           opacity: 0.6,
-                                           transparent: true,
-                                           side: THREE.FrontSide,
-                                           needsUpdate: true
-                                       }); 
+	    var m = new THREE.MeshLambertMaterial({
+	    	color:0xaaaaaa,
+			opacity: 0.6,
+			transparent: true,
+			side: THREE.DoubleSide,
+			map: texture,
+			_needsUpdate: true
+		}); 
 
-	    var n = new THREE.MeshLambertMaterial({ color:0xaaaaaa,
-                                           opacity: 0.6,
-                                           transparent: true,
-                                           side: THREE.BackSide,
-                                           needsUpdate: true
-                                       }); 
+	    var n = new THREE.MeshLambertMaterial({
+	    	color:0xaaaaaa,
+			opacity: 0.6,
+			transparent: true,
+			side: THREE.BackSide,
+			map: texture,
+			_needsUpdate: true
+		}); 
+
+	    // For showing the mesh, will cause serious lag.
+	 //    var l = new THREE.MeshBasicMaterial({
+		//     color: 0x000000,
+		//     wireframe: true
+		// });
 
 
 		var geom;
-		for(var i = 0; i < this.array.shape[0]-1; i++){
-			for(var j = 0; j < this.array.shape[1]-1; j++){
+		for(var i = 0; i < this.array.shape.shape[0]-1; i++){
+			for(var j = 0; j < this.array.shape.shape[1]-1; j++){
 				pushQuad(geom, i, j);
 				
 			}
 		}
 		geom.computeFaceNormals();
 		geom.computeVertexNormals();
-		PackedGeom.add(new THREE.Mesh(geom, m));
-		PackedGeom.add(new THREE.Mesh(geom, n));
+		packedGeom.add(new THREE.Mesh(geom, m));
+		packedGeom.add(new THREE.Mesh(geom, n));
+		// packedGeom.add(new THREE.Mesh(geom, l));
 
-		return PackedGeom;
+		return packedGeom;
 	}
 
 }

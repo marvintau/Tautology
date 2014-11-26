@@ -1,56 +1,50 @@
-Tautology.Element = function(index, object, query){
-	this.index  = index;
+// The Tautological Element is the finest unit that organizes data. It holds
+// Three types of information, including index (representation of structure),
+// query (criteria of finding the element) and the object. All three types of
+// data should be defined outside this class.
+// (apparently we haven't realize it now.)
+
+// The index class should consist of method about manipulating index. Since
+// the index represent multi-dimensional matrix, it should represents the way
+// to initialize, manipulate, reduce or add more dimensions, and export to
+// string to make it as key for quick look-up. Moreover, it can be mapped to
+// a partial-order value for sorting.
+// COPY THE PARAGRAPH ABOVE INTO THE NEW CREATED INDEX CLASS [DONE]
+
+// The query class should consist of method about verifying a dimension of
+// an index. Since the query array is usually changing, there is no need to
+// store it. However some of the queries over a particular dimension are
+// freuquently used, like even, odd, or don't-care. The query class specifies
+// the procedure of matching between index array and query array, and the
+// detailed matching criteria are specified by user.
+// COPY THE PARAGRAPH ABOVE INTO THE QUERY CLASS [DONE]
+
+// After separating the functionalities away, the main task of Tautological
+// Element is to create a new copy of itself, and apply the object method
+// when the query criterion is true.
+
+// TODO: SEPARATE THE INDEX METHOD AWAY FROM THIS CLASS [DONE]
+
+Tautology.Element = function(index, object){
+	this.index  = index
 	this.object = object;
-	this.query  = query;
 }
 
 Tautology.Element.prototype = {
 	constructor : Tautology.Element,
 
 	clone : function(copyMethod){
-		with ({proto : this.object.constructor.prototype}){
-			proto.copyMethod = copyMethod;
-			var newClone = this.object.copyMethod();
-			delete proto.copy_method;			
-		};
-		return new Tautology.Element(this.index.slice(), newClone, this.query);	
+		return new Tautology.Element(this.index.clone(), 
+									 copyMethod.call(this.object));	
 	},
 
-	applyFunc : function(func, queryArray){
-		// here the function passed as parameter will be added to the prototype of AwesomeElem,
-		// since the index might be useful for the operation. 
-		with ({proto : this.constructor.prototype}){
-			proto.operator = func;
-
-			// If outcome is true means all matched.
-			if(this.query.match(this.index, queryArray)){
-				this.operator();
-			}
-			delete proto.operator;
-		}
+	dispose : function(disposeMethod){
+		this.index = null;
+		disposeMethod.call(this.object);
+		this.object = null;
 	},
 
-	setIndex : function(newIndex){
-		this.index = newIndex;
-	},
-
-	flatten : function(dim){
-		// if(this.index.length > 1){
-			this.index = [this.index[0]*dim + this.index[1]].concat(this.index.slice(2));	
-		// }
-	},
-
-	reshapeIndex : function(dim){
-		this.index = [Math.floor(this.index[0]/dim), this.index[0] % dim].concat(this.index.slice(1));
-	},
-
-	sumIndex : function(shape){
-		var sum = 0;
-		for(var i = 0; i < this.index.length-1; i++){
-			sum = (sum + this.index[i]) * shape[i+1];
-		}
-		sum = sum + this.index[this.index.length-1];
-		return sum;
-	},
-
+	apply : function(func, queryArray){
+		this.index.match(queryArray) && func.call(this);
+	}
 }

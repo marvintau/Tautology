@@ -1,6 +1,13 @@
+// The query class should consist of method about verifying a dimension of
+// an index. Since the query array is usually changing, there is no need to
+// store it. However some of the queries over a particular dimension are
+// freuquently used, like even, odd, or don't-care. The query class specifies
+// the procedure of matching between index array and query array, and the
+// detailed matching criteria are specified by user.
+
+
 Tautology.Query = function(){
 	this.queryTable = [];
-	this.matcher = null;
 }
 
 Tautology.Query.prototype = {
@@ -9,31 +16,6 @@ Tautology.Query.prototype = {
 	register : function(condFunc, checkFunc){
 		with ({table : this.queryTable}){
 			table.push({cond: condFunc, check: checkFunc});
-			if (table.length == 1){
-				this.matcher = function(index, query){
-					return table[0].cond(query) && table[0].check(index, query);
-				}.bind(this);
-			} else {
-				this.matcher = function(index, query){
-					for(var i = 0; i < table.length; i++){
-						if(table[i].cond(query) && table[i].check(index, query)){
-							return true;
-						}
-					}
-					return false;
-				}
-			}		
 		}
-	},
-
-	match : function(indexArray, queryArray){
-
-		var outcome = true;
-		if(queryArray != undefined && indexArray.length == queryArray.length){
-			for(var i = 0; i < indexArray.length; i++){
-				outcome = outcome && this.matcher(indexArray[i], queryArray[i]);
-			}
-		}
-		return outcome;
 	}
 }
