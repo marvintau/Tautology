@@ -1,6 +1,7 @@
-(function(window, document, Math, undef){
-	var camera, scene, renderer, canvas;
+var camera, scene, renderer, canvas;
 
+(function(window, document, Math, undef){
+	
 	var setup_canvas = function(){
 		canvas = new fabric.Canvas('viewport');
 
@@ -129,10 +130,13 @@ function test(scene){
 	a.transpose([0, 2, 1]);
 	a.flatten();
 	a.transpose([1,0]);
-	a.output();
+	a.toggleLabel();
+	// a.output();
 
-	geom = a.generateMesh(texture);
+	m = new Tautology.MeshGenerator(a.array);
+	geom = m.generateMesh();
+	
 	scene.add(geom);
 	
-	
+	a.toggleLabel();
 }
