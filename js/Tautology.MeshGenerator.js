@@ -1,12 +1,15 @@
-Tautology.MeshGenerator = function(array){
+Tautology.Geometry = function(array){
+
 	this.array = array;
+	this.geom = new THREE.Geometry();
+
 	this.cols = this.array.shape.shape[0];
 	this.rows = this.array.shape.shape[1];
 	this.vertexTable = {};
 }
 
-Tautology.MeshGenerator.prototype = {
-	constructor : Tautology.MeshGenerator,
+Tautology.Geometry.prototype = {
+	constructor : Tautology.Geometry,
 
 	initIndex : function(){
 		for (var i = 0; i < this.array.elems.length; i++){
@@ -54,36 +57,36 @@ Tautology.MeshGenerator.prototype = {
 		}
 	},
 
-	pushVertices : function(geom, i, j){
+	pushVertices : function(i, j){
 		for(var i = 0; i < this.cols; i++){
 			for(var j = 0; j < this.rows; j++){
-				geom.vertices.push(this.array.elems[this.vertexTable[i+","+j].i].object);
+				this.geom.vertices.push(this.array.elems[this.vertexTable[i+","+j].i].object);
 			}
 		}
 	},
 
-	pushFace : function(geom, a, b, c){
-		geom.faces.push(new THREE.Face3(a.i, b.i, c.i));
-		geom.faceVertexUvs[0].push([
+	pushFace : function(a, b, c){
+		this.geom.faces.push(new THREE.Face3(a.i, b.i, c.i));
+		this.geom.faceVertexUvs[0].push([
 			new THREE.Vector2(a.tCoord.x, a.tCoord.y),
 			new THREE.Vector2(b.tCoord.x, b.tCoord.y),
 			new THREE.Vector2(c.tCoord.x, c.tCoord.y)
 		]);
 	},
 
-	pushQuad : function(geom, i, j){
-		this.pushFace(geom, this.vertexTable[i+","+j],
-							this.vertexTable[(i+1)+","+j],
-							this.vertexTable[i+","+(j+1)]);
-		this.pushFace(geom, this.vertexTable[i+","+(j+1)], 
-							this.vertexTable[(i+1)+","+j],
-							this.vertexTable[(i+1)+","+(j+1)]);
+	pushQuad : function(i, j){
+		this.pushFace( 	this.vertexTable[i+","+j],
+						this.vertexTable[(i+1)+","+j],
+						this.vertexTable[i+","+(j+1)]);
+		this.pushFace(	this.vertexTable[i+","+(j+1)], 
+						this.vertexTable[(i+1)+","+j],
+						this.vertexTable[(i+1)+","+(j+1)]);
 	},
 
-	pushAllQuads : function(geom){
+	pushAllQuads : function(){
 		for(var i = 0; i < this.cols - 1; i++){
 			for(var j = 0; j < this.rows - 1; j++){
-				this.pushQuad(geom, i, j);		
+				this.pushQuad(i, j);		
 			}
 		}
 
@@ -103,43 +106,24 @@ Tautology.MeshGenerator.prototype = {
 		console.log(s);
 	},
 
-	generateMesh : function(){
-		var geom = new THREE.Geometry();
-		var packedGeom = new THREE.Object3D();
-
-		var outside = new THREE.MeshLambertMaterial({
-	    	color:0xaaaaaa,
-			opacity: 0.6,
-			transparent: true,
-			side: THREE.FrontSide,
-			map: texture,
-			_needsUpdate: true
-		}); 
-
-	    var inside = new THREE.MeshLambertMaterial({
-	    	color:0xaaaaaa,
-			opacity: 0.6,
-			transparent: true,
-			side: THREE.BackSide,
-			map: texture,
-			_needsUpdate: true
-		}); 
-
+	generateGeom : function(){
+		
 	    this.initIndex();
 		this.getCoordinateArray();
 		this.getUnifiedCoordinateArray();
-		this.pushVertices(geom);
-		this.pushAllQuads(geom);
+		this.pushVertices();
+		this.pushAllQuads();
 		this.output();
 
-		geom.computeFaceNormals();
-		geom.computeVertexNormals();
-		packedGeom.add(new THREE.Mesh(geom, outside));
-		packedGeom.add(new THREE.Mesh(geom, inside));
+		this.geom.computeFaceNormals();
+		this.geom.computeVertexNormals();
+		// goem.normalsNeedUpdate = true;
+	},
 
-		return packedGeom;
-
+	setVertex : function(i, j, vector){
+		console.log(this.geom.vertices[this.vertexTable[i+","+j].i]);
+		this.geom.verticesNeedUpdate = true;
+		this.array.elems[this.vertexTable[i+","+j].i].object.copy(vector);
+		console.log(this.geom.vertices[this.vertexTable[i+","+j].i]);
 	}
-
-
 }

@@ -106,6 +106,10 @@ var camera, scene, renderer, canvas;
 
 		renderer.render( scene, camera );
 		canvas.backgroundColor = 'rgba(255,255,255, 1)';
+
+		$(document).mousemove(function(e){
+			m.setVertex(8, 13, new THREE.Vector3(e.pageX/10, 10, 10));
+		})
 	});
 
 })(window, window.document, Math);
@@ -124,19 +128,46 @@ function test(scene){
 	a.init([new THREE.Vector3(0, 0, 3)]);
 	a.translateStepwise(new THREE.Vector3(.4, 0, -.6), 1);
 	a.flatten();
-	a.rotateStepwise(new THREE.Vector3(1, 0, 0), Math.PI*2, 16);
+	a.rotateStepwise(new THREE.Vector3(1, 0, 0), Math.PI*2, 8);
 	a.translate(new THREE.Vector3(0, 10, 0));
-	a.rotateStepwise(new THREE.Vector3(0, 0, 1), -Math.PI/3, 12);
+	a.rotateStepwise(new THREE.Vector3(0, 0, 1), -Math.PI/3, 8);
 	a.transpose([0, 2, 1]);
 	a.flatten();
 	a.transpose([1,0]);
-	a.toggleLabel();
+	// a.toggleLabel();
 	// a.output();
 
-	m = new Tautology.MeshGenerator(a.array);
-	geom = m.generateMesh();
+	m = new Tautology.Geometry(a.array);
+	m.generateGeom();
+	// If the geometry instance in the geom really refers to the vertex in the vertextable, then if we
+	// modify the vector stored in the vertextable, the vertices list in the geometry instance should be
+	// modified as well.
+
+
+
+	var outside = new THREE.MeshLambertMaterial({
+    	color:0xaaaaaa,
+		opacity: 0.6,
+		transparent: true,
+		side: THREE.FrontSide,
+		map: texture,
+		_needsUpdate: true
+	}); 
+
+    var inside = new THREE.MeshLambertMaterial({
+    	color:0xaaaaaa,
+		opacity: 0.6,
+		transparent: true,
+		side: THREE.BackSide,
+		map: texture,
+		_needsUpdate: true
+	}); 
+
+    var packedGeom = new THREE.Object3D();
+	packedGeom.add(new THREE.Mesh(m.geom, outside));
+	packedGeom.add(new THREE.Mesh(m.geom, inside));
+
+	scene.add(packedGeom);
 	
-	scene.add(geom);
-	
-	a.toggleLabel();
+	// a.toggleLabel();
 }
