@@ -2,7 +2,127 @@ var camera, scene, renderer, canvas;
 
 (function(window, document, Math, undef){
 	
-	var setup_canvas = function(){
+	var bentStrawRadius = 2.5,
+		bentBellowRadius = 10,
+		bentShortLength = 10,
+		bentLongLength = 40,
+		bentBellowAngle = Math.PI/3;
+
+
+	var setTexture = function(){
+		texture = new THREE.Texture( canvas.getElement() );
+		texture.repeat = new THREE.Vector2(-1, -1);
+		texture.offset = new THREE.Vector2(1,1);
+		texture.needsUpdate = true;
+	};
+
+	var setMaterials = function(){
+		outside = new THREE.MeshLambertMaterial({
+	    	color:0xaaaaaa,
+			opacity: 0.6,
+			transparent: true,
+			side: THREE.FrontSide,
+			map: texture,
+			_needsUpdate: true
+		}); 
+
+	    inside = new THREE.MeshLambertMaterial({
+	    	color:0xaaaaaa,
+			opacity: 0.6,
+			transparent: true,
+			side: THREE.BackSide,
+			map: texture,
+			_needsUpdate: true
+		}); 	
+	};
+	
+	var generateShortGeometry = function (strawRadius, bellowRadius, strawShortLength, left, width){
+		var part = new Tautology.VectorArray(scene);
+
+			part.init([new THREE.Vector3(0, 0, strawRadius)]);
+			part.rotateStepwise(new THREE.Vector3(1, 0, 0), Math.PI*2, Math.floor(10*strawRadius));
+			part.flatten();
+			part.output();
+			part.translateStepwise(new THREE.Vector3(-strawShortLength, 0, 0), 1);
+			part.translate(new THREE.Vector3(0, bellowRadius, 0));
+			part.transpose([1,0]);
+
+
+		var m = new Tautology.MeshGeometry(part.array, left, width, 0, 1);
+			delete part;
+			m.generateGeom();
+
+		return m.geom;
+	};
+
+	var generateLongGeometry = function (strawRadius, bellowRadius, strawLongLength, bellowAngle, left, width){
+		var part = new Tautology.VectorArray(scene);
+
+			part.init([new THREE.Vector3(0, 0, strawRadius)]);
+			part.rotateStepwise(new THREE.Vector3(1, 0, 0), Math.PI*2, Math.floor(10*strawRadius));
+			part.flatten();
+			part.output();
+			part.translateStepwise(new THREE.Vector3(strawLongLength, 0, 0), 1);
+			part.translate(new THREE.Vector3(0, bellowRadius, 0));
+			part.rotate(new THREE.Vector3(0, 0, 1), -bellowAngle, Math.floor(bellowRadius/10*8));
+			part.transpose([1,0]);
+
+		var m = new Tautology.MeshGeometry(part.array, left, width, 0, 1);
+			delete part;
+			m.generateGeom();
+
+		return m.geom;
+	};
+
+	var generateBellowGeometry = function (strawRadius, bellowRadius, bellowAngle, left, width){
+		var bellow = new Tautology.VectorArray();
+
+			bellow.init([new THREE.Vector3(0, 0, strawRadius)]);
+			bellow.translateStepwise(new THREE.Vector3(.4, 0, .6), 1);
+			bellow.flatten();
+			bellow.rotateStepwise(new THREE.Vector3(1, 0, 0), Math.PI*2, Math.floor(8*strawRadius));
+			bellow.translate(new THREE.Vector3(0, bellowRadius, 0));
+			bellow.rotateStepwise(new THREE.Vector3(0, 0, 1), -bellowAngle, Math.floor(bellowRadius/10*8));
+			bellow.transpose([0, 2, 1]);
+			bellow.flatten();
+			bellow.transpose([1,0]);
+
+		var m = new Tautology.MeshGeometry(bellow.array, left, width, 0, 1);
+			delete bellow;
+			m.generateGeom();
+
+		return m.geom;
+	};
+
+	function generateBentStraw(scene, strawRadius, bellowRadius, bellowAngle, shortLength, longLength){
+		var total = shortLength + bellowRadius * bellowAngle + longLength,
+			shortLeft = shortLength / total,
+			shortWidth = -shortLength / total,
+			bellowLeft = shortLength / total,
+			bellowWidth = bellowRadius * bellowAngle / total,
+			longLeft = bellowLeft + bellowWidth,
+			longWidth = longLength / total;
+
+		var geomShort = generateShortGeometry(strawRadius, bellowRadius, shortLength, shortLeft, shortWidth);
+		var geomBellow = generateBellowGeometry(strawRadius, bellowRadius, bellowAngle, bellowLeft, bellowWidth);
+		var geomLong = generateLongGeometry(strawRadius, bellowRadius, longLength, bellowAngle, longLeft, longWidth);
+
+		scene.remove(scene.children[1]);
+	    packedGeom = new THREE.Object3D();
+		packedGeom.add(new THREE.Mesh(geomBellow, outside));
+		packedGeom.add(new THREE.Mesh(geomShort, inside));
+		packedGeom.add(new THREE.Mesh(geomLong, outside));
+
+		packedGeom.add(new THREE.Mesh(geomBellow, inside));
+		packedGeom.add(new THREE.Mesh(geomShort, outside));
+		packedGeom.add(new THREE.Mesh(geomLong, inside));
+
+		scene.add(packedGeom);
+
+	};
+
+
+	var set2DCanvas = function(){
 		canvas = new fabric.Canvas('viewport');
 
 	    if( window.devicePixelRatio !== 1 ){
@@ -52,21 +172,25 @@ var camera, scene, renderer, canvas;
 		return ControlManager;
 	})();
 
-	function init(){
-		setup_canvas();
-
-		texture = new THREE.Texture( canvas.getElement() );
-		texture.repeat = new THREE.Vector2(-1, -1);
-		texture.offset = new THREE.Vector2(1,1);
-		texture.needsUpdate = true;
-
+	var setCameraAndLight = function(){
 		camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
 		camera.position.set(0, 0, 200);
 
 		light = new THREE.PointLight( 0xf2f2f2, 1 );
-        // light.shadowCameraVisible = true;
         light.position = camera.position;
         camera.add( light );
+
+	}
+
+	function init(){
+
+		set2DCanvas();
+		
+		setTexture();
+		
+		setMaterials();
+
+		setCameraAndLight();
 
 		scene = new THREE.Scene();
 		scene.add(camera);
@@ -102,72 +226,39 @@ var camera, scene, renderer, canvas;
 		$('#commandline').autosize();
 		$('#commandline').addClass('textarea-transition');
 		
-		test(scene);
-
 		renderer.render( scene, camera );
 		canvas.backgroundColor = 'rgba(255,255,255, 1)';
 
-		$(document).mousemove(function(e){
-			m.setVertex(8, 13, new THREE.Vector3(e.pageX/10, 10, 10));
-		})
+		generateBentStraw(scene, bentStrawRadius, bentBellowRadius, bentBellowAngle, bentShortLength, bentLongLength);
+
+		$("#radius").change(function(e){
+			bentStrawRadius = 8 * e.target.valueAsNumber/100;
+			generateBentStraw(scene, bentStrawRadius, bentBellowRadius, bentBellowAngle, bentShortLength, bentLongLength);
+		});
+
+		$("#angle").change(function(e){
+			bentBellowAngle = e.target.valueAsNumber/180 * Math.PI;
+			generateBentStraw(scene, bentStrawRadius, bentBellowRadius, bentBellowAngle, bentShortLength, bentLongLength);
+		});		
+
+		$("#bradius").change(function(e){
+			bentBellowRadius = e.target.valueAsNumber;
+			generateBentStraw(scene, bentStrawRadius, bentBellowRadius, bentBellowAngle, bentShortLength, bentLongLength);
+		});	
+
+		$("#short").change(function(e){
+			bentShortLength = e.target.valueAsNumber;
+			generateBentStraw(scene, bentStrawRadius, bentBellowRadius, bentBellowAngle, bentShortLength, bentLongLength);
+		});		
+
+		$("#long").change(function(e){
+			bentLongLength = e.target.valueAsNumber;
+			generateBentStraw(scene, bentStrawRadius, bentBellowRadius, bentBellowAngle, bentShortLength, bentLongLength);
+		});		
+
 	});
 
 })(window, window.document, Math);
 
-function test(scene){
-	q = new Tautology.Query();
-
-	q.register(function(q){return q == "X";},
-					 function(i, q){return true;});
-
-	q.register(function(q){return q == "even"},
-			   function(i, q){return i % 2 == 0});
-
-	a = new Tautology.VectorArray(scene);
-
-	a.init([new THREE.Vector3(0, 0, 3)]);
-	a.translateStepwise(new THREE.Vector3(.4, 0, -.6), 1);
-	a.flatten();
-	a.rotateStepwise(new THREE.Vector3(1, 0, 0), Math.PI*2, 8);
-	a.translate(new THREE.Vector3(0, 10, 0));
-	a.rotateStepwise(new THREE.Vector3(0, 0, 1), -Math.PI/3, 8);
-	a.transpose([0, 2, 1]);
-	a.flatten();
-	a.transpose([1,0]);
-	// a.toggleLabel();
-	// a.output();
-
-	m = new Tautology.Geometry(a.array);
-	m.generateGeom();
-	// If the geometry instance in the geom really refers to the vertex in the vertextable, then if we
-	// modify the vector stored in the vertextable, the vertices list in the geometry instance should be
-	// modified as well.
 
 
-
-	var outside = new THREE.MeshLambertMaterial({
-    	color:0xaaaaaa,
-		opacity: 0.6,
-		transparent: true,
-		side: THREE.FrontSide,
-		map: texture,
-		_needsUpdate: true
-	}); 
-
-    var inside = new THREE.MeshLambertMaterial({
-    	color:0xaaaaaa,
-		opacity: 0.6,
-		transparent: true,
-		side: THREE.BackSide,
-		map: texture,
-		_needsUpdate: true
-	}); 
-
-    var packedGeom = new THREE.Object3D();
-	packedGeom.add(new THREE.Mesh(m.geom, outside));
-	packedGeom.add(new THREE.Mesh(m.geom, inside));
-
-	scene.add(packedGeom);
-	
-	// a.toggleLabel();
-}

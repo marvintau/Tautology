@@ -1,4 +1,9 @@
-Tautology.Geometry = function(array){
+Tautology.MeshGeometry = function(array, left, width, top, height){
+
+	this.left = left;
+	this.top = top;
+	this.width = width;
+	this.height = height;
 
 	this.array = array;
 	this.geom = new THREE.Geometry();
@@ -8,8 +13,8 @@ Tautology.Geometry = function(array){
 	this.vertexTable = {};
 }
 
-Tautology.Geometry.prototype = {
-	constructor : Tautology.Geometry,
+Tautology.MeshGeometry.prototype = {
+	constructor : Tautology.MeshGeometry,
 
 	initIndex : function(){
 		for (var i = 0; i < this.array.elems.length; i++){
@@ -29,21 +34,19 @@ Tautology.Geometry.prototype = {
 		return o1.distanceTo(o2);
 	},
 
-	getCoordinate : function(i, j){
+	generate : function(i, j){
 
 		dX = (j != 0) && this.distX(this.array.elems, i, j) || 0;
 		dY = (i != 0) && this.distY(this.array.elems, i, j) || 0;
 
-		this.vertexTable[i+","+j].tCoord = {
-			x:(j != 0) && dX + this.vertexTable[i+","+(j-1)].tCoord.x || 0,
-			y:(i != 0) && dY + this.vertexTable[(i-1)+","+j].tCoord.y || 0
-		}
+		this.vertexTable[i+","+j].x = (j != 0) && dX + this.vertexTable[i+","+(j-1)].x || 0;
+		this.vertexTable[i+","+j].y = (i != 0) && dY + this.vertexTable[(i-1)+","+j].y || 0;
 	},
 
-	getCoordinateArray : function(){
+	generateArray : function(){
 		for(var i = 0; i < this.cols; i++){
 			for(var j = 0; j < this.rows; j++){
-				this.getCoordinate(i, j);
+				this.generate(i, j);
 			}						
 		}
 	},
@@ -51,8 +54,12 @@ Tautology.Geometry.prototype = {
 	getUnifiedCoordinateArray : function(){
 		for(var i = 0; i < this.cols; i++){
 			for(var j = 0; j < this.rows; j++){
-				this.vertexTable[i+","+j].tCoord.x /= this.vertexTable[i+","+(this.rows - 1)].tCoord.x;
-				this.vertexTable[i+","+j].tCoord.y /= this.vertexTable[(this.cols - 1)+","+j].tCoord.y;
+				this.vertexTable[i+","+j].x /= this.vertexTable[i+","+(this.rows - 1)].x;
+				(this.width != undefined) && (this.vertexTable[i+","+j].x *= this.width);
+				(this.left != undefined) && (this.vertexTable[i+","+j].x += this.left);
+				this.vertexTable[i+","+j].y /= this.vertexTable[(this.cols - 1)+","+j].y;
+				(this.height != undefined) && (this.vertexTable[i+","+j].y *= this.height);
+				(this.top != undefined) && (this.vertexTable[i+","+j].x += this.top);
 			}						
 		}
 	},
@@ -68,9 +75,9 @@ Tautology.Geometry.prototype = {
 	pushFace : function(a, b, c){
 		this.geom.faces.push(new THREE.Face3(a.i, b.i, c.i));
 		this.geom.faceVertexUvs[0].push([
-			new THREE.Vector2(a.tCoord.x, a.tCoord.y),
-			new THREE.Vector2(b.tCoord.x, b.tCoord.y),
-			new THREE.Vector2(c.tCoord.x, c.tCoord.y)
+			new THREE.Vector2(a.x, a.y),
+			new THREE.Vector2(b.x, b.y),
+			new THREE.Vector2(c.x, c.y)
 		]);
 	},
 
@@ -99,7 +106,7 @@ Tautology.Geometry.prototype = {
 			for(var j = 0; j < this.rows; j++){
 				s += ((j==0)?"":" ")+"["+i+","+j+"] ";
 				s += this.vertexTable[i+","+j].i+" "+Array((this.vertexTable[last].i+"").length - (this.vertexTable[i+","+j].i+"").length+1).join(" ");
-				s += this.vertexTable[i+","+j].tCoord.x.toFixed(3)+" "+this.vertexTable[i+","+j].tCoord.y.toFixed(3);
+				s += this.vertexTable[i+","+j].x.toFixed(3)+" "+this.vertexTable[i+","+j].y.toFixed(3);
 			}
 			s = s +"\n";
 		}
@@ -109,21 +116,19 @@ Tautology.Geometry.prototype = {
 	generateGeom : function(){
 		
 	    this.initIndex();
-		this.getCoordinateArray();
+		this.generateArray();
 		this.getUnifiedCoordinateArray();
 		this.pushVertices();
 		this.pushAllQuads();
-		this.output();
+		// this.output();
 
 		this.geom.computeFaceNormals();
 		this.geom.computeVertexNormals();
-		// goem.normalsNeedUpdate = true;
+		this.geom.normalsNeedUpdate = true;
 	},
 
 	setVertex : function(i, j, vector){
-		console.log(this.geom.vertices[this.vertexTable[i+","+j].i]);
 		this.geom.verticesNeedUpdate = true;
 		this.array.elems[this.vertexTable[i+","+j].i].object.copy(vector);
-		console.log(this.geom.vertices[this.vertexTable[i+","+j].i]);
 	}
 }
