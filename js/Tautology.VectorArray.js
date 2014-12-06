@@ -1,6 +1,5 @@
 Tautology.VectorArray = function(scene){
 	this.array = new Tautology.Array();
-	this.query = new Tautology.Query();
 }
 
 Tautology.VectorArray.prototype ={

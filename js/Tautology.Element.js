@@ -44,7 +44,7 @@ Tautology.Element.prototype = {
 		this.object = null;
 	},
 
-	apply : function(func, queryArray){
-		this.index.match(queryArray) && func.call(this);
+	applyFunc : function(func){
+		func.call(this);
 	}
 }

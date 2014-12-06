@@ -47,6 +47,28 @@ Tautology.Array.prototype = {
 		this.shape.prepend(n);
 	},
 
+	remove : function(dimension, ith){
+		(ith == "last") && (ith = this.shape.shape[dimension] - 1);
+		console.log(ith);
+		for (var i = 0; i < this.elems.length; i++){
+			if (this.elems[i].index.index[dimension] == ith) {
+				console.log(this.elems[i].index.index);
+				delete this.elems[i];
+				continue;
+			}
+			(this.elems[i].index.index[dimension] > ith) && (this.elems[i].index.index[dimension] --);
+		}
+
+		this.elems.sort(function(a, b){
+			return a.index.sum(this.shape) - b.index.sum(this.shape);
+		}.bind(this));
+
+		// console.log(this.elems);
+		this.elems.length = this.elems.length - this.elems.length / this.shape.shape[dimension];
+		this.shape.shape[dimension] --;
+		console.log(this.elems.length);
+	},
+
 	// Concatenate two Tautological Array together, (so no need to implement
 	// the prepending/appending submatrix separately.) The submatrix should
 	// have different length on only one dimension.
@@ -115,9 +137,9 @@ Tautology.Array.prototype = {
 		});
 		
 	},
-	apply : function(func, pattern){
+	applyFunc : function(func, pattern){
 		for(var i = 0; i < this.elems.length; i++){
-			this.elems[i].apply(func, pattern);
+			this.elems[i].applyFunc(func, pattern);
 		}
 	},
 

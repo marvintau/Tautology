@@ -2,16 +2,16 @@ Tautology.Label = function(scene){
 	this.scene = scene;
 	this.labels  = [];
 	this.sprites = [];
-	this.isShowinglabel = false;
+	this.isShowinglabel = true;
 }
 
-Tautology.prototype = {
+Tautology.Label.prototype = {
 	constructor : Tautology.Label,
 
 	makeSprite : function( message ){
 	
-		var fontface = "TheSans";	
-		var fontsize =  48;
+		var fontface = "Helvetica";	
+		var fontsize =  96;
 
 		var roundRect = function(ctx, x, y, w, h, r) {
 			    ctx.beginPath();
@@ -68,7 +68,7 @@ Tautology.prototype = {
 		if(this.isShowinglabel){
 			for(var i = 0; i < array.elems.length; i++){
 				// console.log(a.array.elems[i].index);
-				this.labels.push(this.makeTextSprite(array.elems[i].index.index.join(",")));
+				this.labels.push(this.makeSprite(array.elems[i].index.index.join(",")));
 				this.labels[i].position.copy(array.elems[i].object);
 				this.scene.add(this.labels[i]);
 			}	

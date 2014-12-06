@@ -113,7 +113,7 @@ Tautology.MeshGeometry.prototype = {
 		console.log(s);
 	},
 
-	generateGeom : function(){
+	generateGeom : function(swapAxis){
 		
 	    this.initIndex();
 		this.generateArray();
@@ -122,6 +122,9 @@ Tautology.MeshGeometry.prototype = {
 		this.pushAllQuads();
 		// this.output();
 
+		if(swapAxis){
+			this.geom.faceVertexUvs[0].map(function(face){face.map(function(point){point.set(point.y, point.x);});});
+		}
 		this.geom.computeFaceNormals();
 		this.geom.computeVertexNormals();
 		this.geom.normalsNeedUpdate = true;

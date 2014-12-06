@@ -1,12 +1,14 @@
-var camera, scene, renderer, canvas;
-
 (function(window, document, Math, undef){
-	
+	var camera, scene, renderer, canvas, controller;
+
 	var bentStrawRadius = 2.5,
-		bentBellowRadius = 10,
-		bentShortLength = 10,
-		bentLongLength = 40,
-		bentBellowAngle = Math.PI/3;
+		bentStrawRadiusResolution = 16,
+		bentStrawBellowRadius = 10,
+		bentStrawBellowResolution = 16,
+		bentStrawShortLength = 10,
+		bentStrawLongLength = 40,
+		bentStrawBellowAngle = Math.PI/3,
+		bentStrawBellowOffset = new THREE.Vector3(0.4, 0, 0.6);
 
 
 	var setTexture = function(){
@@ -35,92 +37,68 @@ var camera, scene, renderer, canvas;
 			_needsUpdate: true
 		}); 	
 	};
-	
-	var generateShortGeometry = function (strawRadius, bellowRadius, strawShortLength, left, width){
-		var part = new Tautology.VectorArray(scene);
 
-			part.init([new THREE.Vector3(0, 0, strawRadius)]);
-			part.rotateStepwise(new THREE.Vector3(1, 0, 0), Math.PI*2, Math.floor(10*strawRadius));
-			part.flatten();
-			part.output();
-			part.translateStepwise(new THREE.Vector3(-strawShortLength, 0, 0), 1);
-			part.translate(new THREE.Vector3(0, bellowRadius, 0));
-			part.transpose([1,0]);
+	var generateStrawVertices = function (strawResolution, bellowResolution) {
+		var vertices = new Tautology.VectorArray(scene);
+			vertices.init([new THREE.Vector3(0, 0, 0)]);
+			vertices.dup(strawResolution+1);
+			vertices.flatten();
+			vertices.dup(bellowResolution*2+1);
 
+		return vertices;
+	}
 
-		var m = new Tautology.MeshGeometry(part.array, left, width, 0, 1);
-			delete part;
-			m.generateGeom();
+	var updateStrawVertices2 = function (vertices,
+										bentStrawRadius,
+										bentStrawRadiusResolution,
+										bentStrawBellowRadius,
+										bentStrawBellowResolution,
+										bentStrawShortLength,
+										bentStrawLongLength,
+										bentStrawBellowAngle,
+										bentStrawBellowOffset,
+										geom){
+		vertices.applyFunc(function(){
+			(geom != undefined) && (geom.verticesNeedUpdate = true);
 
-		return m.geom;
-	};
+			// Reset the point
+			this.object.set(0, 0, 0);
 
-	var generateLongGeometry = function (strawRadius, bellowRadius, strawLongLength, bellowAngle, left, width){
-		var part = new Tautology.VectorArray(scene);
+			// Make the points move away from center to represent the short straight part
+			this.index.index[0] == 0 && this.object.add(new THREE.Vector3(-bentStrawShortLength, 0, 0));
 
-			part.init([new THREE.Vector3(0, 0, strawRadius)]);
-			part.rotateStepwise(new THREE.Vector3(1, 0, 0), Math.PI*2, Math.floor(10*strawRadius));
-			part.flatten();
-			part.output();
-			part.translateStepwise(new THREE.Vector3(strawLongLength, 0, 0), 1);
-			part.translate(new THREE.Vector3(0, bellowRadius, 0));
-			part.rotate(new THREE.Vector3(0, 0, 1), -bellowAngle, Math.floor(bellowRadius/10*8));
-			part.transpose([1,0]);
+			// Make the points move away from center to represent the long straight part
+			if(this.index.index[0] == bentStrawBellowResolution*2) {
+				this.object.add(new THREE.Vector3(bentStrawLongLength, 0, 0));
+			} ;
 
-		var m = new Tautology.MeshGeometry(part.array, left, width, 0, 1);
-			delete part;
-			m.generateGeom();
+			// Move the points away from the straw centroid axis to represent the radius
+			this.object.add(new THREE.Vector3(0, 0, bentStrawRadius));
 
-		return m.geom;
-	};
+			// Move the points with odd index over bellow resolution dimension to form the bellow
+			if(this.index.index[0] > 1 && this.index.index[0] < bentStrawBellowResolution*2 && ((this.index.index[0] & 1)==0)){
+				this.object.add(bentStrawBellowOffset);	
+			}
+		
+			// Rotate the points around the straw centroid axis to form the straw
+			this.object.applyAxisAngle(new THREE.Vector3(1, 0, 0), 2*Math.PI*this.index.index[1]/bentStrawRadiusResolution);		
 
-	var generateBellowGeometry = function (strawRadius, bellowRadius, bellowAngle, left, width){
-		var bellow = new Tautology.VectorArray();
+			// Move the whole straw further to make the curved bellow.
+			this.object.add(new THREE.Vector3(0, bentStrawBellowRadius, 0));
 
-			bellow.init([new THREE.Vector3(0, 0, strawRadius)]);
-			bellow.translateStepwise(new THREE.Vector3(.4, 0, .6), 1);
-			bellow.flatten();
-			bellow.rotateStepwise(new THREE.Vector3(1, 0, 0), Math.PI*2, Math.floor(8*strawRadius));
-			bellow.translate(new THREE.Vector3(0, bellowRadius, 0));
-			bellow.rotateStepwise(new THREE.Vector3(0, 0, 1), -bellowAngle, Math.floor(bellowRadius/10*8));
-			bellow.transpose([0, 2, 1]);
-			bellow.flatten();
-			bellow.transpose([1,0]);
+			// Let the bellow part rotate around the axis which the bellow curved around.
+			with({index : this.index.index}){
+				if(index[0] > 1 && index[0] < bentStrawBellowResolution*2){
+					this.object.applyAxisAngle(new THREE.Vector3(0, 0, 1), -bentStrawBellowAngle*index[0]/(bentStrawBellowResolution*2));
+				}
+				if(index[0] == bentStrawBellowResolution*2){
+					this.object.applyAxisAngle(new THREE.Vector3(0, 0, 1), -bentStrawBellowAngle*index[0]/(bentStrawBellowResolution*2));
+				}
+			}
 
-		var m = new Tautology.MeshGeometry(bellow.array, left, width, 0, 1);
-			delete bellow;
-			m.generateGeom();
-
-		return m.geom;
-	};
-
-	function generateBentStraw(scene, strawRadius, bellowRadius, bellowAngle, shortLength, longLength){
-		var total = shortLength + bellowRadius * bellowAngle + longLength,
-			shortLeft = shortLength / total,
-			shortWidth = -shortLength / total,
-			bellowLeft = shortLength / total,
-			bellowWidth = bellowRadius * bellowAngle / total,
-			longLeft = bellowLeft + bellowWidth,
-			longWidth = longLength / total;
-
-		var geomShort = generateShortGeometry(strawRadius, bellowRadius, shortLength, shortLeft, shortWidth);
-		var geomBellow = generateBellowGeometry(strawRadius, bellowRadius, bellowAngle, bellowLeft, bellowWidth);
-		var geomLong = generateLongGeometry(strawRadius, bellowRadius, longLength, bellowAngle, longLeft, longWidth);
-
-		scene.remove(scene.children[1]);
-	    packedGeom = new THREE.Object3D();
-		packedGeom.add(new THREE.Mesh(geomBellow, outside));
-		packedGeom.add(new THREE.Mesh(geomShort, inside));
-		packedGeom.add(new THREE.Mesh(geomLong, outside));
-
-		packedGeom.add(new THREE.Mesh(geomBellow, inside));
-		packedGeom.add(new THREE.Mesh(geomShort, outside));
-		packedGeom.add(new THREE.Mesh(geomLong, inside));
-
-		scene.add(packedGeom);
-
-	};
-
+		});
+		// vertices.transpose([1,0]);
+	}
 
 	var set2DCanvas = function(){
 		canvas = new fabric.Canvas('viewport');
@@ -147,30 +125,19 @@ var camera, scene, renderer, canvas;
 		canvas.add(rect);
 	};
 
-	var ControlManager = (function(){
+	var setControl = function(){
+		controller = new THREE.TrackballControls(camera, $('#threeport').get(0));
+		controller.rotateSpeed = 1.0;
+		controller.zoomSpeed = 1.2;
+		controller.panSpeed = 0.8;
+		controller.noZoom = false;
+		controller.noPan = false;
+		controller.staticMoving = false;
+		controller.dynamicDampingFactor = 0.1;	
 
-		function ControlManager(camera, render_elem){
-			this.controller = new THREE.TrackballControls(camera, render_elem);
-			this.controller.rotateSpeed = 1.0;
-			this.controller.zoomSpeed = 1.2;
-			this.controller.panSpeed = 0.8;
-			this.controller.noZoom = false;
-			this.controller.noPan = false;
-			this.controller.staticMoving = false;
-			this.controller.dynamicDampingFactor = 0.1;	
-		};
+        controller.addEventListener( 'change', render );
+	};
 
-		ControlManager.prototype = {
-			bind: function(render){
-		        this.controller.addEventListener( 'change', render );
-			},
-			update: function(){
-		        this.controller.update();
-			}
-		};
-
-		return ControlManager;
-	})();
 
 	var setCameraAndLight = function(){
 		camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 1000 );
@@ -198,18 +165,17 @@ var camera, scene, renderer, canvas;
 		renderer = new THREE.WebGLRenderer({alpha:true, antialias: true });
 		renderer.setSize( window.innerWidth, window.innerHeight );
 		renderer.sortObjects = true;
+		console.log($("#threeport").get(0));
 		$("#threeport").get(0).appendChild( renderer.domElement );
 
-		// ControlManager();
-		control = new ControlManager(camera, renderer.domElement);
-		control.bind(render);
-
+		setControl();
+		
 		render();
 	}
 
 	function animate() {
 	    requestAnimationFrame( animate );
-	    control.update();
+	    controller.update();
 	    render();
 	}
 
@@ -223,42 +189,80 @@ var camera, scene, renderer, canvas;
 
 	$(document).ready( function(){
 		$('viewport').attr('width', window.innerWidth);
-		$('#commandline').autosize();
-		$('#commandline').addClass('textarea-transition');
 		
 		renderer.render( scene, camera );
 		canvas.backgroundColor = 'rgba(255,255,255, 1)';
 
-		generateBentStraw(scene, bentStrawRadius, bentBellowRadius, bentBellowAngle, bentShortLength, bentLongLength);
+		document.getElementById("")
+		
+		vertices = generateStrawVertices(16, 16);
+		updateStrawVertices2(vertices,
+							bentStrawRadius,
+							bentStrawRadiusResolution,
+							bentStrawBellowRadius,
+							bentStrawBellowResolution,
+							bentStrawShortLength,
+							bentStrawLongLength,
+							bentStrawBellowAngle,
+							bentStrawBellowOffset);
 
-		$("#radius").change(function(e){
-			bentStrawRadius = 8 * e.target.valueAsNumber/100;
-			generateBentStraw(scene, bentStrawRadius, bentBellowRadius, bentBellowAngle, bentShortLength, bentLongLength);
+		g = new THREE.Geometry();
+		g.vertices = vertices.array.elems.map(function(elem){ return elem.object });
+		scene.add(new THREE.PointCloud(g));
+		
+		m = new Tautology.MeshGeometry(vertices.array, 0, 1, 0, 1);
+		m.generateGeom(true);
+		
+		scene.add(new THREE.Mesh(m.geom, inside));
+		scene.add(new THREE.Mesh(m.geom, outside));
+
+		$("#radius").on("input change", function(e) {
+			bentStrawRadius = 5 * e.target.valueAsNumber/100;
+			updateStrawVertices2(vertices,
+							bentStrawRadius,
+							bentStrawRadiusResolution,
+							bentStrawBellowRadius,
+							bentStrawBellowResolution,
+							bentStrawShortLength,
+							bentStrawLongLength,
+							bentStrawBellowAngle,
+							bentStrawBellowOffset);			
+			g.verticesNeedUpdate = true;
+			m.geom.verticesNeedUpdate = true;
 		});
 
-		$("#angle").change(function(e){
-			bentBellowAngle = e.target.valueAsNumber/180 * Math.PI;
-			generateBentStraw(scene, bentStrawRadius, bentBellowRadius, bentBellowAngle, bentShortLength, bentLongLength);
-		});		
 
-		$("#bradius").change(function(e){
-			bentBellowRadius = e.target.valueAsNumber;
-			generateBentStraw(scene, bentStrawRadius, bentBellowRadius, bentBellowAngle, bentShortLength, bentLongLength);
-		});	
+		$("#bradius").on("input change", function(e) {
+			bentStrawBellowRadius = e.target.valueAsNumber;
+			updateStrawVertices2(vertices,
+							bentStrawRadius,
+							bentStrawRadiusResolution,
+							bentStrawBellowRadius,
+							bentStrawBellowResolution,
+							bentStrawShortLength,
+							bentStrawLongLength,
+							bentStrawBellowAngle,
+							bentStrawBellowOffset);			
+			g.verticesNeedUpdate = true;
+			m.geom.verticesNeedUpdate = true;
+		});
 
-		$("#short").change(function(e){
-			bentShortLength = e.target.valueAsNumber;
-			generateBentStraw(scene, bentStrawRadius, bentBellowRadius, bentBellowAngle, bentShortLength, bentLongLength);
-		});		
-
-		$("#long").change(function(e){
-			bentLongLength = e.target.valueAsNumber;
-			generateBentStraw(scene, bentStrawRadius, bentBellowRadius, bentBellowAngle, bentShortLength, bentLongLength);
-		});		
+		$("#angle").on("input change", function(e) {
+			bentStrawBellowAngle = e.target.valueAsNumber/180 * Math.PI;
+			updateStrawVertices2(vertices,
+							bentStrawRadius,
+							bentStrawRadiusResolution,
+							bentStrawBellowRadius,
+							bentStrawBellowResolution,
+							bentStrawShortLength,
+							bentStrawLongLength,
+							bentStrawBellowAngle,
+							bentStrawBellowOffset);			
+			g.verticesNeedUpdate = true;
+			m.geom.verticesNeedUpdate = true;
+		});
 
 	});
 
 })(window, window.document, Math);
-
-
 
