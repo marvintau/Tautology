@@ -6,7 +6,7 @@ Tautology.MeshGeometry = function(array, left, width, top, height){
 	this.height = height;
 
 	this.array = array;
-	this.geom = new THREE.Geometry();
+	// this.geom 
 
 	this.cols = this.array.shape.shape[0];
 	this.rows = this.array.shape.shape[1];
@@ -64,36 +64,38 @@ Tautology.MeshGeometry.prototype = {
 		}
 	},
 
-	pushVertices : function(i, j){
+	pushVertices : function(geom){
 		for(var i = 0; i < this.cols; i++){
 			for(var j = 0; j < this.rows; j++){
-				this.geom.vertices.push(this.array.elems[this.vertexTable[i+","+j].i].object);
+				geom.vertices.push(this.array.elems[this.vertexTable[i+","+j].i].object);
 			}
 		}
 	},
 
-	pushFace : function(a, b, c){
-		this.geom.faces.push(new THREE.Face3(a.i, b.i, c.i));
-		this.geom.faceVertexUvs[0].push([
+	pushFace : function(geom, a, b, c){
+		geom.faces.push(new THREE.Face3(a.i, b.i, c.i));
+		geom.faceVertexUvs[0].push([
 			new THREE.Vector2(a.x, a.y),
 			new THREE.Vector2(b.x, b.y),
 			new THREE.Vector2(c.x, c.y)
 		]);
 	},
 
-	pushQuad : function(i, j){
-		this.pushFace( 	this.vertexTable[i+","+j],
+	pushQuad : function(geom, i, j){
+		this.pushFace( 	geom,
+						this.vertexTable[i+","+j],
 						this.vertexTable[(i+1)+","+j],
 						this.vertexTable[i+","+(j+1)]);
-		this.pushFace(	this.vertexTable[i+","+(j+1)], 
+		this.pushFace(	geom,
+						this.vertexTable[i+","+(j+1)], 
 						this.vertexTable[(i+1)+","+j],
 						this.vertexTable[(i+1)+","+(j+1)]);
 	},
 
-	pushAllQuads : function(){
+	pushAllQuads : function(geom){
 		for(var i = 0; i < this.cols - 1; i++){
 			for(var j = 0; j < this.rows - 1; j++){
-				this.pushQuad(i, j);		
+				this.pushQuad(geom, i, j);		
 			}
 		}
 
@@ -114,20 +116,22 @@ Tautology.MeshGeometry.prototype = {
 	},
 
 	generateGeom : function(swapAxis){
-		
+		var geom = new THREE.Geometry();
+
 	    this.initIndex();
 		this.generateArray();
 		this.getUnifiedCoordinateArray();
-		this.pushVertices();
-		this.pushAllQuads();
-		// this.output();
+		this.pushVertices(geom);
+		this.pushAllQuads(geom);
 
 		if(swapAxis){
-			this.geom.faceVertexUvs[0].map(function(face){face.map(function(point){point.set(point.y, point.x);});});
+			geom.faceVertexUvs[0].map(function(face){face.map(function(point){point.set(point.y, point.x);});});
 		}
-		this.geom.computeFaceNormals();
-		this.geom.computeVertexNormals();
-		this.geom.normalsNeedUpdate = true;
+		geom.computeFaceNormals();
+		geom.computeVertexNormals();
+		geom.normalsNeedUpdate = true;
+		
+		return geom;
 	},
 
 	setVertex : function(i, j, vector){

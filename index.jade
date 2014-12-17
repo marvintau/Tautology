@@ -1,0 +1,108 @@
+doctype
+html(lang='en')
+  head
+      meta(charset='utf-8')       
+      meta(http-equiv='X-UA-Compatible', content='IE=edge')       
+      meta(name='viewport', content='width=device-width, initial-scale=1')       
+      meta(name='description', content='')       
+      meta(name='author', content='')       
+      link(rel='icon', href='../../favicon.ico')       
+      title App
+      link(href='./css/bootstrap.min.css', rel='stylesheet')       
+      link(href='css/style.css', rel='stylesheet', type='text/css')   
+
+    body
+      nav(role='navigation').navbar.navbar-inverse.navbar-fixed-top
+        .container
+          .navbar-header
+            button.navbar-toggle.collapsed(
+              type='button',
+              data-toggle='collapse',
+              data-target='#navbar',
+              aria-expanded='false',
+              aria-controls='navbar'
+            )
+            a.navbar-brand(href='#') StrawPrint
+          #navbar-header.collapse.navbar-collapse
+            ui.nav.navbar-nav
+              li.active
+                a(href='#') Home
+              li
+                a(href='#about') About
+              li
+                a(href='#contact') Contact
+
+      .container
+        .col-md-3.well.well-lg
+          #accordion.panel-group(
+            role='tablist', 
+            aria-multiselectable='true'
+          )
+            div(role='tabpanel')
+              ul#straw-selector-tab.nav.nav-tabs(role='tablist')
+                
+                // Tab function to create tab tips
+                mixin tab(type, name, active)
+                  li(role='presentation', class=active)
+                    a(id=type + '-tab', href='#'+type, role='tab',
+                      data-toggle="tab",
+                      aria-controls=type, aria-expanded='true'
+                    )= name
+
+                +tab('straight', 'Straight', 'active')
+                +tab('bent', 'Bent')
+                +tab('spoon', 'Spoon')
+
+              #straw-selector-tab-content.tab-content
+                mixin tab-content(type, active)
+                  .tab-pane.fade(role='tabpanel', id=type,
+                    aria-labelledBy=type + '-tab',
+                    class= active
+                  )
+                    block
+
+
+                mixin slider(name, type, func, min, max, val)
+                  = name
+                  div: input(id=type + '-' + func + '-slider', type='range',
+                             min= min, max= max, value= val)
+
+                +tab-content('straight', 'in active')
+                  +slider('Radius', 'straight', 'radius', '40', '100', '50')
+                  +slider('Length', 'straight', 'length', '100', '200', '100')
+                
+                +tab-content('bent')
+                  +slider('Radius', 'bent', 'radius', '40', '100', '50')
+                  +slider('Stub Length', 'bent', 'stub-length', '100', '200', '100')
+                  +slider('Body Length', 'bent', 'body-length', '200', '600', '400')
+                  +slider('Cruvature', 'bent', 'curvature', '25', '100', '33')
+
+                +tab-content('spoon')
+                  +slider('Radius', 'spoon', 'radius', '40', '100', '50')
+                  +slider('Length', 'spoon', 'length', '100', '200', '100')
+
+        .col-md-8
+          .well.well-sm
+            canvas#viewport
+          #threeport.well.well-sm
+            | Showing
+
+      script(src="js/jquery.min.js")
+      script(src="js/three.min.js")
+      script(src="js/TrackballControl.min.js")
+      script(src="js/Tautology.js")
+      script(src="js/Tautology.Element.js")
+      script(src="js/Tautology.Index.js")
+      script(src="js/Tautology.Array.js")
+      script(src="js/Tautology.Shape.js")
+      script(src="js/Tautology.VectorArray.js")
+      script(src="js/Tautology.MeshGeometry.js")
+      script(src="js/Tautology.StraightStraw.js")
+      script(src="js/Tautology.BentStraw.js")
+      script(src="js/Tautology.SpoonStraw.js")
+      script(src="js/NURBSSurface.js")
+      script(src="js/NURBSCurve.js")
+      script(src="js/NURBSUtils.js")
+      script(src="js/fabric.min.js")
+      script(src="js/main.js")
+      script(src="js/bootstrap.min.js")

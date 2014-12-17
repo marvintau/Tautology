@@ -1,31 +1,101 @@
-<html>
-	<head>
-		<title>My first Three.js app</title>
-		<link rel="stylesheet" type="text/css" href="css/style.css">
-	</head>
-	<body>
-
-		<input id="radius" type="range" min="1"/ max="100"/>
-		<input id="angle" type="range" min="60"/ max="180"/>
-		<input id="bradius" type="range" min="10"/ max="20"/>
-		<input id="short" type="range" min="10"/ max="20"/>
-		<input id="long" type="range" min="40"/ max="60"/>
-
-		<canvas id="viewport" width = "200" height="200"></canvas>
-		<div id="threeport" width="1000" height="600"></div>
-
-		<script src="js/jquery.min.js"></script>
-		<script src="js/three.min.js"></script>
-		<script src="js/TrackballControl.min.js"></script>
-		<script src="js/Tautology.js"></script>
-		<script src="js/Tautology.Element.js"></script>
-		<script src="js/Tautology.Index.js"></script>
-		<script src="js/Tautology.Array.js"></script>
-		<script src="js/Tautology.Shape.js"></script>
-		<script src="js/Tautology.VectorArray.js"></script>
-		<script src="js/Tautology.Label.js"></script>
-		<script src="js/Tautology.MeshGeometry.js"></script>
-		<script src="js/fabric.min.js"></script>
-		<script src="js/main.js"></script>
-	</body>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+    <title>App</title>
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <nav role="navigation" class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar" class="navbar-toggle collapsed"></button><a href="#" class="navbar-brand">StrawPrint</a>
+        </div>
+        <div id="navbar-header" class="collapse navbar-collapse">
+          <ui class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ui>
+        </div>
+      </div>
+    </nav>
+    <div class="container">
+      <div class="col-md-3 well well-lg">
+        <div id="accordion" role="tablist" aria-multiselectable="true" class="panel-group">
+          <div role="tabpanel">
+            <ul id="straw-selector-tab" role="tablist" class="nav nav-tabs">
+              <!-- Tab function to create tab tips-->
+                            <li role="presentation" class="active"><a id="straight-tab" href="#straight" role="tab" data-toggle="tab" aria-controls="straight" aria-expanded="true">Straight</a></li>
+                            <li role="presentation"><a id="bent-tab" href="#bent" role="tab" data-toggle="tab" aria-controls="bent" aria-expanded="true">Bent</a></li>
+                            <li role="presentation"><a id="spoon-tab" href="#spoon" role="tab" data-toggle="tab" aria-controls="spoon" aria-expanded="true">Spoon</a></li>
+            </ul>
+            <div id="straw-selector-tab-content" class="tab-content">
+                            <div role="tabpanel" id="straight" aria-labelledBy="straight-tab" class="tab-pane fade in active">Radius
+                                            <div>
+                                              <input id="straight-radius-slider" type="range" min="40" max="100" value="50">
+                                            </div>Length
+                                            <div>
+                                              <input id="straight-length-slider" type="range" min="100" max="200" value="100">
+                                            </div>
+                            </div>
+                            <div role="tabpanel" id="bent" aria-labelledBy="bent-tab" class="tab-pane fade">Radius
+                                            <div>
+                                              <input id="bent-radius-slider" type="range" min="40" max="100" value="50">
+                                            </div>Stub Length
+                                            <div>
+                                              <input id="bent-stub-length-slider" type="range" min="100" max="200" value="100">
+                                            </div>Body Length
+                                            <div>
+                                              <input id="bent-body-length-slider" type="range" min="200" max="600" value="400">
+                                            </div>Cruvature
+                                            <div>
+                                              <input id="bent-curvature-slider" type="range" min="25" max="100" value="33">
+                                            </div>
+                            </div>
+                            <div role="tabpanel" id="spoon" aria-labelledBy="spoon-tab" class="tab-pane fade">Radius
+                                            <div>
+                                              <input id="spoon-radius-slider" type="range" min="40" max="100" value="50">
+                                            </div>Length
+                                            <div>
+                                              <input id="spoon-length-slider" type="range" min="100" max="200" value="100">
+                                            </div>
+                            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="well well-sm">
+          <canvas id="viewport"></canvas>
+        </div>
+        <div id="threeport" class="well well-sm">Showing</div>
+      </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/three.min.js"></script>
+    <script src="js/TrackballControl.min.js"></script>
+    <script src="js/Tautology.js"></script>
+    <script src="js/Tautology.Element.js"></script>
+    <script src="js/Tautology.Index.js"></script>
+    <script src="js/Tautology.Array.js"></script>
+    <script src="js/Tautology.Shape.js"></script>
+    <script src="js/Tautology.VectorArray.js"></script>
+    <script src="js/Tautology.MeshGeometry.js"></script>
+    <script src="js/Tautology.StraightStraw.js"></script>
+    <script src="js/Tautology.BentStraw.js"></script>
+    <script src="js/Tautology.SpoonStraw.js"></script>
+    <script src="js/NURBSSurface.js"></script>
+    <script src="js/NURBSCurve.js"></script>
+    <script src="js/NURBSUtils.js"></script>
+    <script src="js/fabric.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </body>
 </html>

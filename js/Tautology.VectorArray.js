@@ -1,4 +1,4 @@
-Tautology.VectorArray = function(scene){
+Tautology.VectorArray = function(){
 	this.array = new Tautology.Array();
 }
 
