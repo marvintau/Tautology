@@ -19,49 +19,17 @@ Tautology.Array = function(shape, constructor, copyMethod){
 	 * @private
 	 * @type {Array}
 	 */
-	this.elems = (shape==undefined) ? [] : function(){
-		Array.permute(shape).map(function(index){
-			new Tautology.Element(
-				new Tautology.Index(index),
-				new constructor(),
-				copyMethod);
-		})
-	};
+	this.elems = (shape==undefined) ? [] : Array.permute(shape).map(
+		function(index){return new Tautology.Element(
+			new Tautology.Index(index),
+			new constructor(),
+			copyMethod);
+		});
 
 }
 
 Tautology.Array.prototype.constructor = Tautology.Array;
 
-/**
- * Initialize the array in the Tautology array with given array and query.
- * By pushing the elements into the array, an 1-dimensional index is also
- * assigned.
- * @param {Array} array array to be transformed
- */
-Tautology.Array.prototype.init = function(array){
-	this.shape = new Tautology.Shape([array.length]);
-
-	for(var i = 0; i < array.length; i++){
-		this.elems.push(new Tautology.Element(new Tautology.Index([i]), array[i]));
-	}
-};
-
-/**
- * Initialize the array in the Tautology array with given array and query.
- * By pushing the elements into the array, an 1-dimensional index is also
- * assigned.
- * @param  {Number} n times to duplicate
- * @param  {Function} copy_method method name to clone memory
- */
-Tautology.Array.prototype.dup = function(n, copy_method){
-	(copy_method == undefined) && (copy_method = THREE.Vector3.prototype.clone);
-	var new_elems = this.deepcopy(this.elems, copy_method);
-	this.elems = [];
-	for(var i = 0; i < n; i++){
-		this.elems = this.elems.concat(this.deepcopy(new_elems, copy_method, i));
-	}
-	this.shape.prepend(n);
-};
 
 /**
  * Remove ith vector from particular dimension
