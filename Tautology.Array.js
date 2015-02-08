@@ -1,43 +1,33 @@
-
 /**
  * Tautological Array organizes the Elements. The Array needs to maintain and
  * manipulate the structure of the matrix, and apply operations over specific
  * Elements.
  * @constructor
  */
-Tautology.Array = function(){
+Tautology.Array = function(shape, constructor, copyMethod){
+
+	/**
+	 * Array shape (dimension)
+	 * @private
+	 * @type {[type]}
+	 */
+	this.shape = (shape==undefined) ? [] : shape;
+
 
 	/**
 	 * element array
 	 * @private
 	 * @type {Array}
 	 */
-	this.elems = [];
-	/**
-	 * Array shape (dimension)
-	 * @private
-	 * @type {[type]}
-	 */
-	this.shape = null;
-
-	/**
-	 * Deep copy (create new memory space)
-	 * @param  {Array} elems
-	 * @param  {Function} copyMethod
-	 * @param  {Number} the level of existing array
-	 * @return {Array} newElems copied elems
-	 */
-	this.deepcopy = function(elems, copyMethod, newDimension){
-		
-		var newElems = elems.slice();
-
-		for(var i = 0; i< newElems.length; i++){
-			newElems[i] = elems[i].clone(copyMethod);
-			(newDimension !== undefined) && newElems[i].index.prepend(newDimension);
-		}
-
-		return newElems;
+	this.elems = (shape==undefined) ? [] : function(){
+		Array.permute(shape).map(function(index){
+			new Tautology.Element(
+				new Tautology.Index(index),
+				new constructor(),
+				copyMethod);
+		})
 	};
+
 }
 
 Tautology.Array.prototype.constructor = Tautology.Array;
@@ -46,7 +36,7 @@ Tautology.Array.prototype.constructor = Tautology.Array;
  * Initialize the array in the Tautology array with given array and query.
  * By pushing the elements into the array, an 1-dimensional index is also
  * assigned.
- * @param {Array} aray array to be transformed
+ * @param {Array} array array to be transformed
  */
 Tautology.Array.prototype.init = function(array){
 	this.shape = new Tautology.Shape([array.length]);
@@ -160,7 +150,8 @@ Tautology.Array.prototype.applyFunc = function(func){
 };
 
 /**
- * output
+ * Output for debug purpose
+ * @return {[type]} [description]
  */
 Tautology.Array.prototype.output = function(){
 	var _this = this;

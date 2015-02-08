@@ -4,9 +4,10 @@
  * @param {Object} object
  * @constructor
  */
-Tautology.Element = function(index, object){
+Tautology.Element = function(index, object, copyMethod){
 	this.index  = index
 	this.object = object;
+	this.copyMethod = copyMethod;
 }
 
 Tautology.Element.prototype.constructor = Tautology.Element;
@@ -18,7 +19,7 @@ Tautology.Element.prototype.constructor = Tautology.Element;
  */
 Tautology.Element.prototype.clone = function(copyMethod){
 	return new Tautology.Element(this.index.clone(), 
-								 copyMethod.call(this.object));	
+								 this.copyMethod.call(this.object));	
 };
 
 /**
@@ -33,9 +34,9 @@ Tautology.Element.prototype.dispose = function(disposeMethod){
 };
 
 /**
- * [applyFunc description]
+ * [apply description]
  * @param  {Function} function operation to be applied on element
  */
-Tautology.Element.prototype.applyFunc = function(func){
+Tautology.Element.prototype.apply = function(func){
 	func.call(this);
 };

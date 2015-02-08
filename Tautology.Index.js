@@ -18,34 +18,69 @@ Tautology.Index = function(index){
 Tautology.Index.prototype = {
 	constructor : Tautology.Index,
 
+	/**
+	 * make a new copy of the index (only called by
+	 * copying an element that contains this index)
+	 * @return {[type]} [description]
+	 */
 	clone : function(){
 		return new Tautology.Index(this.index.slice());
 	},
 
+	/**
+	 * Set the new index with an array
+	 * @param {Array} newIndex [description]
+	 */
 	set : function(newIndex){
 		this.index = newIndex;
+		return null;
 	},
 
+	/**
+	 * prepend a new dimension (use when padding
+	 * the matrix)
+	 * @param  {[type]} newDimension [description]
+	 * @return {[type]}              [description]
+	 */
 	prepend : function(newDimension){
 		this.index.unshift(newDimension);
+		return null;
 	},
 
-	// For flattening
+	/**
+	 * Flattens the outermost dimension of the array
+	 * @param  {[type]} dim [description]
+	 * @return {[type]}     [description]
+	 */
 	flatten : function(dim){
 		this.index = [this.index[0]*dim + this.index[1]].concat(this.index.slice(2));
+		return null;
 	},
 
-	// For partitioning
+	/**
+	 * partition the outermost dimensions, while the
+	 * remainders will be discarded.
+	 * @param  {[type]} dim [description]
+	 * @return {[type]}     [description]
+	 */
 	partition : function(dim){
 		this.index = [Math.floor(this.index[0]/dim), this.index[0] % dim].concat(this.index.slice(1));
+		return null;
 	},
 	
+	/**
+	 * permutes the index, which causes the transposing
+	 * effect over the whole matrix
+	 * @param  {[type]} pattern [description]
+	 * @return {[type]}         [description]
+	 */
 	transpose : function(pattern){
 		var newIndex = [];
 		for(var i = 0; i < this.index.length; i++){
 			newIndex.push(this.index[pattern[i]]);
 		}
 		this.index = newIndex;
+		return null;
 	},
 
 	// For sorting
@@ -58,10 +93,5 @@ Tautology.Index.prototype = {
 		}
 		sum += this.index[this.index.length-1];
 		return sum;
-	},
-
-	toLabel : function(){
-		return this.index.toString();
 	}
-
 }
