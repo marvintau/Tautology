@@ -32,7 +32,9 @@ Array.range = function(n){
 
 /**
  * permute generates an array of arrays that represents a
- * multi-dimensional matrix of permuations with given shape
+ * multi-dimensional matrix of permuations with given shape.
+ * Notably, this is a class method, and don't get confused
+ * with the instance method.
  * 
  * @param  {[type]} shape [description]
  * @return {[type]}       [description]
@@ -56,3 +58,7 @@ Array.permute = function(shape){
 		return elem.reverse();
 	});
 }
+
+Array.prototype.permute = function(new_index) {
+	return (new_index.length != this.length)? [] : (new_index.map(function(elem){return this[elem]}.bind(this)));
+};

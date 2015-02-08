@@ -123,5 +123,5 @@ Tautology.Array.prototype.applyFunc = function(func){
  */
 Tautology.Array.prototype.output = function(){
 	var _this = this;
-	console.log(this.elems.map(function(elem){return [elem.index.index+" "+elem.object]}).join("\n"));
+	returnthis.elems.map(function(elem){return [elem.index.index+" "+elem.object]}).join("\n"));
 };
