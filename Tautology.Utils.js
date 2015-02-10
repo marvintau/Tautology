@@ -2,6 +2,9 @@
 // expansion of existing classes. Thus this file should be 
 // loaded before all other Tautology subclasses.
 
+// Some very handy Array/List manipulating functions which are
+// very familiar in other popular FP languages. I LOVE FP.
+
 /**
  * const generates a array with specific length
  * and constant object, which can be further 
@@ -33,24 +36,23 @@ Array.range = function(n){
 /**
  * permute generates an array of arrays that represents a
  * multi-dimensional matrix of permuations with given shape.
- * Notably, this is a class method, and don't get confused
- * with the instance method.
  * 
  * @param  {[type]} shape [description]
  * @return {[type]}       [description]
  */
 Array.permute = function(shape){
+	// for each dimension
 	return shape.reduce(function(perms, dimension){
-		// for each dimension
+		// for each number in the range of new dimension
 		return Array.range(dimension).map(function(elem){
-			// for each number in the range of new dimension
+			// for each permutation of existing dimensions
 			return perms.map(function(perm){
-				// for each permutation of existing dimensions
+				// combine each new number with each of the existing perms
 				return perm.concat(elem);
 			});
-		// for each newly formed permutation (is a two-dimensional array)
+		// for each newly formed perm (is a two-dimensional array)
 		}).reduce(function(a, b){
-			// flatten it.
+			// flatten 
 			return a.concat(b);
 		});
 	}, [[]]).map(function(elem){
@@ -58,7 +60,3 @@ Array.permute = function(shape){
 		return elem.reverse();
 	});
 }
-
-Array.prototype.permute = function(new_index) {
-	return (new_index.length != this.length)? [] : (new_index.map(function(elem){return this[elem]}.bind(this)));
-};

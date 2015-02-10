@@ -62,8 +62,3 @@ the straightforward method will definitely bring a lot of performance lags. A be
 # Model and Mesh
 
 There are two main problems with our current design of Model class. The first problem is that we integrates two different kind of geometrical model. One is generated from the vertices, and the other comes from the control points of NURBS. 
-
-
-
-
-

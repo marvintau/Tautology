@@ -70,7 +70,7 @@ Tautology.Index.prototype = {
 	
 	/**
 	 * permutes the index, which causes the transposing
-	 * effect over the whole matrix
+	 * effect over the whole matri
 	 * @param  {[type]} pattern [description]
 	 * @return {[type]}         [description]
 	 */
