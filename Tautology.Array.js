@@ -12,7 +12,7 @@ Tautology.Array = function(shape, constructor){
 	 * @type {[type]}
 	 */
 	this.shape = (shape==undefined) ? [] : shape;
-
+	this.cons = constructor;
 	/**
 	 * element array
 	 * @private
@@ -20,8 +20,8 @@ Tautology.Array = function(shape, constructor){
 	 */
 	this.elems = (shape==undefined) ? [] : Array.permute(shape).map(
 		function(index){
-			return { index: index, object: new constructor()};
-		});
+			return { index: index, object: new this.cons()};
+		}.bind(this));
 	
 	this.compiledQueries = {};
 }

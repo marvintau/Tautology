@@ -1,5 +1,18 @@
-Tautology.Model = function(parameters, routines, queries){
-	this.parameters = parameters;
+/**
+ * Tautology.Model generates the THREE.Geometry model from
+ * Tautology.Array object along with the updating function
+ * that corresponds to the parameters associated with UI,
+ * from given params, routines, and queries
+ * 
+ * @param {Object} params An object with all properties are function which
+ *                            returns the parameter value.
+ * @param {Array}  routines   The list of operations that will seuqentially
+ *                            applied on the objects.
+ * @param {Object} queries    An object with all functions that receives a Tau-
+ *                            Index and returns true/false value.
+ */
+Tautology.Model = function(params, routines, queries){
+	this.params = params;
 	this.routines = routines;
 	this.queries = queries;
 
@@ -10,18 +23,27 @@ Tautology.Model = function(parameters, routines, queries){
 Tautology.Model.prototype.constructor = Tautology.Model;
 
 Tautology.Model.prototype.eval = function(){
-	// 1. Generate the shape;
-	if(!this.parameters.shape){
-		throw new Error('But you have to specify the dimensions of the matrix in the parameter list..');
+	// 1. Generate the shape. First check whether the parameter list
+	//    contains the shape function.
+	if(!this.params.shape){
+		throw new Error('Dimensions not mentioned.');
 		return;
 	}
-	this.array = new Tautology.Array(this.parameters.shape());
+
+	if(!this.params.cons){
+		throw new Error('constructor not specified.');
+		return;
+	}
+	
+	this.array = new Tautology.Array(this.params.shape(),this.params.cons());
 
 	// 2. Performs the operation specified in routines
 	for (var i = this.routines.length - 1; i >= 0; i--) {
-		for (var j = this.array.elems.length - 1; i >= 0; i--) {
-			if (this.queries[this.routines[i].query](this.array.elems[j])){
-				this.array.elems[j].(this.routines[i].func(this.routines[i].))
+		for (var j = this.array.elems.length - 1; j >= 0; j--) {
+			// console.log(this.queries[this.routines[i].query].call(this.array.elems[j]));
+			if (this.queries[this.routines[i].query].call(this.array.elems[j])){
+				console.log(this.array.elems[j].index);
+				// this.array.elems[j].(this.routines[i].func(this.routines[i].))
 			}
 		};
 	};

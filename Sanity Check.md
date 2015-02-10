@@ -38,7 +38,4 @@ Thus by far, we inevitably need to design the structure of parameters, operation
 ## Tautology.Point.js
 `Tautology.Point` is definitely a 3D model specific library that contains the 3D spatial point data with its texture mapping coordinate. It also contains the necessary method for manipulating the point, which can be further utilized by the `Tautology.Model` class. The `Tautology.Point` data will be held by the `Tautology.Array`, and the method defined in the class will be used by the `Tautology.Model` class.
 
-__Note: Why do we need protocol?__
-Because some of the operation over the class cannot be defined inside the class specification. In javascript, we cannot make an object instance delete itself in the runtime. Thus we can only mark it as "to be deleted", and actually delete it in the outer program routine.
-
-Thus w will make a protocol here, that all element that stored by `Tautology.Array` and operated by `Tautology.Model` should contain a property `mad` which stands for _'Marked As Deletion'_. The compileQuery method will check whether there is a property of `mad`, and it won't compile if not.
+1. Test whether the Tautology.Array object in Tautology.Model is properly built.
