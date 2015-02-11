@@ -6,6 +6,10 @@ param = {
 parts = {
 	first : function(){
 		return this.index[0] ==1 && this.object.vec;
+	},
+
+	second: function(){
+		return this.index[1] ==1 && this.object.vec;
 	}
 };
 
@@ -22,3 +26,4 @@ codes = [{
 
 model = new Tautology.Model(param, parts, codes);
 model.eval();
+console.log(model.array);

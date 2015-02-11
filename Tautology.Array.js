@@ -34,17 +34,16 @@ Tautology.Array.prototype.constructor = Tautology.Array;
  * @param  {[type]} queryRules [description]
  * @return {[type]}            [description]
  */
-Tautology.Array.prototype.compileQuery = function(queryRules) {
+Tautology.Array.prototype.compileQuery = function(rules) {
+	// If the "Marked as deletion" is false or undefined
+	// the element will be preserved.
 	this.elems = this.elems.filter(function(elem){
 		return !elem.mad;
 	})
 
-	for (var i = this.elems.length - 1; i >= 0; i--) {
-		for(var query in queryRules){
-			if(queryRules[query](this.elems[i].index)){
-				(!this[query]) && (this[query]=[]);
-				this.compiledQueries.query.push[this.elems[i]];
-			}
-		}
-	};
+	for(var query in rules){
+		this[query] = this.elems.map(function(elem, index){return {i:index, e:elem};})
+				  .filter(function(elem){ return rules[query].call(elem.e);})
+				  .map(function(elem){return elem.i});
+	}
 };

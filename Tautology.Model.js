@@ -53,8 +53,7 @@ Tautology.Model.prototype.eval = function(){
 	};
 
 	// 3. compile queries for the updating function to be generated
-	
-
+	this.array.compileQuery(this.parts);
 	
 	// remove objects that marked as deletion
 	// perform the this.array.compileQuery(this.queries)

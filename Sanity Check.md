@@ -8,8 +8,6 @@
 3. `Array.permute`
    generates a array of arrays with permutations of specifc array shape (which can be considered as the indices of a sparse array)
 
-##
-
 ## Design of Tautology.Array
 Tautology.Array is a multi-dimensional array stored as a sparse array. Each element contains an native JS array that represents the index in the multi-dimensional array, and a generic object. For not confusing with the index of native JS array, the index we just defined in the `Tautology.Array` will be called **"Tau-Index"**.
 
