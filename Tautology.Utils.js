@@ -14,6 +14,7 @@
  * @param  {Object} func copy of new element
  * @return {Array}  constant array    
  */
+
 Array.const = function(n, element){
     return Array.apply(null, new Array(n)).map(function(){
     	return element;
@@ -37,15 +38,48 @@ Array.range = function(n){
  * @return {[type]}       [description]
  */
 
-Array.grid = function(m, n){
-	var grid = [];
-	for (var i = 0; i < m - 1; i++) {
-		for (var j = 0; j < n - 1; j++) {
-			grid.push(	[i*m+j, ((i+1)*m+j), (i*m+j+1)],
-						[((i+1)*m+j), (i*m+1), ((i+1)*m+j+1)]);
-		};
+Array.prototype.flatten = function(){
+	return this.reduce(function(prev, curr){return prev.concat(curr)});
+}
+
+Array.prototype.slide = function(n, cycle){
+	var res = [];
+	for (var i = this.length - n; i >= 0; i--) {
+		res.push(this.slice(i, i+n));
 	};
-	return grid;
+
+	return res.reverse();
+}
+
+Array.prototype.transpose = function(){
+	 return Object.keys(this[0]).map(
+	    function (c) { return this.map(function (r) { return r[c]; }); }.bind(this)
+    );
+}
+
+Array.prototype.toFace3 = function(){
+	if (this.length !=3){
+		throw new Error('have to be length of 3');
+		return
+	}
+	return new THREE.Face3(this[0], this[1], this[2]);
+}
+
+Array.prototype.tail = function(){
+	return [this[0], this[1].reverse()];
+}
+
+Array.mesh = function(shape){
+	return Array.const(shape[1], Array.range(shape[0]))
+				.map(function(arr, index){return arr.map(function(e){return e+index*arr.length})});
+}
+
+Array.grid2 = function(shape){
+	return Array.mesh(shape).slide(2)								//slide over cols
+				.map(function(e){return e.transpose().slide(2)})	//slide over rows
+				.flatten().map(function(e){return e.flatten()})		//flatten to get quads
+				.map(function(e){return e.slide(3).tail()})
+				.flatten().map(function(e){return e.toFace3()});
 }
 
 Array.permute = function(shape){

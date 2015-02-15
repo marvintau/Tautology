@@ -20,11 +20,13 @@ Tautology.Geometry = function(param, codes){
 	this.array;
 	this.faces;
 	this.geom;
+
+	this.make();
 }
 
 Tautology.Geometry.prototype.constructor = Tautology.Geometry;
 
-Tautology.Geometry.prototype.init = function(){
+Tautology.Geometry.prototype.make = function(){
 	// 1. Generate the shape. First check whether the parameter list
 	//    contains the shape function.
 	if(!this.param.shape){
@@ -34,10 +36,6 @@ Tautology.Geometry.prototype.init = function(){
 		throw new Error('The Tautology.Geometry only accepts 2-dimensional array.')
 	}
 
-	if(!this.param.cons){
-		throw new Error('constructor not specified.');
-		return;
-	}
 	this.makeArray();
 	this.makeFaces();
 	this.update();
@@ -62,8 +60,7 @@ Tautology.Geometry.prototype.makeArray = function(){
 }
 
 Tautology.Geometry.prototype.makeFaces = function(){
-	this.faces = Array.grid(this.param.shape[0], this.param.shape[1])
-					  .map(function(e){return new THREE.Face3(e[0], e[1], e[2])});
+	this.faces = Array.grid2(this.param.shape);
 }
 
 Tautology.Geometry.prototype.makeGeom = function(){
@@ -72,4 +69,9 @@ Tautology.Geometry.prototype.makeGeom = function(){
 	
 	this.geom.faces = this.faces;
 	this.geom.faceVertexUvs = [this.array.unzipFor('tex')];
+
+	this.geom.computeFaceNormals();
+	this.geom.computeVertexNormals();
+	this.geom.normalsNeedUpdate = true;
+
 }

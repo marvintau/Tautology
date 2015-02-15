@@ -1,23 +1,61 @@
 param = {
-	shape: [10, 10],
-	cons:function(){return Tautology.Point;}
+	shape: [5, 20],
+	bent: 1.
 };
 
 codes =
 [	{	name: 'trans',
 		func: function(param){
-			this.vec.add(new THREE.Vector3(this.idx[0]*2, 2, 0));
+			this.vec.add(new THREE.Vector3(this.idx[1]*2, 2, 0));
 		}
 	},
 	{	name: 'rot',
 		func: function(param){
-			this.vec.applyAxisAngle(new THREE.Vector3(1, 0, 0), this.idx[1]/param.shape[1]*2*Math.PI);
+			this.vec.applyAxisAngle(new THREE.Vector3(1, 0, 0), this.idx[0]/(param.shape[1]-1)*2*Math.PI);
 		}
 	}
 ];
 
 geometry = new Tautology.Geometry(param, codes);
-geometry.init();
+// geometry.make();
+
+var setMaterials = function(){
+	material={};
+	material['outside-mapped'] = new THREE.MeshLambertMaterial({
+    	color:0xffffff,
+		opacity: 0.6,
+		transparent: true,
+		side: THREE.FrontSide,
+		// map: texture,
+		_needsUpdate: true
+	}); 
+
+    material['inside-mapped'] = new THREE.MeshLambertMaterial({
+    	color:0xffffff,
+		opacity: 0.6,
+		transparent: true,
+		side: THREE.BackSide,
+		// map: texture,
+		_needsUpdate: true
+	});
+
+	material['outside'] = new THREE.MeshLambertMaterial({
+    	color:0xffffff,
+		opacity: 0.6,
+		transparent: true,
+		side: THREE.FrontSide,
+		_needsUpdate: true
+	}); 
+
+    material['inside'] = new THREE.MeshLambertMaterial({
+    	color:0xffffff,
+		opacity: 0.6,
+		transparent: true,
+		side: THREE.BackSide,
+		_needsUpdate: true
+	}); 	
+
+};
 
 var setControl = function(){
 	ctrl = new THREE.TrackballControls(camera, window.document);
@@ -70,7 +108,10 @@ var init = function() {
 	setScene();
 	setControl();
 	setRenderer();
-	scene.add(new THREE.PointCloud(geometry.geom));
+	setMaterials();
+	scene.add(new THREE.Mesh(geometry.geom, material['outside']));
+	scene.add(new THREE.Mesh(geometry.geom, material['inside']));
+
 
 	render();
 	animate();
