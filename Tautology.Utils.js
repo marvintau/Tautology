@@ -36,6 +36,18 @@ Array.range = function(n){
  * @param  {[type]} shape [description]
  * @return {[type]}       [description]
  */
+
+Array.grid = function(m, n){
+	var grid = [];
+	for (var i = 0; i < m - 1; i++) {
+		for (var j = 0; j < n - 1; j++) {
+			grid.push(	[i*m+j, ((i+1)*m+j), (i*m+j+1)],
+						[((i+1)*m+j), (i*m+1), ((i+1)*m+j+1)]);
+		};
+	};
+	return grid;
+}
+
 Array.permute = function(shape){
 	// for each dimension
 	return shape.reduce(function(perms, dimension){
@@ -116,6 +128,12 @@ Array.prototype.selectBy = function(func){
 	});
 }
 
+/**
+ * unzipFor only returns the reference of the objects, instead of
+ * the deep copied objects.
+ * @param  {[type]} property [description]
+ * @return {[type]}          [description]
+ */
 Array.prototype.unzipFor = function(property){
 	return this.map(function(elem){return elem[property]});
 }

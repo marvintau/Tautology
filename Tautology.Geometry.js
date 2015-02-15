@@ -1,5 +1,5 @@
 /**
- * Tautology.Model generates the THREE.Geometry model from
+ * Tautology.Geometry generates the THREE.Geometry model from
  * Tautology.Array object along with the updating function
  * that corresponds to the parameters associated with UI,
  * from given parameters, routines, and parts
@@ -13,60 +13,63 @@
  *                        define whether a point belongs to some particular
  *                        part.
  */
-Tautology.Model = function(param, codes){
+Tautology.Geometry = function(param, codes){
 	this.param = param;
 	this.codes = codes;
 
 	this.array;
+	this.faces;
 	this.geom;
-
-	this.reversed = {};
 }
 
-Tautology.Model.prototype.constructor = Tautology.Model;
+Tautology.Geometry.prototype.constructor = Tautology.Geometry;
 
-Tautology.Model.prototype.eval = function(){
+Tautology.Geometry.prototype.init = function(){
 	// 1. Generate the shape. First check whether the parameter list
 	//    contains the shape function.
 	if(!this.param.shape){
 		throw new Error('Dimensions not mentioned.');
 		return;
 	} else if (this.param.shape.length != 2){
-		throw new Error('The Tautology.Model only accepts 2-dimensional array.')
+		throw new Error('The Tautology.Geometry only accepts 2-dimensional array.')
 	}
 
 	if(!this.param.cons){
 		throw new Error('constructor not specified.');
 		return;
 	}
-	
+	this.makeArray();
+	this.makeFaces();
+	this.update();
+	this.makeGeom();	
+}
+
+Tautology.Geometry.prototype.update = function(){
+	this.codes.forEach(function(code){
+		this.array.forEach(function(elem){
+			(this.geom) && (this.geom.verticesNeedUpdate = true);
+			code.func.call(elem, this.param);
+		}.bind(this))
+	}.bind(this));	
+}
+
+Tautology.Geometry.prototype.makeArray = function(){
 	this.array = Array.permute(this.param.shape).map(function(index){
 			return { idx: index, 
 					 vec: new THREE.Vector3(),
 					 tex: new THREE.Vector2()};
 		}.bind(this));
+}
 
-	this.array.forEach(function(elem, index){
-		this.reversed[elem.index.toString()] = index;
-	}.bind(this));
+Tautology.Geometry.prototype.makeFaces = function(){
+	this.faces = Array.grid(this.param.shape[0], this.param.shape[1])
+					  .map(function(e){return new THREE.Face3(e[0], e[1], e[2])});
+}
 
+Tautology.Geometry.prototype.makeGeom = function(){
+	this.geom = new THREE.Geometry();
+	this.geom.vertices = this.array.unzipFor('vec');
 	
-	// 2. Performs the operation specified in routines
-	this.codes.forEach(function(code){
-		this.array.forEach(function(elem){
-			code.func.call(elem);
-		}.bind(this))
-	}.bind(this));
-		
-	// 4. create the geometry
-	for(var i = 0; i < this.param.shape[0]-1; i++){
-		for(var j = 0; j < this.param.shape[1]-1; j++){
-			this.faces.push(new THREE.Face3(this.reversed[i+','+j],
-											this.reversed[i+','+(j+1)],
-											this.reversed[(i+1)+','+j]));
-			this.faces.push(new THREE.Face3(this.reversed[i+','+(j+1)],
-											this.reversed[(i+1)+','+j],
-											this.reversed[(i+1)+','+(j+1)]));
-		}
-	};
+	this.geom.faces = this.faces;
+	this.geom.faceVertexUvs = [this.array.unzipFor('tex')];
 }
