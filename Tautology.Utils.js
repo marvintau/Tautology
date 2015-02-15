@@ -26,11 +26,7 @@ Array.const = function(n, element){
  * @return {Array}  the array you want
  */
 Array.range = function(n){
-	var a = Array.const(n, null);
-	for (var key in a) {
-		a[key] = parseInt(key);
-	};
-	return a;
+	return Object.keys(Array.const(n)).map(function(e){return parseInt(e)});
 }
 
 /**
@@ -59,4 +55,71 @@ Array.permute = function(shape){
 		// reverse each permutation
 		return elem.reverse();
 	});
+}
+
+Array.less = function(arr1, arr2){
+	if(arr1.length!= arr2.length){
+		throw new Error('inequal length');
+		return;
+	}
+	var res = true;
+	for (var i = 0; i < arr1.length; i++) {
+		(arr1[i] > arr2[i]) && res 
+	};
+}
+
+/**
+ * An instance method that returns a new array that combines
+ * the reference of original object contained by the array,
+ * and the index of the array. This new kind of array can be
+ * used when you want to add/delete some elements while you
+ * still need the existing array index.
+ * @type {[type]}
+ */
+
+Array.prototype.add = function(arr){
+	for (var i = 0; i < this.length; i++) {
+		this[i] += arr[i];
+	};
+	return null;
+}
+
+Array.prototype.zipWith = function(holder){
+	var isSameLength = function(holder, length){
+		return Object.keys(holder)
+					 .map(function(key){return holder[key].length==length})
+			  		 .every(function(elem){return elem});
+	}
+
+	if(!holder){
+		return this.map(function(elem, index){
+			return {'index': index, 'object':elem};
+		});
+	} else if(!isSameLength(holder, this.length)){
+		throw new Error('zipWith needs arrays with same length');
+		return;
+	} else {
+		return this.map(function(elem, index){
+			var new_elem = {};
+			Object.keys(holder).forEach(function(key){
+				new_elem[key] = holder[key][index];
+			})
+
+			return new_elem;
+		})
+	}
+}
+
+Array.prototype.selectBy = function(func){
+	return this.filter(function(elem){
+		return func.call(elem.object);
+	});
+}
+
+Array.prototype.unzipFor = function(property){
+	return this.map(function(elem){return elem[property]});
+}
+
+Object.values = function(obj){
+	return (Object.keys(obj)).map(function(key){return obj[key]});
 }

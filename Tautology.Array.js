@@ -22,8 +22,13 @@ Tautology.Array = function(shape, constructor){
 		function(index){
 			return { index: index, object: new this.cons()};
 		}.bind(this));
-	
-	this.compiledQueries = {};
+
+	this.reversed = {};
+	this.elems.forEach(function(elem, index){
+		this.reversed[elem.index.toString()] = index;
+	}.bind(this));
+
+	this.faces = [];
 }
 
 Tautology.Array.prototype.constructor = Tautology.Array;
@@ -34,16 +39,29 @@ Tautology.Array.prototype.constructor = Tautology.Array;
  * @param  {[type]} queryRules [description]
  * @return {[type]}            [description]
  */
-Tautology.Array.prototype.compileQuery = function(rules) {
-	// If the "Marked as deletion" is false or undefined
-	// the element will be preserved.
-	this.elems = this.elems.filter(function(elem){
-		return !elem.mad;
-	})
 
-	for(var query in rules){
-		this[query] = this.elems.map(function(elem, index){return {i:index, e:elem};})
-				  .filter(function(elem){ return rules[query].call(elem.e);})
-				  .map(function(elem){return elem.i});
+Tautology.Array.prototype.makeFaces = function(){
+	for(var i = 0; i < this.shape[0]-1; i++){
+		for(var j = 0; j < this.shape[1]-1; j++){
+			this.faces.push(new THREE.Face3(this.reversed[i+','+j],
+											this.reversed[i+','+(j+1)],
+											this.reversed[(i+1)+','+j]));
+			this.faces.push(new THREE.Face3(this.reversed[i+','+(j+1)],
+											this.reversed[(i+1)+','+j],
+											this.reversed[(i+1)+','+(j+1)]));
+		}
 	}
-};
+}
+
+Tautology.Array.prototype.apply = function(codes){
+	codes.forEach(function(code){
+		this.elems.forEach(function(elem){
+			code.func.call(elem);
+		}.bind(this))
+	}.bind(this));
+}
+
+Tautology.Array.prototype.assemble = function(geom){
+	geom.vertices = this.elems.unzipFor('object').unzipFor('vec');
+	// geom.faces = this.
+}

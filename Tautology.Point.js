@@ -1,6 +1,6 @@
 Tautology.Point = function(){
 	this.vec = new THREE.Vector3();
-	this.tex = {x:0, y:0};
+	this.tex = new THREE.Vector2();
 	this.mad = false;
 }
 
@@ -11,8 +11,7 @@ Tautology.Point.prototype.setVec = function(x, y, z){
 }
 
 Tautology.Point.prototype.setTex = function(x, y){
-	this.tex.x = x;
-	this.tex.y = y;
+	this.tex.set(x, y);
 }
 
 Tautology.Point.prototype.trans = function(v){

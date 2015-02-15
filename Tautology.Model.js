@@ -13,13 +13,14 @@
  *                        define whether a point belongs to some particular
  *                        part.
  */
-Tautology.Model = function(param, parts, codes){
+Tautology.Model = function(param, codes){
 	this.param = param;
-	this.parts = parts;
 	this.codes = codes;
 
 	this.array;
 	this.geom;
+
+	this.reversed = {};
 }
 
 Tautology.Model.prototype.constructor = Tautology.Model;
@@ -30,6 +31,8 @@ Tautology.Model.prototype.eval = function(){
 	if(!this.param.shape){
 		throw new Error('Dimensions not mentioned.');
 		return;
+	} else if (this.param.shape.length != 2){
+		throw new Error('The Tautology.Model only accepts 2-dimensional array.')
 	}
 
 	if(!this.param.cons){
@@ -37,28 +40,33 @@ Tautology.Model.prototype.eval = function(){
 		return;
 	}
 	
-	this.array = new Tautology.Array(this.param.shape(),this.param.cons());
+	this.array = Array.permute(this.param.shape).map(function(index){
+			return { idx: index, 
+					 vec: new THREE.Vector3(),
+					 tex: new THREE.Vector2()};
+		}.bind(this));
 
+	this.array.forEach(function(elem, index){
+		this.reversed[elem.index.toString()] = index;
+	}.bind(this));
+
+	
 	// 2. Performs the operation specified in routines
-	for (var i = this.codes.length - 1; i >= 0; i--) {
-		for (var j = this.array.elems.length - 1; j >= 0; j--) {
-			// For each instruction, check each element if meets the part
-			// criterion. Remember that the function in part uses `this`,
-			// thus we need to use `call` to bind the `this` to the element.
-			if (this.parts[this.codes[i].part].call(this.array.elems[j])){
-				// and then apply the operation to the corresponding elems.
-				this.codes[i].func.call(this.array.elems[j]);
-			}
-		};
-	};
-
-	// 3. compile queries for the updating function to be generated
-	this.array.compileQuery(this.parts);
-	
-	// remove objects that marked as deletion
-	// perform the this.array.compileQuery(this.queries)
-	
+	this.codes.forEach(function(code){
+		this.array.forEach(function(elem){
+			code.func.call(elem);
+		}.bind(this))
+	}.bind(this));
+		
 	// 4. create the geometry
-
-	// 5. create the updating functions
+	for(var i = 0; i < this.param.shape[0]-1; i++){
+		for(var j = 0; j < this.param.shape[1]-1; j++){
+			this.faces.push(new THREE.Face3(this.reversed[i+','+j],
+											this.reversed[i+','+(j+1)],
+											this.reversed[(i+1)+','+j]));
+			this.faces.push(new THREE.Face3(this.reversed[i+','+(j+1)],
+											this.reversed[(i+1)+','+j],
+											this.reversed[(i+1)+','+(j+1)]));
+		}
+	};
 }
