@@ -60,7 +60,7 @@ Tautology.Geometry.prototype.makeArray = function(){
 }
 
 Tautology.Geometry.prototype.makeFaces = function(){
-	this.faces = Array.grid2(this.param.shape);
+	this.faces = Array.grid(this.param.shape);
 }
 
 Tautology.Geometry.prototype.makeGeom = function(){

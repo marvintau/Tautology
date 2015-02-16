@@ -31,24 +31,66 @@ Array.range = function(n){
 }
 
 /**
- * permute generates an array of arrays that represents a
- * multi-dimensional matrix of permuations with given shape.
- * 
- * @param  {[type]} shape [description]
- * @return {[type]}       [description]
+ * Permute generates the sparse-array-like indices with given
+ * dimensions (a.k.a. shape).
+ * @param  {Array} shape Given dimensions
+ * @return {Array}       Array of indices
  */
+Array.permute = function(shape){
+	return shape.reduce(function(perms, dim){
+		return Array.range(dim).outer(perms, function(d, perm){
+			return perm.concat(d);
+		}).flatten().reverse();
+	},[[]])
+}
+
+Array.grid = function(shape){
+	return Array.mesh(shape).slide(2)								// slide over cols
+				.map(function(e){return e.transpose().slide(2)})	// slide over rows
+				.flatten().map(function(e){return e.flatten()})		// flatten to get quads
+				.map(function(e){return e.slide(3).tail()})
+				.flatten().map(function(e){return e.toFace3()});
+}
+
+
+Array.mesh = function(shape){
+	var whole = Array.range(shape.reduce(function(a, b){return a*b}))
+	
+	return shape.reduce(function(prev, curr){
+		return prev.partition(curr);
+	}, whole)[0];
+				
+}
+
+Array.prototype.outer = function(another, func){
+	return this.map(function(outerElem){
+		return another.map(function(innerElem){
+			return func(outerElem, innerElem);
+		})
+	})
+}
+
+Array.prototype.partition = function(n){
+	return Array.range(Math.ceil(this.length/n)).map(function(e){return e*n})
+				// starting point of each slice, slice including not-enough items will be kept also.
+				.map(function(e){return this.slice(e, e+n)}, this)
+}
 
 Array.prototype.flatten = function(){
 	return this.reduce(function(prev, curr){return prev.concat(curr)});
 }
 
-Array.prototype.slide = function(n, cycle){
+Array.prototype.slide = function(n){
 	var res = [];
 	for (var i = this.length - n; i >= 0; i--) {
 		res.push(this.slice(i, i+n));
 	};
 
 	return res.reverse();
+}
+
+Array.prototype.diff = function(){
+	return this.slide(2).map(function(e){return e[1] - e[0]});
 }
 
 Array.prototype.transpose = function(){
@@ -69,51 +111,6 @@ Array.prototype.tail = function(){
 	return [this[0], this[1].reverse()];
 }
 
-Array.mesh = function(shape){
-	return Array.const(shape[1], Array.range(shape[0]))
-				.map(function(arr, index){return arr.map(function(e){return e+index*arr.length})});
-}
-
-Array.grid2 = function(shape){
-	return Array.mesh(shape).slide(2)								//slide over cols
-				.map(function(e){return e.transpose().slide(2)})	//slide over rows
-				.flatten().map(function(e){return e.flatten()})		//flatten to get quads
-				.map(function(e){return e.slide(3).tail()})
-				.flatten().map(function(e){return e.toFace3()});
-}
-
-Array.permute = function(shape){
-	// for each dimension
-	return shape.reduce(function(perms, dimension){
-		// for each number in the range of new dimension
-		return Array.range(dimension).map(function(elem){
-			// for each permutation of existing dimensions
-			return perms.map(function(perm){
-				// combine each new number with each of the existing perms
-				return perm.concat(elem);
-			});
-		// for each newly formed perm (is a two-dimensional array)
-		}).reduce(function(a, b){
-			// flatten 
-			return a.concat(b);
-		});
-	}, [[]]).map(function(elem){
-		// reverse each permutation
-		return elem.reverse();
-	});
-}
-
-Array.less = function(arr1, arr2){
-	if(arr1.length!= arr2.length){
-		throw new Error('inequal length');
-		return;
-	}
-	var res = true;
-	for (var i = 0; i < arr1.length; i++) {
-		(arr1[i] > arr2[i]) && res 
-	};
-}
-
 /**
  * An instance method that returns a new array that combines
  * the reference of original object contained by the array,
@@ -128,32 +125,6 @@ Array.prototype.add = function(arr){
 		this[i] += arr[i];
 	};
 	return null;
-}
-
-Array.prototype.zipWith = function(holder){
-	var isSameLength = function(holder, length){
-		return Object.keys(holder)
-					 .map(function(key){return holder[key].length==length})
-			  		 .every(function(elem){return elem});
-	}
-
-	if(!holder){
-		return this.map(function(elem, index){
-			return {'index': index, 'object':elem};
-		});
-	} else if(!isSameLength(holder, this.length)){
-		throw new Error('zipWith needs arrays with same length');
-		return;
-	} else {
-		return this.map(function(elem, index){
-			var new_elem = {};
-			Object.keys(holder).forEach(function(key){
-				new_elem[key] = holder[key][index];
-			})
-
-			return new_elem;
-		})
-	}
 }
 
 Array.prototype.selectBy = function(func){

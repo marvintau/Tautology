@@ -6,12 +6,12 @@ param = {
 codes =
 [	{	name: 'trans',
 		func: function(param){
-			this.vec.add(new THREE.Vector3(this.idx[1]*2, 2, 0));
+			this.vec.add(new THREE.Vector3(this.idx[0]*2, 2, 0));
 		}
 	},
 	{	name: 'rot',
 		func: function(param){
-			this.vec.applyAxisAngle(new THREE.Vector3(1, 0, 0), this.idx[0]/(param.shape[1]-1)*2*Math.PI);
+			this.vec.applyAxisAngle(new THREE.Vector3(1, 0, 0), this.idx[1]/(param.shape[1]-1)*2*Math.PI);
 		}
 	}
 ];
@@ -109,9 +109,9 @@ var init = function() {
 	setControl();
 	setRenderer();
 	setMaterials();
-	scene.add(new THREE.Mesh(geometry.geom, material['outside']));
+	
 	scene.add(new THREE.Mesh(geometry.geom, material['inside']));
-
+	scene.add(new THREE.Mesh(geometry.geom, material['outside']));
 
 	render();
 	animate();
