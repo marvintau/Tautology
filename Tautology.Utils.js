@@ -178,3 +178,10 @@ Array.prototype.add = function(arr){
 Array.prototype.unzipFor = function(property){
 	return this.map(function(elem){return elem[property]});
 }
+
+THREE.Vector3.prototype.roll = function(n, angle, axis, trans){
+	for (var i = 0; i < n; i++) {
+		this.applyAxisAngle(axis, angle);
+		this.add(trans);
+	};
+}

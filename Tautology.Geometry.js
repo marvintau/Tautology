@@ -6,17 +6,15 @@
  * 
  * @param {Object} param  An object with all properties are function which
  *                        returns the parameter value.
- * @param {Array}  dodes  The list of operations that will seuqentially
+ * @param {Array}  codes  The list of operations that will seuqentially
  *                        applied on the objects.
- * @param {Object} parts  An object with all functions that receives a Tau-
- *                        Index and returns true/false value use this to
- *                        define whether a point belongs to some particular
- *                        part.
  */
 Tautology.Geometry = function(param, codes){
 	this.param = param;
 	this.codes = codes;
 
+
+	this.index;
 	this.array;
 	this.faces;
 	this.geom;
