@@ -181,6 +181,7 @@ Array.prototype.unzipFor = function(property){
 
 THREE.Vector3.prototype.roll = function(n, angle, axis, trans){
 	for (var i = 0; i < n; i++) {
+		this.add(trans);
 		this.applyAxisAngle(axis, angle);
 		this.add(trans);
 	};

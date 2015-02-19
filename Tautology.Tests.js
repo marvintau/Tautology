@@ -1,28 +1,24 @@
 param = {
-	shape: [5, 30],
+	shape: [30, 30],
 	length: 1,
-	radius: 1,
-	bent: 1.
+	radius: 3,
+	theta: Math.PI/29,
+	phi: Math.PI/29
 };
 
-codes =
-[	{	description: 'translate the vertices over length direction',
-		func: function(param){
-			this.vec.add(new THREE.Vector3(this.idx[0]*param.length, 0, 0));
-		}
-	},
-	{	name: 'roll the vertices to form the tube',
-		func: function(param){
-			var theta = Math.PI/(param.shape[1]-1),
-				axis  = new THREE.Vector3(1, 0, 0),
-				trans = new THREE.Vector3(0, Math.sin(theta)*param.radius, 0);
-			// this.vec.applyAxisAngle(new THREE.Vector3(1, 0, 0), this.idx[1]/(param.shape[1]-1)*2*Math.PI);
-			this.vec.roll(this.idx[1], 2*theta, axis, trans);
-		}
-	}
-];
+var code = function(param){
+	var axisRoll = new THREE.Vector3(1, 0, 0),
+		axisBend = new THREE.Vector3(0, 0, 1),
+		trans = new THREE.Vector3(0, Math.sin(Math.PI/29)*param.radius, 0);
+		leng = new THREE.Vector3(param.length, 0, 0);
+	// this.vec.add(new THREE.Vector3(this.idx[0]*param.length, 0, 0));
+	this.vec.roll(this.idx[1], 2*param.theta, axisRoll, trans);
+	this.vec.roll(this.idx[0], 2*param.phi, axisBend, leng);
+	
+}
 
-geometry = new Tautology.Geometry(param, codes);
+
+geometry = new Tautology.Geometry(param, code);
 
 var setMaterials = function(){
 	material={};
@@ -46,7 +42,7 @@ var setMaterials = function(){
 };
 
 var setControl = function(){
-	ctrl = new THREE.TrackballControls(camera, window.document);
+	ctrl = new THREE.TrackballControls(camera, window.document.querySelector('canvas'));
 	ctrl.rotateSpeed = 1.0;
 	ctrl.zoomSpeed = 1.2;
 	ctrl.panSpeed = 0.8;
@@ -94,8 +90,8 @@ var animate = function() {
 
 var init = function() {
 	setScene();
-	setControl();
 	setRenderer();
+	setControl();
 	setMaterials();
 	
 	scene.add(new THREE.Mesh(geometry.geom, material['inside']));
@@ -105,5 +101,11 @@ var init = function() {
 	animate();
 }
 
+var change = function(slider){
+    var sliderValue = document.getElementById (slider.id);
+    console.log(sliderValue);
+}
 
 init();
+
+window.document.querySelector('input').addEventListener('oninput', change);

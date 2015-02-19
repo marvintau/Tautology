@@ -9,9 +9,9 @@
  * @param {Array}  codes  The list of operations that will seuqentially
  *                        applied on the objects.
  */
-Tautology.Geometry = function(param, codes){
+Tautology.Geometry = function(param, code){
 	this.param = param;
-	this.codes = codes;
+	this.code = code;
 
 
 	this.index;
@@ -41,12 +41,10 @@ Tautology.Geometry.prototype.make = function(){
 }
 
 Tautology.Geometry.prototype.update = function(){
-	this.codes.forEach(function(code){
-		this.array.forEach(function(elem){
-			(this.geom) && (this.geom.verticesNeedUpdate = true);
-			code.func.call(elem, this.param);
-		}.bind(this))
-	}.bind(this));	
+	this.array.forEach(function(elem){
+		(this.geom) && (this.geom.verticesNeedUpdate = true);
+		this.code.call(elem, this.param);
+	}.bind(this));
 }
 
 Tautology.Geometry.prototype.makeArray = function(){
