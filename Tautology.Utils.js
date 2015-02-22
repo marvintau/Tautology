@@ -150,7 +150,9 @@ Array.prototype.toFace3 = function(){
  * @return {Array} 
  */
 Array.prototype.tail = function(){
-	return [this[0], this[1].reverse()];
+	var x = this[1];
+	x.push(x.shift());
+	return [this[0], x.reverse()];
 }
 
 /**
@@ -179,10 +181,15 @@ Array.prototype.unzipFor = function(property){
 	return this.map(function(elem){return elem[property]});
 }
 
-THREE.Vector3.prototype.roll = function(n, angle, axis, trans){
+THREE.Vector3.prototype.roll = function(n, m){
 	for (var i = 0; i < n; i++) {
-		this.add(trans);
-		this.applyAxisAngle(axis, angle);
-		this.add(trans);
+		this.applyMatrix4(m);
 	};
+}
+
+THREE.Matrix4.makeRollMatrix = function(axis, angle, trans){
+	var m = new THREE.Matrix4();
+	m.makeRotationAxis(axis, angle);
+	m.setPosition(trans);
+	return m;	
 }

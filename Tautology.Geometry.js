@@ -34,40 +34,26 @@ Tautology.Geometry.prototype.make = function(){
 		throw new Error('The Tautology.Geometry only accepts 2-dimensional array.')
 	}
 
-	this.makeArray();
-	this.makeFaces();
+	this.init();	
 	this.update();
-	this.makeGeom();	
 }
 
 Tautology.Geometry.prototype.update = function(){
-	this.array.forEach(function(elem){
-		(this.geom) && (this.geom.verticesNeedUpdate = true);
-		this.code.call(elem, this.param);
-	}.bind(this));
-}
-
-Tautology.Geometry.prototype.makeArray = function(){
-	this.array = Array.permute(this.param.shape).map(function(index){
-			return { idx: index, 
-					 vec: new THREE.Vector3(),
-					 tex: new THREE.Vector2()};
-		}.bind(this));
-}
-
-Tautology.Geometry.prototype.makeFaces = function(){
-	this.faces = Array.grid(this.param.shape);
-}
-
-Tautology.Geometry.prototype.makeGeom = function(){
-	this.geom = new THREE.Geometry();
-	this.geom.vertices = this.array.unzipFor('vec');
-	
-	this.geom.faces = this.faces;
-	this.geom.faceVertexUvs = [this.array.unzipFor('tex')];
+	this.code.call(this.geom.vertices, this.param, this.array);
 
 	this.geom.computeFaceNormals();
 	this.geom.computeVertexNormals();
 	this.geom.normalsNeedUpdate = true;
+}
+
+Tautology.Geometry.prototype.init = function(){
+	this.array = Array.permute(this.param.shape);
+
+	this.geom = new THREE.Geometry();
+	this.geom.vertices = this.array.map(function(e){return new THREE.Vector3()});
+	
+	this.geom.faces = Array.grid(this.param.shape);
+	this.geom.faceVertexUvs = this.array.map(function(e){return new THREE.Vector2()})
+
 
 }
