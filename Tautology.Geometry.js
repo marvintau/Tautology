@@ -40,7 +40,8 @@ Tautology.Geometry.prototype.make = function(){
 
 Tautology.Geometry.prototype.update = function(){
 	this.code.call(this.geom.vertices, this.param, this.array);
-
+	
+	this.geom.verticesNeedUpdate = true;
 	this.geom.computeFaceNormals();
 	this.geom.computeVertexNormals();
 	this.geom.normalsNeedUpdate = true;

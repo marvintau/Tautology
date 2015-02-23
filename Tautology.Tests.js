@@ -2,32 +2,39 @@ var param = {
 	
 	bellowResolution : 23,
 	circumResolution: 30,
-	length: 1,
-	radius: 8,
-	transAngle: Math.PI/29,
-	lengthAngle: Math.PI/90,
-
-	axisX : new THREE.Vector3(1, 0, 0),
-	axisZ : new THREE.Vector3(0, 0, 1),
+	bellowLength: {min:0.75, max:1.5, val:0.8},
+	radius: {min: 8, max:12, val:10},
+	stubLength : {min:10, max:20, val:10},
+	bodyLength : {min:25, max:35, val:25},
+	transAngle: {min:0, max: Math.PI/29, val:Math.PI/29},
+	lengthAngle: {min:0, max: Math.PI/50, val:Math.PI/80},
 
 	get shape() {
 		return [this.bellowResolution, this.circumResolution]
 	},
 
 	get trans() {
-		return new THREE.Vector3(0, -Math.sin(this.transAngle)*this.radius, 0);
+		return new THREE.Vector3(0, -Math.sin(this.transAngle.val)*this.radius.val, 0);
 	},
 
 	get leng() {
-		return new THREE.Vector3(this.length, 0, 0);
+		return new THREE.Vector3(this.bellowLength.val, 0, 0);
 	},
 
 	get transRollMatrix() {
-		return THREE.Matrix4.makeRollMatrix(this.axisX, 2*this.transAngle, this.trans);
+		return THREE.Matrix4.makeRollMatrix(
+			new THREE.Vector3(1, 0, 0),
+			2*this.transAngle.val,
+			this.trans
+		);
 	},
 
 	get lengRollMatrix() {
-		return THREE.Matrix4.makeRollMatrix(this.axisZ, 2*this.lengthAngle, this.leng);
+		return THREE.Matrix4.makeRollMatrix(
+			new THREE.Vector3(0, 0, 1),
+			2*this.lengthAngle.val,
+			this.leng
+		);
 	}
 };
 
@@ -36,9 +43,9 @@ var code = function(param, array){
 	for (var i = this.length - 1; i >= 0; i--) {
 		this[i].set(0, 0, 0);
 		if (array[i][0]== 0)
-			this[i].add(new THREE.Vector3(-20, 0, 0));
+			this[i].add(new THREE.Vector3(-param.stubLength.val, 0, 0));
 		else if (array[i][0]== param.bellowResolution-1)
-			this[i].add(new THREE.Vector3(20, 0, 0));
+			this[i].add(new THREE.Vector3(param.bodyLength.val, 0, 0));
 		else
 			this[i].add(new THREE.Vector3(((array[i][0]+1)%2)+0.3, 0, (array[i][0]+1)%2));
 
@@ -46,7 +53,6 @@ var code = function(param, array){
 		this[i].roll(array[i][0], param.lengRollMatrix);
 
 	};
-	
 }
 
 geometry = new Tautology.Geometry(param, code);
@@ -134,11 +140,26 @@ var init = function() {
 	animate();
 }
 
-var change = function(slider){
-    var sliderValue = document.getElementById(slider);
-    console.log(sliderValue);
+var addSlider = function(parameter, params){
+	// var input = $('body').append();
+	$('<input type="range">').appendTo($('body'))
+		.attr({
+			id: parameter,
+			min:params[parameter]['min']*2000,
+			max:params[parameter]['max']*2000,
+			val:params[parameter]['val']*2000
+		}).on('input change', function(e){
+			params[parameter]['val'] = $(this).val()/2000;
+			// console.log(geometry.param[parameter]);
+			geometry.update();
+		});
 }
 
-init();
+// init();
 
-window.document.querySelector('input').addEventListener('change', change);
+addSlider('radius', param);
+addSlider('transAngle', param);
+addSlider('lengthAngle', param);
+addSlider('bellowLength', param);
+addSlider('stubLength', param);
+addSlider('bodyLength', param);
