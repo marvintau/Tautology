@@ -9,6 +9,15 @@ function sq(x){
 	return x*x;
 }
 
+function bezier(a, b, c, d, t){
+	var trsq = sq( 1 - t ),
+		tsq = sq( t );
+	return a * trsq * ( 1 - t ) +
+		   b * 3 * trsq *t +
+		   c * 3 * tsq * ( 1 - t ) +
+		   d * tsq * t 
+}
+
 /**
  * const generates a array with specific length
  * and constant object, which can be further 
@@ -35,6 +44,21 @@ Array.range = function(n){
 }
 
 /**
+ * Returns the (sort of) Cartesian Product of two matrix (this and another),
+ * specify the operation over two element with func
+ * @param  {Array} another Another matrix
+ * @param  {Function} func    Operation to be applied
+ * @return {Array}         The outer product of two array
+ */
+Array.prototype.outer = function(another, func){
+	return this.map(function(outerElem){
+		return another.map(function(innerElem){
+			return func(outerElem, innerElem);
+		})
+	})
+}
+
+/**
  * Permute generates the sparse-array-like indices with given
  * dimensions (a.k.a. shape).
  * @param  {Array} shape Given dimensions
@@ -46,19 +70,6 @@ Array.permute = function(shape){
 			return perm.concat(d);
 		}).flatten().reverse();
 	},[[]])
-}
-
-/**
- * grid generates the triangles that can directly applied to Three.js
- * @param  {Array} shape Dimensions of array
- * @return {Array}       to be generated
- */
-Array.grid = function(shape){
-	return Array.mesh(shape).slide(2)								// slide over cols
-				.map(function(e){return e.transpose().slide(2)})	// slide over rows
-				.flatten().map(function(e){return e.flatten()})		// flatten to get quads
-				.map(function(e){return e.slide(3).tail()})
-				.flatten().map(function(e){return e.toFace3()});
 }
 
 /**
@@ -76,20 +87,17 @@ Array.mesh = function(shape){
 				
 }
 
-
 /**
- * Returns the (sort of) Cartesian Product of two matrix (this and another),
- * specify the operation over two element with func
- * @param  {Array} another Another matrix
- * @param  {Function} func    Operation to be applied
- * @return {Array}         The outer product of two array
+ * grid generates the triangles that can directly applied to Three.js
+ * @param  {Array} shape Dimensions of array
+ * @return {Array}       to be generated
  */
-Array.prototype.outer = function(another, func){
-	return this.map(function(outerElem){
-		return another.map(function(innerElem){
-			return func(outerElem, innerElem);
-		})
-	})
+Array.grid = function(shape){
+	return Array.mesh(shape).slide(2)								// slide over cols
+				.map(function(e){return e.transpose().slide(2)})	// slide over rows
+				.flatten().map(function(e){return e.flatten()})		// flatten to get quads
+				.map(function(e){return e.slide(3).tail()})
+				.flatten().map(function(e){return e.toFace3()});
 }
 
 /**
@@ -168,50 +176,8 @@ Array.prototype.tail = function(){
  * @type {[type]}
  */
 
-Array.prototype.add = function(arr){
-	for (var i = 0; i < this.length; i++) {
-		this[i] += arr[i];
-	};
-	return null;
-}
-
-/**
- * unzipFor only returns the reference of the objects, instead of
- * the deep copied objects.
- * @param  {[type]} property [description]
- * @return {[type]}          [description]
- */
-Array.prototype.unzipFor = function(property){
-	return this.map(function(elem){return elem[property]});
-}
-
 THREE.Vector3.prototype.roll = function(n, m){
 	for (var i = 0; i < n; i++) {
 		this.applyMatrix4(m);
 	};
-}
-
-THREE.Vector3.prototype.rollWithDist = function(n, m, lower, upper, mag){
-	if(n * mag > dist){
-		var n = Math.floor(dist / mag);
-		for(var i = 0; i < n; i++){
-			this.applyMatrix4(m);
-		}
-		m.setTransScale(dist - n * mag);
-		this.applyMatrix4(m);
-	} else {
-		for (var i = 0; i < n; i++) {
-			this.applyMatrix4(m);
-		};
-	}
-}
-
-THREE.Matrix4.prototype.magSq = function(){
-	return sq(m.elements[12]) + sq(m.elements[13]) + sq(m.elements[14]);
-}
-
-THREE.Matrix4.prototype.setTransScale = function(scale){
-	m.elements[12] *= scale;
-	m.elements[13] *= scale;
-	m.elements[14] *= scale;
 }

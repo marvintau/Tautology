@@ -13,8 +13,6 @@ Tautology.Geometry = function(param, code){
 	this.param = param;
 	this.code = code;
 
-	this.array;
-
 	this.make();
 }
 
@@ -35,8 +33,8 @@ Tautology.Geometry.prototype.make = function(){
 }
 
 Tautology.Geometry.prototype.update = function(){
-	this.code.call(this.geom.vertices, this.param, this.array);
-	
+
+	this.code.call(this.geom.vertices, this.param);
 	(this.param.post) && this.param.post();
 
 	this.geom.verticesNeedUpdate = true;
@@ -46,13 +44,13 @@ Tautology.Geometry.prototype.update = function(){
 }
 
 Tautology.Geometry.prototype.init = function(){
-	this.array = Array.permute(this.param.shape);
+	this.param.array = Array.permute(this.param.shape);
 
 	this.geom = new THREE.Geometry();
-	this.geom.vertices = this.array.map(function(e){return new THREE.Vector3()});
+	this.geom.vertices = this.param.array.map(function(e){return new THREE.Vector3()});
 	
 	this.geom.faces = Array.grid(this.param.shape);
-	this.geom.faceVertexUvs = this.array.map(function(e){return new THREE.Vector2()})
+	this.geom.faceVertexUvs = this.param.array.map(function(e){return new THREE.Vector2()})
 
 
 }

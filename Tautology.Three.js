@@ -90,5 +90,4 @@ Tautology.Three.prototype.init = function() {
 Tautology.Three.prototype.updateScene = function() {
 	this.scene.add(new THREE.Mesh(geometry.geom, this.materials['inside']));
 	this.scene.add(new THREE.Mesh(geometry.geom, this.materials['outside']));
-	this.scene.add(new THREE.PointCloud(geometry.geom.clone()));
 }

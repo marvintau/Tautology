@@ -65,4 +65,4 @@ three = new Tautology.Three();
 three.init();
 three.updateScene();
 
-addSliders(param);
+addSliders(param1);
