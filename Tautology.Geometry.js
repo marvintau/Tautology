@@ -13,11 +13,7 @@ Tautology.Geometry = function(param, code){
 	this.param = param;
 	this.code = code;
 
-
-	this.index;
 	this.array;
-	this.faces;
-	this.geom;
 
 	this.make();
 }
@@ -41,6 +37,8 @@ Tautology.Geometry.prototype.make = function(){
 Tautology.Geometry.prototype.update = function(){
 	this.code.call(this.geom.vertices, this.param, this.array);
 	
+	(this.param.post) && this.param.post();
+
 	this.geom.verticesNeedUpdate = true;
 	this.geom.computeFaceNormals();
 	this.geom.computeVertexNormals();

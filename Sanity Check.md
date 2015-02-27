@@ -6,4 +6,11 @@ The current design of Tautology has changed a lot since the last time we wrote t
 
 3. Finally we also abandoned the reversed index, compiled query from Array. Because we figured out a very interesting solution. For each step of operation over each vector, we are not going to directly modify the value of vector, but generate the matrix for each step, and finally multiply them together to form a single matrix with regard of adjustable parameters.
 
-4. 
+## Drawing Method of the spoon-like straw:
+1. The spoon-like straw consists of three parts, body, neck and spoon body. The neck part can be described as an ArcSin function when unfolded. While the spoon body part can be drawn with a varying composed transform clipped with an oval function.
+
+2. Since the straw is a center-symmetric geometric model, the drawing can be spitted into two halves, which use one transformation and its inverse separately.
+
+__TEST__:
+If we apply the transform matrix on one half and apply the "inversed" transform over another half, the result is supposed to be identical.
+

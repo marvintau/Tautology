@@ -5,6 +5,10 @@
 // Some very handy Array/List manipulating functions which are
 // very familiar in other popular FP languages. I LOVE FP.
 
+function sq(x){
+	return x*x;
+}
+
 /**
  * const generates a array with specific length
  * and constant object, which can be further 
@@ -187,9 +191,27 @@ THREE.Vector3.prototype.roll = function(n, m){
 	};
 }
 
-THREE.Matrix4.makeRollMatrix = function(axis, angle, trans){
-	var m = new THREE.Matrix4();
-	m.makeRotationAxis(axis, angle);
-	m.setPosition(trans);
-	return m;	
+THREE.Vector3.prototype.rollWithDist = function(n, m, lower, upper, mag){
+	if(n * mag > dist){
+		var n = Math.floor(dist / mag);
+		for(var i = 0; i < n; i++){
+			this.applyMatrix4(m);
+		}
+		m.setTransScale(dist - n * mag);
+		this.applyMatrix4(m);
+	} else {
+		for (var i = 0; i < n; i++) {
+			this.applyMatrix4(m);
+		};
+	}
+}
+
+THREE.Matrix4.prototype.magSq = function(){
+	return sq(m.elements[12]) + sq(m.elements[13]) + sq(m.elements[14]);
+}
+
+THREE.Matrix4.prototype.setTransScale = function(scale){
+	m.elements[12] *= scale;
+	m.elements[13] *= scale;
+	m.elements[14] *= scale;
 }
