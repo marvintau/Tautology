@@ -16,6 +16,8 @@ var param1 = {
 		return [this.bellowResolution, this.circumResolution]
 	},
 
+	
+
 	// The constants that derived from the adjustable parameters
 	// yet not accompanied with vertex index should be defined as
 	// getters.
