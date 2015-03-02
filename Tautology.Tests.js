@@ -48,7 +48,7 @@ var addSlider = function(parameter, params){
 			id: parameter,
 			min:params[parameter]['min']*2000,
 			max:params[parameter]['max']*2000,
-			val:params[parameter]['val']*2000
+			value:params[parameter]['val']*2000
 		}).on('input change', function(e){
 			params[parameter]['val'] = $(this).val()/2000;
 			geometry.update();
