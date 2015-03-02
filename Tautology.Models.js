@@ -10,13 +10,16 @@ var param1 = {
 
 	// Define the shape of the vertex matrix, make sure to define
 	// the getter "shape".
-	bellowResolution : 27,
-	circumResolution: 30,
-	get shape() {
-		return [this.bellowResolution, this.circumResolution]
+
+	shape : {
+		bellow : 27, circum : 30
 	},
 
-	
+	regions : {
+		stub : [ {slice: 1} , ],
+		body : [ {slice: -1}, ],
+		bellow : [{start:2, end:-2}, ]
+	},
 
 	// The constants that derived from the adjustable parameters
 	// yet not accompanied with vertex index should be defined as
@@ -36,10 +39,10 @@ var param1 = {
 
 var code1 = function(param){
 
-	param.trans.set(0, -Math.sin(Math.PI/(param.circumResolution-1))*param.radius.val, 0);
+	param.trans.set(0, -Math.sin(Math.PI/(param.shape.circum-1))*param.radius.val, 0);
 	param.leng.set(param.bellowLength.val, 0, 0);
 
-	param.transRollMatrix.makeRotationAxis( param.axisX, 2*(Math.PI/(param.circumResolution-1)) );
+	param.transRollMatrix.makeRotationAxis( param.axisX, 2*(Math.PI/(param.shape.circum-1)) );
 	param.transRollMatrix.setPosition(param.trans);
 
 	param.lengthRollMatrix.makeRotationAxis( param.axisZ, 2*param.lengthAngle.val);
@@ -49,7 +52,7 @@ var code1 = function(param){
 		this[i].set(0, 0, 0);
 		if (param.array[i][0]== 0)
 			this[i].add(new THREE.Vector3(-param.stubLength.val, 0, 0));
-		else if (param.array[i][0]== param.bellowResolution-1)
+		else if (param.array[i][0]== param.shape.bellow-1)
 			this[i].add(new THREE.Vector3(param.bodyLength.val, 0, 0));
 		else
 			this[i].add(new THREE.Vector3(((param.array[i][0]+1)%2)+0.3, 0, (param.array[i][0]+1)%2));

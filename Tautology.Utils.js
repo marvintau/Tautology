@@ -144,6 +144,45 @@ Array.prototype.transpose = function(){
     );
 }
 
+Array.prototype.checkRegionIndex = function(shape, regionSpec, dimConditions){
+	return this.every(function(dim, i){
+		return dimConditions.some(function(crit){
+			return crit.typeCond(regionSpec[i]) && crit.cond(dim, regionSpec[i], shape[i]);
+		})
+	});
+}
+
+Array.prototype.findRegionIndex = function(shape, regionSpec){
+
+	var r = function(i, r){
+		return (i > 0) ? (i - 1) : (r + i);
+	}
+
+	var dimConditions = [
+		{
+			typeCond : function(ithSpec){ return !ithSpec },
+			cond : function(){return 1;}
+		},
+		{
+			typeCond : function(ithSpec){ return ithSpec && ithSpec.start },
+			cond : function(dim, ithSpec, ithShape){
+				var isInInterval = dim >= r(ithSpec.start, ithShape) && dim <= r(ithSpec.end, ithShape);
+				return isInInterval && ((dim + (ithSpec.shift ? ithSpec.shift : 0)) % (ithSpec.every ? ithSpec.every : 1) == 0 );
+			}
+		},
+		{
+			typeCond : function(ithSpec){ return ithSpec && ithSpec.slice },
+			cond : function(dim, ithSpec, ithShape){
+				return dim == r(ithSpec.slice, ithShape);
+			}
+		}
+	];
+
+	return this.map(function(tauIndex, index){ return {tau: tauIndex, i: index}; })
+			   .filter(function(elem){ return elem.tau.checkRegionIndex(shape, regionSpec, dimConditions); })
+			   .map(function(e){return e.i});
+}
+
 /**
  * make a 3-ary array into a THREE.Face3 object
  * @return {THREE.Face3} Face triangle
@@ -180,4 +219,12 @@ THREE.Vector3.prototype.roll = function(n, m){
 	for (var i = 0; i < n; i++) {
 		this.applyMatrix4(m);
 	};
+}
+
+Object.values = function(obj){
+	return Object.keys(obj).map(function(e){return obj[e]});
+}
+
+Object.findIndex = function(obj, prop){
+	return 
 }

@@ -24,8 +24,6 @@ Tautology.Geometry.prototype.make = function(){
 	if(!this.param.shape){
 		throw new Error('Dimensions not mentioned.');
 		return;
-	} else if (this.param.shape.length != 2){
-		throw new Error('The Tautology.Geometry only accepts 2-dimensional array.')
 	}
 
 	this.init();	
@@ -44,12 +42,19 @@ Tautology.Geometry.prototype.update = function(){
 }
 
 Tautology.Geometry.prototype.init = function(){
-	this.param.array = Array.permute(this.param.shape);
+	var shape = Object.values(this.param.shape);
+	this.param.array = Array.permute(shape);
+
+	var regions = this.param.regions;
+	for (key in regions) {
+		regions[key] = this.param.array.findRegionIndex(shape, regions[key]);
+	}
+	console.log(this.param.regions);
 
 	this.geom = new THREE.Geometry();
 	this.geom.vertices = this.param.array.map(function(e){return new THREE.Vector3()});
 	
-	this.geom.faces = Array.grid(this.param.shape);
+	this.geom.faces = Array.grid(Object.values(this.param.shape));
 	this.geom.faceVertexUvs = this.param.array.map(function(e){return new THREE.Vector2()})
 
 
