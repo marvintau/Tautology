@@ -45,11 +45,12 @@ Tautology.Geometry.prototype.init = function(){
 	var shape = Object.values(this.param.shape);
 	this.param.array = Array.permute(shape);
 
-	var regions = this.param.regions;
+	var regions = this.param.regions,
+		modifiers = this.param.regionModifiers;
+
 	for (key in regions) {
-		regions[key] = this.param.array.findRegionIndex(shape, regions[key]);
+		regions[key] = this.param.array.findRegionIndex(shape, regions[key], modifiers);
 	}
-	console.log(this.param.regions);
 
 	this.geom = new THREE.Geometry();
 	this.geom.vertices = this.param.array.map(function(e){return new THREE.Vector3()});

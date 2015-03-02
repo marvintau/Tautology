@@ -18,8 +18,31 @@ var param1 = {
 	regions : {
 		stub : [ {slice: 1} , ],
 		body : [ {slice: -1}, ],
-		bellow : [{start:2, end:-2}, ]
+		bellow : [{start:2, end:-2, every: 2}, ]
 	},
+
+	regionModifiers : [
+		{	// if undefined on that slot, return true
+			typeCond : function(ithSpec){ return !ithSpec },
+			cond : function(){return 1;}
+		},
+		{	// Accepts {start: , end: , every : , shift : ,}
+			typeCond : function(ithSpec){ return ithSpec && ithSpec.start },
+			cond : function(dim, ithSpec, ithShape){
+				var r = function(i, r){ return (i > 0) ? (i - 1) : (r + i); };
+
+				var isInInterval = dim >= r(ithSpec.start, ithShape) && dim <= r(ithSpec.end, ithShape);
+				return isInInterval && ((dim + (ithSpec.shift ? ithSpec.shift : 0)) % (ithSpec.every ? ithSpec.every : 1) == 0 );
+			}
+		},
+		{	// Accepts {slice:}
+			typeCond : function(ithSpec){ return ithSpec && ithSpec.slice },
+			cond : function(dim, ithSpec, ithShape){
+				var r = function(i, r){ return (i > 0) ? (i - 1) : (r + i); };				
+				return dim == r(ithSpec.slice, ithShape);
+			}
+		}
+	],
 
 	// The constants that derived from the adjustable parameters
 	// yet not accompanied with vertex index should be defined as
@@ -48,14 +71,21 @@ var code1 = function(param){
 	param.lengthRollMatrix.makeRotationAxis( param.axisZ, 2*param.lengthAngle.val);
 	param.lengthRollMatrix.setPosition(param.leng);
 
-	for (var i = this.length - 1; i >= 0; i--) {
-		this[i].set(0, 0, 0);
-		if (param.array[i][0]== 0)
-			this[i].add(new THREE.Vector3(-param.stubLength.val, 0, 0));
-		else if (param.array[i][0]== param.shape.bellow-1)
-			this[i].add(new THREE.Vector3(param.bodyLength.val, 0, 0));
-		else
-			this[i].add(new THREE.Vector3(((param.array[i][0]+1)%2)+0.3, 0, (param.array[i][0]+1)%2));
+	this.forEach(function(e){e.set(0, 0, 0)});
+
+	param.regions.stub.map(function(i){
+		this[i].add(new THREE.Vector3(-param.stubLength.val, 0, 0))
+	}.bind(this));
+
+	param.regions.body.map(function(i){
+		this[i].add(new THREE.Vector3(param.bodyLength.val, 0, 0));
+	}.bind(this));
+
+	param.regions.bellow.map(function(i){
+		this[i].add(new THREE.Vector3(1.3, 0, 1));
+	}.bind(this));
+
+	for (var i = 0; i < this.length; i++) {
 
 		this[i].roll(param.array[i][1], param.transRollMatrix);
 		this[i].roll(param.array[i][0], param.lengthRollMatrix);

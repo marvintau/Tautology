@@ -144,42 +144,17 @@ Array.prototype.transpose = function(){
     );
 }
 
-Array.prototype.checkRegionIndex = function(shape, regionSpec, dimConditions){
+Array.prototype.checkRegionIndex = function(shape, regionSpec, regionModifiers){
 	return this.every(function(dim, i){
-		return dimConditions.some(function(crit){
+		return regionModifiers.some(function(crit){
 			return crit.typeCond(regionSpec[i]) && crit.cond(dim, regionSpec[i], shape[i]);
 		})
 	});
 }
 
-Array.prototype.findRegionIndex = function(shape, regionSpec){
-
-	var r = function(i, r){
-		return (i > 0) ? (i - 1) : (r + i);
-	}
-
-	var dimConditions = [
-		{
-			typeCond : function(ithSpec){ return !ithSpec },
-			cond : function(){return 1;}
-		},
-		{
-			typeCond : function(ithSpec){ return ithSpec && ithSpec.start },
-			cond : function(dim, ithSpec, ithShape){
-				var isInInterval = dim >= r(ithSpec.start, ithShape) && dim <= r(ithSpec.end, ithShape);
-				return isInInterval && ((dim + (ithSpec.shift ? ithSpec.shift : 0)) % (ithSpec.every ? ithSpec.every : 1) == 0 );
-			}
-		},
-		{
-			typeCond : function(ithSpec){ return ithSpec && ithSpec.slice },
-			cond : function(dim, ithSpec, ithShape){
-				return dim == r(ithSpec.slice, ithShape);
-			}
-		}
-	];
-
+Array.prototype.findRegionIndex = function(shape, regionSpec, regionModifiers){
 	return this.map(function(tauIndex, index){ return {tau: tauIndex, i: index}; })
-			   .filter(function(elem){ return elem.tau.checkRegionIndex(shape, regionSpec, dimConditions); })
+			   .filter(function(elem){ return elem.tau.checkRegionIndex(shape, regionSpec, regionModifiers); })
 			   .map(function(e){return e.i});
 }
 
