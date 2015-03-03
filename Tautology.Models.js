@@ -20,21 +20,6 @@ var param1 = {
 		ridge : [{start:2, end:-2, every: 2}, ]
 	},
 
-	dimensionConds : [
-		function(ithSpec){ return !ithSpec },
-		function(ithSpec){ return ithSpec && ithSpec.start },
-		function(ithSpec){ return ithSpec && ithSpec.slice }
-	],
-
-	regionRewrite : [
-		function(ithSpec, ithShape){
-			return {start: r(ithSpec.start, ithShape), end: r(ithSpec.end, ithShape)};
-		},
-		function(ithSpec, ithShape){
-			return {slice: r(ithSpec.slice, ithShape)};
-		}
-	],
-
 	regionModifiers : [
 		{	// if undefined on that slot, return true
 			typeCond : function(ithSpec){ return !ithSpec },
@@ -53,19 +38,6 @@ var param1 = {
 			cond : function(dim, ithSpec, ithShape){
 				
 				return dim == r(ithSpec.slice, ithShape);
-			}
-		}
-	],
-
-	regionSizeModifiers : [
-		{
-			typeCond : function(ithSpec){ return !ithSpec },
-			res : function(ithSpec, ithShape){return ithShape;}
-		},
-		{
-			typeCond : function(ithSpec){ return ithSpec && ithSpec.start },
-			res : function(ithSpec, ithShape){
-				return (r(ithSpec.end) - r(ithSpec.start)) / (ithSpec.every ? ithSpec.every : 1);
 			}
 		}
 	],
