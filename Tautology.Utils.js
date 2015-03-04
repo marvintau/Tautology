@@ -164,7 +164,7 @@ Array.prototype.transpose = function(){
 Array.prototype.checkRegionIndex = function(shape, regionSpec, regionModifiers){
 	return this.every(function(dim, i){
 		return regionModifiers.some(function(crit){
-			return crit.typeCond(regionSpec[i]) && crit.cond(dim, regionSpec[i], shape[i]);
+			return crit.case(regionSpec[i]) && crit.is(dim, regionSpec[i], shape[i]);
 		})
 	});
 }
@@ -187,10 +187,10 @@ Array.prototype.findRegionIndex = function(shape, regionSpec, regionModifiers){
  * @param  {[type]} funcs [description]
  * @return {[type]}       [description]
  */
-Array.prototype.cases = function(conds, funcs){
-	this.map(function(e){
-		for (var i = conds.length - 1; i >= 0; i--) {
-			if (conds[i](e)) return funcs[i](e);
+Array.prototype.cases = function(caseTable, shape){
+	return this.map(function(e, ei){
+		for (var i = caseTable.length - 1; i >= 0; i--) {
+			if (caseTable[i].case(e)) return caseTable[i].do(e, shape[ei]);
 		};
 		return 0;
 	})

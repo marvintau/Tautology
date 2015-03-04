@@ -49,20 +49,19 @@ Tautology.Geometry.prototype.init = function(){
 	// model specification
 	var regions = this.param.regions,
 		modifiers = this.param.regionModifiers;
-	
-	this.param.regionsCompiled = {};
-	// var regionSizes = {};
-	// for (key in regions) {
-	// 	regionsSizes[key] = regions[key]
-	// }
-
-	var transforms = this.param.transforms;
-	transforms.forEach(function(e){
-	});
-
 
 	for (key in regions) {
-		this.param.regionsCompiled[key] = this.param.array.findRegionIndex(shape, regions[key], modifiers);
+		regions[key] = {desc : regions[key]};
+		regions[key]['index'] = this.param.array.findRegionIndex(shape, regions[key].desc, modifiers);
+		regions[key]['dimIndex'] = regions[key].desc.cases(modifiers, shape);
+	}
+	
+	var transforms = this.param.transforms;
+	for (key in transforms) {
+		if(transforms[key].affectedDimension != undefined){
+			transforms[key]['dimIndex'] = regions[transforms[key].affectedRegion].dimIndex[transforms[key].affectedDimension];
+			transforms[key]['matrices'] = Array.constDeep(transforms[key]['dimIndex'].length, THREE.Matrix4);
+		}
 	}
 
 	this.geom = new THREE.Geometry();
