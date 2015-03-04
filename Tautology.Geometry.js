@@ -43,7 +43,7 @@ Tautology.Geometry.prototype.updateGeom = function(){
 }
 
 Tautology.Geometry.prototype.initGeom = function(){
-	var shape = Object.values(this.param.shape);
+	var shape = this.param.shape;
 	this.param.array = Array.permute(shape);
 
 	// This part is suggested to be moved to a class dedicated to handle the
@@ -65,7 +65,7 @@ Tautology.Geometry.prototype.initGeom = function(){
 	this.geom = new THREE.Geometry();
 	this.geom.vertices = this.param.array.map(function(e){return new THREE.Vector3()});
 	
-	this.geom.faces = Array.grid(Object.values(this.param.shape));
+	this.geom.faces = Array.grid(shape);
 	this.geom.faceVertexUvs = this.param.array.map(function(e){return new THREE.Vector2()})
 
 
