@@ -27,7 +27,6 @@ var param = {
 }
 var code = function(param, array){
 
-
 	for (var i = this.length - 1; i >= 0; i--) {
 		this[i].set(0, 0, 0);
 		if (array[i][0]== 0)
@@ -40,7 +39,7 @@ var code = function(param, array){
 	};
 }
 
-geometry = new Tautology.Geometry(param1, code1);
+geometry = new Tautology.Geometry(param1, init1, loop1);
 
 var addSlider = function(parameter, params){
 	$('<input type="range">').appendTo($('body'))
@@ -51,7 +50,7 @@ var addSlider = function(parameter, params){
 			value:params[parameter]['val']*2000
 		}).on('input change', function(e){
 			params[parameter]['val'] = $(this).val()/2000;
-			geometry.update();
+			geometry.updateGeom();
 		}).before('<br>').before(parameter);
 }
 

@@ -44,12 +44,12 @@ Tautology.Three.prototype.initControl = function(){
 Tautology.Three.prototype.initRenderer = function(element){
 	this.rndr = new THREE.WebGLRenderer({alpha:true, antialias: true });
 	element.appendChild( this.rndr.domElement );
-	this.rndr.setSize( 800, 600);
+	this.rndr.setSize( 640, 480);
 	this.rndr.setClearColor( 0xfafafa, 1);
 }
 
 Tautology.Three.prototype.initScene = function(){
-	this.camera = new THREE.PerspectiveCamera( 45, 800 / 600, 1, 1000 );
+	this.camera = new THREE.PerspectiveCamera( 45, 640 / 480, 1, 1000 );
 	this.camera.position.set(0, 0, 100);
 
 	var light = new THREE.DirectionalLight( 0xe0e0e0, 1 );

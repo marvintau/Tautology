@@ -89,7 +89,9 @@ var param1 = {
 	lengthRollMatrices : Array.constDeep(27, THREE.Matrix4)
 };
 
-var code1 = function(param){
+var init1 = {};
+
+var loop1 = function(param){
 
 	param.trans.set(0, -Math.sin(Math.PI/(param.shape[1]-1))*param.radius.val, 0);
 	param.leng.set(param.bellowLength.val, 0, 0);

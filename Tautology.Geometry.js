@@ -9,9 +9,10 @@
  * @param {Array}  codes  The list of operations that will seuqentially
  *                        applied on the objects.
  */
-Tautology.Geometry = function(param, code){
+Tautology.Geometry = function(param, init, loop){
 	this.param = param;
-	this.code = code;
+	this.init = init;
+	this.code = loop;
 
 	this.make();
 }
@@ -26,11 +27,11 @@ Tautology.Geometry.prototype.make = function(){
 		return;
 	}
 
-	this.init();	
-	this.update();
+	this.initGeom();	
+	this.updateGeom();
 }
 
-Tautology.Geometry.prototype.update = function(){
+Tautology.Geometry.prototype.updateGeom = function(){
 
 	this.code.call(this.geom.vertices, this.param);
 	(this.param.post) && this.param.post();
@@ -41,7 +42,7 @@ Tautology.Geometry.prototype.update = function(){
 	this.geom.normalsNeedUpdate = true;
 }
 
-Tautology.Geometry.prototype.init = function(){
+Tautology.Geometry.prototype.initGeom = function(){
 	var shape = Object.values(this.param.shape);
 	this.param.array = Array.permute(shape);
 
