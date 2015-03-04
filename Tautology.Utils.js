@@ -161,40 +161,6 @@ Array.prototype.transpose = function(){
     );
 }
 
-Array.prototype.checkRegionIndex = function(shape, regionSpec, regionModifiers){
-	return this.every(function(dim, i){
-		return regionModifiers.some(function(crit){
-			return crit.case(regionSpec[i]) && crit.is(dim, regionSpec[i], shape[i]);
-		})
-	});
-}
-
-Array.prototype.findRegionIndex = function(shape, regionSpec, regionModifiers){
-	return this.map(function(tauIndex, index){ return {tau: tauIndex, i: index}; })
-			   .filter(function(elem){ return elem.tau.checkRegionIndex(shape, regionSpec, regionModifiers); })
-			   .map(function(e){return e.i});
-}
-
-/**
- * cases walks through the whole array to check whether the
- * current element meets the criterion in conds. If the ith
- * criterion is met, then returns the value after applying
- * the ith function to this element.
- * Notably, the conditions are supposed to be mutual exclusive.
- * However, the function doesn't check the mutex, and applies
- * the first satisfying criterion and corresponding function.
- * @param  {[type]} conds [description]
- * @param  {[type]} funcs [description]
- * @return {[type]}       [description]
- */
-Array.prototype.cases = function(caseTable, shape){
-	return this.map(function(e, ei){
-		for (var i = caseTable.length - 1; i >= 0; i--) {
-			if (caseTable[i].case(e)) return caseTable[i].do(e, shape[ei]);
-		};
-		return 0;
-	})
-}
 
 /**
  * make a 3-ary array into a THREE.Face3 object

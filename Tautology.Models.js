@@ -14,41 +14,12 @@ var param1 = {
 
 	shape : [27, 30],
 
-	regions : {
+	regions : new Tautology.Regions({
 		all : [undefined, undefined],
 		stub : [ {slice: 1} , undefined],
 		body : [ {slice: -1}, undefined],
 		ridge : [{start:2, end:-2, every: 2}, undefined]
-	},
-
-	regionModifiers : [
-		{	// if undefined on that slot, return true
-			case : function(ithSpec){ return !ithSpec },	
-			is : function(){ return 1; },
-			do : function(ithSpec, ithShape){return Array.range(ithShape)}
-		},
-		{	// Accepts {start: , end: , every : , shift : ,}
-			case : function(ithSpec){ return ithSpec && ithSpec.start },
-			is : function(dim, ithSpec, ithShape){
-				// var isInInterval = dim >= ithSpec.start && dim <= ithSpec.end;
-				var isInInterval = dim >= r(ithSpec.start, ithShape) && dim <= r(ithSpec.end, ithShape);
-				return isInInterval && ((dim + (ithSpec.shift ? ithSpec.shift : 0)) % (ithSpec.every ? ithSpec.every : 1) == 0 );
-			},
-			do : function(ithSpec, ithShape){
-				var start = r(ithSpec.start, ithShape) - 1,
-					end = r(ithSpec.end, ithShape) + 1;
-				return Array.range(ithShape).slice(start, end)
-							.filter(function(e){ return e % (ithSpec.every ? ithSpec.every : 1)==0; });
-			}
-		},
-		{	// Accepts {slice:}
-			case : function(ithSpec){ return ithSpec && ithSpec.slice },
-			is : function(dim, ithSpec, ithShape){
-				return dim == r(ithSpec.slice, ithShape);
-			},
-			do : function(ithSpec, ithShape){ return [ithSpec.slice]; }
-		}
-	],
+	}),
 
 	transforms : {
 		'stretchStub' : {
@@ -81,10 +52,6 @@ var param1 = {
 
 	axisZ : new THREE.Vector3(0, 0, 1),
 
-	transRollMatrix : new THREE.Matrix4(),
-
-	lengthRollMatrix : new THREE.Matrix4(),
-
 	transRollMatrices : Array.constDeep(30, THREE.Matrix4),
 
 	lengthRollMatrices : Array.constDeep(27, THREE.Matrix4)
@@ -114,24 +81,24 @@ var loop1 = function(param){
 
 	this.forEach(function(e){e.set(0, 0, 0)});
 
-	param.regions.stub.index.forEach(function(i){
+	param.regions.compiled.stub.forEach(function(i){
 		this[i].add(new THREE.Vector3(-param.stubLength.val, 0, 0))
 	}.bind(this));
 
-	param.regions.body.index.forEach(function(i){
+	param.regions.compiled.body.forEach(function(i){
 		this[i].add(new THREE.Vector3(param.bodyLength.val, 0, 0));
 	}.bind(this));
 
-	param.regions.ridge.index.forEach(function(i){
+	param.regions.compiled.ridge.forEach(function(i){
 		this[i].add(new THREE.Vector3(1.3, 0, 1));
 	}.bind(this));
 
 
-	param.regions.all.index.forEach(function(i){
+	param.regions.compiled.all.forEach(function(i){
 		this[i].applyMatrix4(param.transRollMatrices[param.array[i][1]]);
 	}.bind(this));
 
-	param.regions.all.index.forEach(function(i){
+	param.regions.compiled.all.forEach(function(i){
 		this[i].applyMatrix4(param.lengthRollMatrices[param.array[i][0]]);
 	}.bind(this));
 }
