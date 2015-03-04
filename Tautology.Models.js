@@ -7,6 +7,7 @@ var param1 = {
 	stubLength : {min:10, max:20, val:10},
 	bodyLength : {min:25, max:35, val:25},
 	lengthAngle: {min:0, max: Math.PI/50, val:Math.PI/80},
+	radiusAngle: {min:0, max: Math.PI/29, val:Math.PI/29},
 
 	// Define the shape of the vertex matrix, make sure to define
 	// the getter "shape".
@@ -93,10 +94,10 @@ var init1 = {};
 
 var loop1 = function(param){
 
-	param.trans.set(0, -Math.sin(Math.PI/(param.shape[1]-1))*param.radius.val, 0);
+	param.trans.set(0, -Math.sin(param.radiusAngle.max)*param.radius.val, 0);
 	param.leng.set(param.bellowLength.val, 0, 0);
 
-	param.transRollMatrices[0].makeRotationAxis( param.axisX, 2*(Math.PI/(param.shape[1]-1)) );
+	param.transRollMatrices[0].makeRotationAxis( param.axisX, 2*(param.radiusAngle.val) );
 	param.transRollMatrices[0].setPosition(param.trans);
 
 	param.lengthRollMatrices[0].makeRotationAxis( param.axisZ, 2*param.lengthAngle.val);
