@@ -52,7 +52,7 @@ var addSlider = function(parameter, params){
 		}).on('input change', function(e){
 			params[parameter]['val'] = $(this).val()/2000;
 			geometry.update();
-		});
+		}).before('<br>').before(parameter);
 }
 
 var addSliders = function(params){
