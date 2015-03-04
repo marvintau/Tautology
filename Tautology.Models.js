@@ -18,14 +18,14 @@ var param1 = {
 		all : [undefined, undefined],
 		stub : [ {slice: 1} , undefined],
 		body : [ {slice: -1}, undefined],
-		ridge : [{start:2, end:-2, every: 2}, ]
+		ridge : [{start:2, end:-2, every: 2}, undefined]
 	},
 
 	regionModifiers : [
 		{	// if undefined on that slot, return true
 			case : function(ithSpec){ return !ithSpec },	
 			is : function(){ return 1; },
-			do : function(ithSpec, ithShape){console.log(Array.range(ithShape)); return Array.range(ithShape)}
+			do : function(ithSpec, ithShape){return Array.range(ithShape)}
 		},
 		{	// Accepts {start: , end: , every : , shift : ,}
 			case : function(ithSpec){ return ithSpec && ithSpec.start },
