@@ -9,9 +9,8 @@
  * @param {Array}  codes  The list of operations that will seuqentially
  *                        applied on the objects.
  */
-Tautology.Geometry = function(param, loop){
+Tautology.Geometry = function(param){
 	this.param = param;
-	this.code = loop;
 
 	this.make();
 }

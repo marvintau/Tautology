@@ -86,7 +86,6 @@ param1.manuever =  [
 			this.indices = param.regions.compiled['all'];
 		},
 		update : function(param, vertices){
-			console.log(this);
 			this.feed.set(0, -Math.sin(param.radiusAngle.max)*param.radius.val, 0);
 			this.matrices[0].makeRotationAxis(this.axisX, 2*(param.radiusAngle.val) );
 			this.matrices[0].setPosition(this.feed);
