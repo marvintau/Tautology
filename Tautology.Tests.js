@@ -39,7 +39,7 @@ var code = function(param, array){
 	};
 }
 
-geometry = new Tautology.Geometry(param1, init1, loop1);
+geometry = new Tautology.Geometry(param1, loop1);
 
 var addSlider = function(parameter, params){
 	$('<input type="range">').appendTo($('body'))

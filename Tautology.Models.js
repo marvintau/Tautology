@@ -21,26 +21,6 @@ var param1 = {
 		ridge : [{start:2, end:-2, every: 2}, undefined]
 	}),
 
-	transforms : {
-		'stretchStub' : {
-			affectedRegion : 'stub'
-		},
-		'stretchBody' : {
-			affectedRegion : 'body'
-		},
-		'makeRidge' : {
-			affectedRegion : 'ridge'
-		},
-		'rollAroundCenter' : {
-			affectedRegion : 'all',
-			affectedDimension : 1
-		},
-		'rollTheRidgePart' : {
-			affectedRegion : 'all',
-			affectedDimension : 0
-		}
-	},
-
 	// The constants that derived from the adjustable parameters
 	// yet not accompanied with vertex index should be defined as
 	// getters.
@@ -57,48 +37,90 @@ var param1 = {
 	lengthRollMatrices : Array.constDeep(27, THREE.Matrix4)
 };
 
-var init1 = {};
+param1.manuever =  [
+	{
+		desc : 'Stretch the stub part',
+		init : function(param){
+			this.translation = new THREE.Vector3();
+			this.indices = param.regions.compiled['stub'];
+		},
+		update : function(param, vertices){
+			this.translation.set(-param.stubLength.val, 0, 0);
+			this.indices.forEach(function(i){
+				vertices[i].add(this.translation);
+			}.bind(this));
+		}
+	},
+	{
+		desc : 'Stretch the body part',
+		init : function(param){
+			this.translation = new THREE.Vector3();
+			this.indices = param.regions.compiled['body'];
+		},
+		update : function(param, vertices){
+			this.translation.set(param.bodyLength.val, 0, 0);
+			this.indices.forEach(function(i){
+				vertices[i].add(this.translation);
+			}.bind(this));
+		}
+	},
+	{
+		desc : 'Make the ridge over the plane',
+		init : function(param){
+			this.translation = new THREE.Vector3();
+			this.indices = param.regions.compiled['ridge'];
+		},
+		update : function(param, vertices){
+			this.translation.set(1.3, 0, 1);
+			this.indices.forEach(function(i){
+				vertices[i].add(this.translation);
+			}.bind(this));
+		}
+	},
+	{	
+		desc : 'roll around the centeroid axis of the straw',
+		init : function(param){
+			this.axisX = new THREE.Vector3(1, 0, 0);
+			this.feed = new THREE.Vector3();
+			this.matrices = Array.constDeep(param.shape[1], THREE.Matrix4);
+			this.indices = param.regions.compiled['all'];
+		},
+		update : function(param, vertices){
+			console.log(this);
+			this.feed.set(0, -Math.sin(param.radiusAngle.max)*param.radius.val, 0);
+			this.matrices[0].makeRotationAxis(this.axisX, 2*(param.radiusAngle.val) );
+			this.matrices[0].setPosition(this.feed);
 
-var loop1 = function(param){
+			for (var i = 1; i < this.matrices.length; i++) {
+				this.matrices[i].multiplyMatrices(this.matrices[i-1], this.matrices[0]);
+			};
 
-	param.trans.set(0, -Math.sin(param.radiusAngle.max)*param.radius.val, 0);
-	param.leng.set(param.bellowLength.val, 0, 0);
+			this.indices.forEach(function(i){
+				vertices[i].applyMatrix4(this.matrices[param.array[i][1]]);
+			}.bind(this));
+		}
+	},
+	{	
+		desc : 'bend the accordion-like ridge part',
+		init : function(param){
+			this.axisZ = new THREE.Vector3(0, 0, 1);
+			this.feed = new THREE.Vector3();
+			this.matrices = Array.constDeep(param.shape[0], THREE.Matrix4);
+			this.indices = param.regions.compiled['all'];
+		},
+		update : function(param, vertices){
+			this.feed.set(param.bellowLength.val, 0, 0);
+			this.matrices[0].makeRotationAxis( param.axisZ, 2*param.lengthAngle.val);
+			this.matrices[0].setPosition(this.feed);
 
-	param.transRollMatrices[0].makeRotationAxis( param.axisX, 2*(param.radiusAngle.val) );
-	param.transRollMatrices[0].setPosition(param.trans);
+			for(var i = 1; i < this.matrices.length; i++){
+				this.matrices[i].multiplyMatrices(this.matrices[i-1], this.matrices[0]);
+			};
 
-	param.lengthRollMatrices[0].makeRotationAxis( param.axisZ, 2*param.lengthAngle.val);
-	param.lengthRollMatrices[0].setPosition(param.leng);
+			this.indices.forEach(function(i){
+				vertices[i].applyMatrix4(this.matrices[param.array[i][0]]);
+			}.bind(this));
 
-	for(var i = 1; i < 30; i++){
-		param.transRollMatrices[i].multiplyMatrices(param.transRollMatrices[i-1], param.transRollMatrices[0]);
+		}
 	}
-
-	for(var i = 1; i < 27; i++){
-		param.lengthRollMatrices[i].multiplyMatrices(param.lengthRollMatrices[i-1], param.lengthRollMatrices[0]);
-	}
-
-
-	this.forEach(function(e){e.set(0, 0, 0)});
-
-	param.regions.compiled.stub.forEach(function(i){
-		this[i].add(new THREE.Vector3(-param.stubLength.val, 0, 0))
-	}.bind(this));
-
-	param.regions.compiled.body.forEach(function(i){
-		this[i].add(new THREE.Vector3(param.bodyLength.val, 0, 0));
-	}.bind(this));
-
-	param.regions.compiled.ridge.forEach(function(i){
-		this[i].add(new THREE.Vector3(1.3, 0, 1));
-	}.bind(this));
-
-
-	param.regions.compiled.all.forEach(function(i){
-		this[i].applyMatrix4(param.transRollMatrices[param.array[i][1]]);
-	}.bind(this));
-
-	param.regions.compiled.all.forEach(function(i){
-		this[i].applyMatrix4(param.lengthRollMatrices[param.array[i][0]]);
-	}.bind(this));
-}
+];

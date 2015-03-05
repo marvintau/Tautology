@@ -68,13 +68,11 @@ Tautology.Three.prototype.render = function(){
 
 Tautology.Three.prototype.animate = function(){
 	var that = this;
-    requestAnimationFrame(function(){
-    	that.animate();
-    	that.ctrl.update();
+	requestAnimationFrame(function(){
+		that.animate();
+		that.ctrl.update();
     });
-    
-    that.render();
-
+	that.render();
 }
 
 Tautology.Three.prototype.init = function() {
