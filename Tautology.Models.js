@@ -20,26 +20,11 @@ var param1 = {
 		body : [ {slice: -1}, undefined],
 		ridge : [{start:2, end:-2, every: 2}, undefined]
 	}),
-
-	// The constants that derived from the adjustable parameters
-	// yet not accompanied with vertex index should be defined as
-	// getters.
-	trans: new THREE.Vector3(),
-
-	leng: new THREE.Vector3(),
-
-	axisX : new THREE.Vector3(1, 0, 0),
-
-	axisZ : new THREE.Vector3(0, 0, 1),
-
-	transRollMatrices : Array.constDeep(30, THREE.Matrix4),
-
-	lengthRollMatrices : Array.constDeep(27, THREE.Matrix4)
 };
 
 param1.manuever =  [
 	{
-		desc : 'Stretch the stub part',
+		type : 'trans',
 		init : function(param){
 			this.translation = new THREE.Vector3();
 			this.indices = param.regions.compiled['stub'];
@@ -52,7 +37,7 @@ param1.manuever =  [
 		}
 	},
 	{
-		desc : 'Stretch the body part',
+		type : 'trans',
 		init : function(param){
 			this.translation = new THREE.Vector3();
 			this.indices = param.regions.compiled['body'];
@@ -65,7 +50,7 @@ param1.manuever =  [
 		}
 	},
 	{
-		desc : 'Make the ridge over the plane',
+		type : 'trans',
 		init : function(param){
 			this.translation = new THREE.Vector3();
 			this.indices = param.regions.compiled['ridge'];
@@ -109,7 +94,7 @@ param1.manuever =  [
 		},
 		update : function(param, vertices){
 			this.feed.set(param.bellowLength.val, 0, 0);
-			this.matrices[0].makeRotationAxis( param.axisZ, 2*param.lengthAngle.val);
+			this.matrices[0].makeRotationAxis( this.axisZ, 2*param.lengthAngle.val) ;
 			this.matrices[0].setPosition(this.feed);
 
 			for(var i = 1; i < this.matrices.length; i++){
