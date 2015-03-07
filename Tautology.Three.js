@@ -44,12 +44,12 @@ Tautology.Three.prototype.initControl = function(){
 Tautology.Three.prototype.initRenderer = function(element){
 	this.rndr = new THREE.WebGLRenderer({alpha:true, antialias: true });
 	element.appendChild( this.rndr.domElement );
-	this.rndr.setSize( 640, 480);
+	this.rndr.setSize( 640, 320);
 	this.rndr.setClearColor( 0xfafafa, 1);
 }
 
 Tautology.Three.prototype.initScene = function(){
-	this.camera = new THREE.PerspectiveCamera( 45, 640 / 480, 1, 1000 );
+	this.camera = new THREE.PerspectiveCamera( 30, 640 / 320, 1, 1000 );
 	this.camera.position.set(0, 0, 100);
 
 	var light = new THREE.DirectionalLight( 0xe0e0e0, 1 );
@@ -71,6 +71,7 @@ Tautology.Three.prototype.animate = function(){
 	requestAnimationFrame(function(){
 		that.animate();
 		that.ctrl.update();
+		// that.camera.lookAt(new THREE.Vector3(40, 0, 0));
     });
 	that.render();
 }
@@ -86,6 +87,6 @@ Tautology.Three.prototype.init = function() {
 }
 
 Tautology.Three.prototype.updateScene = function() {
-	this.scene.add(new THREE.Mesh(geometry.geom, this.materials['inside']));
 	this.scene.add(new THREE.Mesh(geometry.geom, this.materials['outside']));
+	this.scene.add(new THREE.Mesh(geometry.geom, this.materials['inside']));
 }

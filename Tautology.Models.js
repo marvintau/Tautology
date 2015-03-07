@@ -3,108 +3,65 @@ var param1 = {
 	// current value that modified by slider. The parameters that
 	// directly defined by user should be mentioned at first.
 	bellowLength: {min:0.75, max:1.5, val:0.8},
-	radius: {min: 8, max:12, val:10},
+	radius: {min: 2, max:4, val:3},
 	stubLength : {min:10, max:20, val:10},
-	bodyLength : {min:25, max:35, val:25},
+	bodyLength : {min:45, max:55, val:45},
 	lengthAngle: {min:0, max: Math.PI/50, val:Math.PI/80},
 	radiusAngle: {min:0, max: Math.PI/29, val:Math.PI/29},
 
 	// Define the shape of the vertex matrix, make sure to define
 	// the getter "shape".
 
-	shape : [27, 30],
+	shape : [23, 30],
 
 	regions : new Tautology.Regions({
-		all : [undefined, undefined],
-		stub : [ {slice: 1} , undefined],
-		body : [ {slice: -1}, undefined],
-		ridge : [{start:2, end:-2, every: 2}, undefined]
+		all : ['all', 'all'],
+		stub : [ {slice: -1} , 'all'],
+		body : [ {slice: 1}, 'all'],
+		ridge : [{start:2, end:-2, every: 2}, 'all']
 	}),
 };
 
-param1.manuever =  [
+param1.manuever1 = [
 	{
-		type : 'trans',
-		init : function(param){
-			this.translation = new THREE.Vector3();
-			this.indices = param.regions.compiled['stub'];
-		},
-		update : function(param, vertices){
-			this.translation.set(-param.stubLength.val, 0, 0);
-			this.indices.forEach(function(i){
-				vertices[i].add(this.translation);
-			}.bind(this));
+		command : 'tran',
+		region : 'stub',
+		callback : function(){
+			this.v.set(-this.param.stubLength.val, 0, 0);
 		}
 	},
 	{
-		type : 'trans',
-		init : function(param){
-			this.translation = new THREE.Vector3();
-			this.indices = param.regions.compiled['body'];
-		},
-		update : function(param, vertices){
-			this.translation.set(param.bodyLength.val, 0, 0);
-			this.indices.forEach(function(i){
-				vertices[i].add(this.translation);
-			}.bind(this));
+		command : 'tran',
+		region : 'body',
+		callback : function(){
+			this.v.set(this.param.bodyLength.val, 0, 0);
 		}
 	},
 	{
-		type : 'trans',
-		init : function(param){
-			this.translation = new THREE.Vector3();
-			this.indices = param.regions.compiled['ridge'];
-		},
-		update : function(param, vertices){
-			this.translation.set(1.3, 0, 1);
-			this.indices.forEach(function(i){
-				vertices[i].add(this.translation);
-			}.bind(this));
+		command : 'tran',
+		region : 'ridge',
+		callback : function(){
+			this.v.set(0.6, 0, 0.5);
 		}
 	},
-	{	
-		desc : 'roll around the centeroid axis of the straw',
-		init : function(param){
-			this.axisX = new THREE.Vector3(1, 0, 0);
-			this.feed = new THREE.Vector3();
-			this.matrices = Array.constDeep(param.shape[1], THREE.Matrix4);
-			this.indices = param.regions.compiled['all'];
-		},
-		update : function(param, vertices){
-			this.feed.set(0, -Math.sin(param.radiusAngle.max)*param.radius.val, 0);
-			this.matrices[0].makeRotationAxis(this.axisX, 2*(param.radiusAngle.val) );
+	{
+		command : 'radiate',
+		region : 'all',
+		dimension: 1,
+		callback : function(){
+			this.v.set(0, 0, this.param.radius.val);
+			this.axis.set(1, 0, 0);
+		}
+	},
+	{
+		command : 'bend',
+		region : 'all',
+		dimension : 0,
+		callback : function () {
+			this.bendAxis.set(0, 0, 1);
+			this.feed.set(-this.param.bellowLength.val, 0, 0);
+			this.matrices[0].makeRotationAxis(this.bendAxis, 2*this.param.lengthAngle.val) ;
 			this.matrices[0].setPosition(this.feed);
-
-			for (var i = 1; i < this.matrices.length; i++) {
-				this.matrices[i].multiplyMatrices(this.matrices[i-1], this.matrices[0]);
-			};
-
-			this.indices.forEach(function(i){
-				vertices[i].applyMatrix4(this.matrices[param.array[i][1]]);
-			}.bind(this));
-		}
-	},
-	{	
-		desc : 'bend the accordion-like ridge part',
-		init : function(param){
-			this.axisZ = new THREE.Vector3(0, 0, 1);
-			this.feed = new THREE.Vector3();
-			this.matrices = Array.constDeep(param.shape[0], THREE.Matrix4);
-			this.indices = param.regions.compiled['all'];
-		},
-		update : function(param, vertices){
-			this.feed.set(param.bellowLength.val, 0, 0);
-			this.matrices[0].makeRotationAxis( this.axisZ, 2*param.lengthAngle.val) ;
-			this.matrices[0].setPosition(this.feed);
-
-			for(var i = 1; i < this.matrices.length; i++){
-				this.matrices[i].multiplyMatrices(this.matrices[i-1], this.matrices[0]);
-			};
-
-			this.indices.forEach(function(i){
-				vertices[i].applyMatrix4(this.matrices[param.array[i][0]]);
-			}.bind(this));
-
 		}
 	}
 ];

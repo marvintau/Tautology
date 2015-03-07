@@ -3,7 +3,7 @@ Tautology.Regions = function(specs){
 
 	this.modifiers = [
 		{	// if undefined on that slot, return true
-			case : function(ithSpec){ return !ithSpec },	
+			case : function(ithSpec){ return ithSpec=='all' },	
 			is : function(){ return 1; },
 			do : function(ithSpec, ithShape){return Array.range(ithShape)}
 		},
