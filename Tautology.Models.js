@@ -1,4 +1,4 @@
-var param1 = {
+var BendyStraw = {
 	// Adjustable parameters should include the min/max value and
 	// current value that modified by slider. The parameters that
 	// directly defined by user should be mentioned at first.
@@ -22,7 +22,7 @@ var param1 = {
 	}),
 };
 
-param1.manuever1 = [
+BendyStraw.manuever1 = [
 	{
 		command : 'tran',
 		region : 'stub',
@@ -41,7 +41,7 @@ param1.manuever1 = [
 		command : 'tran',
 		region : 'ridge',
 		callback : function(){
-			this.v.set(0.6, 0, 0.5);
+			this.v.set(0.8, 0, 0.5);
 		}
 	},
 	{
