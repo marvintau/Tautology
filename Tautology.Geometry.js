@@ -12,12 +12,12 @@
 Tautology.Geometry = function(param){
 	this.param = param;
 
-	this.param.array = Array.permute(this.param.shape);
+	this.shape = new Tautology.Shape(this.param.shape);
 
-	this.vertices = this.param.array.map(function(e){return new THREE.Vector3()});
+	this.param.array = this.shape.labels;
 
-	// This part is suggested to be moved to a class dedicated to handle the
-	// model specification
+	this.vertices = this.shape.vertices;
+
 	var regions = this.param.regions,
 		modifiers = this.param.regionModifiers;
 
@@ -27,7 +27,7 @@ Tautology.Geometry = function(param){
 	var instructions = this.param.instructions = [];
 	
 	this.param.manuever.forEach(function(step){
-		var newTran = new Tautology.Transform(this.param, this.vertices, step.region);
+		var newTran = new Tautology.Transform(this.param, this.shape, this.param.regions, step.region);
 		(newTran[step.command])(step.callback, step.dimension);
 		instructions.push(newTran);
 

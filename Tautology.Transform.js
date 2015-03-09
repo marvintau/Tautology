@@ -1,7 +1,9 @@
-Tautology.Transform = function(param, vertices, regionLabel){
+Tautology.Transform = function(param, shape, regions, regionLabel){
 	this.param = param;
-	this.vertices = vertices;
-	this.indices = this.param.regions.compiled[regionLabel];
+	this.shape = shape.shape;
+	this.array = shape.labels;
+	this.vertices = shape.vertices;
+	this.indices = regions.compiled[regionLabel];
 };
 
 Tautology.Transform.prototype.constructor = Tautology.Transform;
@@ -28,8 +30,8 @@ Tautology.Transform.prototype.radiate = function(settingCallback,dimension){
 	this.update = function(){
 		this.settingCallback.call(this);
 
-		var a = this.param.array,
-			s = this.param.shape,
+		var a = this.array,
+			s = this.shape,
 			d = this.dim;
 
 		this.indices.forEach(function(i){
@@ -42,13 +44,13 @@ Tautology.Transform.prototype.radiate = function(settingCallback,dimension){
 Tautology.Transform.prototype.bend = function(settingCallback,dimension){
 	this.bendAxis = new THREE.Vector3();
 	this.feed = new THREE.Vector3();
-	this.matrices = Array.constDeep(this.param.shape[dimension], THREE.Matrix4);
+	this.matrices = Array.constDeep(this.shape[dimension], THREE.Matrix4);
 	this.settingCallback = settingCallback;
 	this.dim = dimension;
 
 	this.update = function () {
 		this.settingCallback.call(this);
-		var a = this.param.array,
+		var a = this.array,
 			d = this.dim;
 
 		for(var i = 1; i < this.matrices.length; i++){

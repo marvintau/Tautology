@@ -1,6 +1,7 @@
 Tautology.Shape = function(shape){
 	this.shape = shape;
 	this.getLabels();
+	this.makeVertices();
 }
 
 Tautology.Shape.prototype.constructor = Tautology.Shape;
@@ -11,5 +12,8 @@ Tautology.Shape.prototype.getLabels = function(){
 			return perm.concat(d);
 		}).flatten();
 	},[[]]);
+}
 
+Tautology.Shape.prototype.makeVertices = function(){
+	this.vertices = this.labels.map(function(e){return new THREE.Vector3()});
 }
