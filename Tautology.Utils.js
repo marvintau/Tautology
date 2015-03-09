@@ -81,13 +81,6 @@ Array.prototype.outer = function(another, func){
  * @param  {Array} shape Given dimensions
  * @return {Array}       Array of indices
  */
-Array.permute = function(shape){
-	return shape.reduce(function(perms, dim){
-		return Array.range(dim).outer(perms, function(d, perm){
-			return perm.concat(d);
-		}).flatten();
-	},[[]]);
-}
 
 /**
  * Mesh generates an index array with hierarchical structure, that represents
@@ -97,11 +90,9 @@ Array.permute = function(shape){
  */
 Array.mesh = function(shape){
 	var whole = Array.range(shape.reduce(function(a, b){return a*b}))
-	
 	return shape.reduce(function(prev, curr){
 		return prev.partition(curr);
 	}, whole)[0];
-				
 }
 
 /**

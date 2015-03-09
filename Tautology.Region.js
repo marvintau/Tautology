@@ -1,8 +1,8 @@
 Tautology.Region = function(ranges, shape){
 	this.ranges = ranges.map(function(e, i){
-		return new Tautology.Range(e, shape.shape[i]);
+		return new Tautology.Range(e, shape[i]);
 	});
-	this.getTable(shape.shape);
+	this.getTable(shape);
 }
 
 Tautology.Region.prototype.constructor = Tautology.Region;
