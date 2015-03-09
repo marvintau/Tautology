@@ -9,7 +9,7 @@ Tautology.Range.prototype.set = function(range, length){
 	this.range = range;
 	if(!isNaN(this.range)){
 		this.range = this.single(length);
-	} else if (this.range.length){
+	} else if (Array.isArray(range)){
 		this.range = this.interval(length);
 	} else if (this.range == 'all'){
 		this.range = this.all(length);

@@ -1,9 +1,11 @@
-Tautology.Transform = function(param, shape, regions, regionLabel){
+Tautology.Transform = function(param, shape, regions, transSpec){
 	this.param = param;
 	this.shape = shape.shape;
-	this.array = shape.labels;
+	this.labels = shape.labels;
 	this.vertices = shape.vertices;
-	this.indices = regions.compiled[regionLabel];
+	this.indices = regions[transSpec.region].table;
+
+	this[transSpec.command](transSpec.callback, transSpec.dimension);
 };
 
 Tautology.Transform.prototype.constructor = Tautology.Transform;
@@ -14,8 +16,8 @@ Tautology.Transform.prototype.tran = function(settingCallback){
 	this.settingCallback = settingCallback;
 
 	this.update = function(){
-		this.settingCallback.call(this);
 		this.indices.forEach(function(i){
+			this.settingCallback.call(this);
 			this.vertices[i].add(this.v);
 		}.bind(this));
 	}
@@ -30,13 +32,13 @@ Tautology.Transform.prototype.radiate = function(settingCallback,dimension){
 	this.update = function(){
 		this.settingCallback.call(this);
 
-		var a = this.array,
+		var l = this.labels,
 			s = this.shape,
 			d = this.dim;
 
 		this.indices.forEach(function(i){
 			this.vertices[i].add(this.v);
-			this.vertices[i].applyAxisAngle(this.axis, 2*Math.PI*a[i][d]/(s[d]-1));
+			this.vertices[i].applyAxisAngle(this.axis, 2*Math.PI*l[i][d]/(s[d]-1));
 		}.bind(this));
 	}
 };
@@ -50,7 +52,7 @@ Tautology.Transform.prototype.bend = function(settingCallback,dimension){
 
 	this.update = function () {
 		this.settingCallback.call(this);
-		var a = this.array,
+		var l = this.labels,
 			d = this.dim;
 
 		for(var i = 1; i < this.matrices.length; i++){
@@ -58,7 +60,7 @@ Tautology.Transform.prototype.bend = function(settingCallback,dimension){
 		};
 
 		this.indices.forEach(function(i){
-			this.vertices[i].applyMatrix4(this.matrices[a[i][d]]);
+			this.vertices[i].applyMatrix4(this.matrices[l[i][d]]);
 		}.bind(this));
 
 	}

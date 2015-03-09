@@ -14,12 +14,12 @@ var BendyStraw = {
 
 	shape : [23, 30],
 
-	regions : new Tautology.Regions({
+	regions : {
 		all : ['all', 'all'],
-		stub : [ -1 , 'all'],
-		body : [ 1, 'all'],
+		stub : [ -1, 'all' ],
+		body : [ 0, 'all'],
 		ridge : [[2, -2, 2], 'all']
-	}),
+	},
 };
 
 BendyStraw.manuever = [
