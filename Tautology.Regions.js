@@ -8,25 +8,25 @@ Tautology.Regions = function(specs){
 			do : function(ithSpec, ithShape){return Array.range(ithShape)}
 		},
 		{	// Accepts {start: , end: , every : , shift : ,}
-			case : function(ithSpec){ return ithSpec && ithSpec.start },
+			case : function(ithSpec){ return ithSpec.length },
 			is : function(dim, ithSpec, ithShape){
-				// var isInInterval = dim >= ithSpec.start && dim <= ithSpec.end;
-				var isInInterval = dim >= r(ithSpec.start, ithShape) && dim <= r(ithSpec.end, ithShape);
-				return isInInterval && ((dim + (ithSpec.shift ? ithSpec.shift : 0)) % (ithSpec.every ? ithSpec.every : 1) == 0 );
+				// var isInInterval = dim >= ithSpec[0] && dim <= ithSpec[1];
+				var isInInterval = dim >= r(ithSpec[0], ithShape) && dim <= r(ithSpec[1], ithShape);
+				return isInInterval && (dim % (ithSpec[2] ? ithSpec[2] : 1) == 0 );
 			},
 			do : function(ithSpec, ithShape){
-				var start = r(ithSpec.start, ithShape) - 1,
-					end = r(ithSpec.end, ithShape) + 1;
+				var start = r(ithSpec[0], ithShape) - 1,
+					end = r(ithSpec[1], ithShape) + 1;
 				return Array.range(ithShape).slice(start, end)
-							.filter(function(e){ return e % (ithSpec.every ? ithSpec.every : 1)==0; });
+							.filter(function(e){ return e % (ithSpec[2] ? ithSpec[2] : 1)==0; });
 			}
 		},
 		{	// Accepts {slice:}
-			case : function(ithSpec){ return ithSpec && ithSpec.slice },
+			case : function(ithSpec){ return !isNaN(ithSpec) },
 			is : function(dim, ithSpec, ithShape){
-				return dim == r(ithSpec.slice, ithShape);
+				return dim == r(ithSpec, ithShape);
 			},
-			do : function(ithSpec, ithShape){ return [ithSpec.slice]; }
+			do : function(ithSpec, ithShape){ return [ithSpec]; }
 		}
 	];
 }

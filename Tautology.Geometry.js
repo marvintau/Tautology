@@ -26,8 +26,8 @@ Tautology.Geometry = function(param){
 	
 	var instructions = this.param.instructions = [];
 	
-	this.param.manuever1.forEach(function(step){
-		var newTran = new Tautology.Trans(this.param, this.vertices, step.region);
+	this.param.manuever.forEach(function(step){
+		var newTran = new Tautology.Transform(this.param, this.vertices, step.region);
 		(newTran[step.command])(step.callback, step.dimension);
 		instructions.push(newTran);
 
@@ -46,15 +46,9 @@ Tautology.Geometry.prototype.constructor = Tautology.Geometry;
 
 Tautology.Geometry.prototype.updateGeom = function(){
 
-	// this.code.call(this.geom.vertices, this.param);
-
-	var manuever = this.param.manuever;
 	this.vertices.forEach(function(e){
 		e.set(0, 0, 0);
 	})
-	// manuever.forEach(function(step){
-	// 	step.update.call(step, this.param, this.vertices);
-	// }.bind(this));
 
 	this.param.instructions.forEach(function(inst){
 		inst.update();

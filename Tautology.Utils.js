@@ -85,8 +85,8 @@ Array.permute = function(shape){
 	return shape.reduce(function(perms, dim){
 		return Array.range(dim).outer(perms, function(d, perm){
 			return perm.concat(d);
-		}).flatten().reverse();
-	},[[]])
+		}).flatten();
+	},[[]]);
 }
 
 /**

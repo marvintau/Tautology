@@ -16,13 +16,13 @@ var BendyStraw = {
 
 	regions : new Tautology.Regions({
 		all : ['all', 'all'],
-		stub : [ {slice: -1} , 'all'],
-		body : [ {slice: 1}, 'all'],
-		ridge : [{start:2, end:-2, every: 2}, 'all']
+		stub : [ -1 , 'all'],
+		body : [ 1, 'all'],
+		ridge : [[2, -2, 2], 'all']
 	}),
 };
 
-BendyStraw.manuever1 = [
+BendyStraw.manuever = [
 	{
 		command : 'tran',
 		region : 'stub',
