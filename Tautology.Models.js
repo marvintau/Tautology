@@ -2,17 +2,23 @@ var BendyStraw = {};
 	// Adjustable parameters should include the min/max value and
 	// current value that modified by slider. The parameters that
 	// directly defined by user should be mentioned at first.
-BendyStraw.param = {
+BendyStraw.param = {};
+BendyStraw.param.geom = {
 	bellowLength: {min:0.75, max:1.5, val:0.8},
 	radius: {min: 2, max:4, val:3},
 	stubLength : {min:10, max:20, val:10},
 	bodyLength : {min:45, max:55, val:45},
-	lengthAngle: {min:0, max: Math.PI/50, val:Math.PI/80},
-	radiusAngle: {min:0, max: Math.PI/29, val:Math.PI/29}
+	lengthAngle: {min:0, max: Math.PI/50, val:Math.PI/80}
 };
 	// Define the shape of the vertex matrix, make sure to define
 	// the getter "shape".
-BendyStraw.shape = [23, 30];
+BendyStraw.param.material = {
+	color : 0xffffff,
+	opacity : {val: 0.5, min:0., max:1.}
+}
+
+
+BendyStraw.shape = [23, 40];
 
 BendyStraw.regions = {
 	all : ['all', 'all'],

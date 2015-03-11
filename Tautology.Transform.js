@@ -1,9 +1,9 @@
-Tautology.Transform = function(param, shape, regions, transSpec){
-	this.param = param;
-	this.shape = shape.shape;
-	this.labels = shape.labels;
-	this.vertices = shape.vertices;
-	this.indices = regions[transSpec.region].table;
+Tautology.Transform = function(geom, transSpec){
+	this.param = geom.param;
+	this.shape = geom.shape.shape;
+	this.labels = geom.shape.labels;
+	this.vertices = geom.shape.vertices;
+	this.indices = geom.regions[transSpec.region].table;
 
 	this[transSpec.command](transSpec.callback, transSpec.dimension);
 };

@@ -80,7 +80,7 @@ Tautology.Three.prototype.init = function() {
 	this.initScene();
 	this.initRenderer(window.document.body);
 	this.initControl();
-	this.initMaterials();
+	// this.initMaterials();
 	
 	this.render();
 	this.animate();
@@ -88,7 +88,7 @@ Tautology.Three.prototype.init = function() {
 
 Tautology.Three.prototype.updateScene = function() {
 
-	this.scene.add(new THREE.Mesh(geometry.geom, this.materials['inside']));
-	this.scene.add(new THREE.Mesh(geometry.geom, this.materials['outside']));
+	this.scene.add(new THREE.Mesh(geometry.geom, material.materials['inside']));
+	this.scene.add(new THREE.Mesh(geometry.geom, material.materials['outside']));
 	// this.scene.add(new THREE.PointCloud(geometry.geom));
 }

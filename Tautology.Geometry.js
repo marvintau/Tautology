@@ -22,9 +22,7 @@ Tautology.Geometry = function(param, shape, regions, manuever){
 	this.instructions = [];
 	
 	manuever.forEach(function(step){
-		var newTran = new Tautology.Transform(this.param, this.shape, this.regions, step);
-		this.instructions.push(newTran);
-
+		this.instructions.push(new Tautology.Transform(this, step));
 	}.bind(this));
 
 	this.initGeom(this.shape);
@@ -52,7 +50,6 @@ Tautology.Geometry.prototype.updateGeom = function(){
 	}.bind(this));
 	this.geom.verticesNeedUpdate = true;
 	this.geom.computeFaceNormals();
-	this.geom.computeVertexNormals();
 	this.geom.normalsNeedUpdate = true;
 
 }
