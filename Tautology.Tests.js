@@ -1,7 +1,6 @@
 geometry = new Tautology.Geometry(BendyStraw.param.geom, BendyStraw.shape, BendyStraw.regions, BendyStraw.manuever);
 
-material = new Tautology.Material(BendyStraw.param.material, 'lambert', 'transparent');
-console.log(material);
+material = new Tautology.Material(BendyStraw.param.material);
 
 var addSlider = function(parameter, params){
 	$('<input type="range">').appendTo($('body'))
