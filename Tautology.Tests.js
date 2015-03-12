@@ -1,9 +1,6 @@
-// geometry = new Tautology.Geometry(BendyStraw.param.geom, BendyStraw.shape, BendyStraw.regions, BendyStraw.manuever);
-// material = new Tautology.Material(BendyStraw.param.material);
-
 model = new Tautology.Model(BendyStraw);
 
-draw = new Tautology.Canvas();
+draw = new Tautology.Canvas('2DViewport', 640, 320);
 
 var addSlider = function(parameter, params){
 	$('<input type="range">').appendTo($('body'))

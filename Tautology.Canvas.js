@@ -2,29 +2,25 @@
  * Canvas integrates the styling and some interactive operation on the 2D drawing area 
  * @param {} divElementID
  */
-Tautology.Canvas = function(){
+Tautology.Canvas = function(elementName, width, height){
 	this.patterns = {};
 
-	this.canvas = new fabric.Canvas($('#2DViewport').get(0) , {
-		width : 2000,
-		height: 2000
+	$('#'+elementName).attr({'width': width, 'height': height}).css({'width':width, 'height':height});
+
+	this.canvas = new fabric.Canvas(elementName , {
+		'width' : width,
+		'height': height
 	});
 
-	this.makePatterns();
 
-	fabric.util.addListener(document.getElementsByClassName('upper-canvas')[0], 'contextmenu', function(e) {
-        e.preventDefault();
-    });
+	this.canvas.setBackgroundColor('#f0f0f0');
 
-	$("#viewContainer").ruler({
-		showCrosshair : false,
-    	showMousePos: false
-    });
+	this.canvas.add(new fabric.Circle({
+		radius: 20, fill: 'green', left: 100, top: 100
+	}));
 
-	$("#scrollView").scroll(function(){
-		$('.vRule').css({'left' : $(this).scrollLeft()});
-		$('.hRule').css({'top' : $(this).scrollTop()});
-	});
+	// this.makePatterns();
+
 
 };
 
