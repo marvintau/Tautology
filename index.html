@@ -2,18 +2,25 @@
 <html>
 <head>
 	<title>Tautology Framework</title>
+	<link href='./ruler.css' rel='stylesheet'>
 </head>
 <body>
-<h1>Interactive 3D Object presentation</h1>
-<br/>
-
 <div id='3DViewport'></div>
-<!-- <canvas id='2DViewport'></canvas> -->
+<div id='viewContainer' height='200'>
+	<div id='scrollView'>
+		<canvas id='2DViewport'></canvas>
+	</div>
+</div>
 
+    
 </body>
 <script src="./jquery-1.11.2.min.js"></script>
 <script src="./three.min.js"></script>
 <script src='./TrackballControl.min.js'></script>
+<script src='./fabric.min.js'></script>
+<script src='./modernizr.js'></script>
+<script src='./ruler.js'></script>
+
 <script src="./Tautology.js"></script>
 <script src="./Tautology.Utils.js"></script>
 <script src="./Tautology.Range.js"></script>
@@ -25,6 +32,8 @@
 <script src="./Tautology.Model.js"></script>
 <script src="./Tautology.Material.js"></script>
 <script src="./Tautology.Three.js"></script>
+<script src="./Tautology.Canvas.js"></script>
+
 <script src="./Tautology.Tests.js"></script>
 
 </html>
