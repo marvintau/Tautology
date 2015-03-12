@@ -8,8 +8,8 @@ Tautology.Three = function(){
 
 Tautology.Three.prototype.constructor = Tautology.Three;
 
-Tautology.Three.prototype.initControl = function(){
-	this.ctrl = new THREE.TrackballControls(this.camera, window.document.querySelector('canvas'));
+Tautology.Three.prototype.initControl = function(element){
+	this.ctrl = new THREE.TrackballControls(this.camera, element);
 	this.ctrl.rotateSpeed = 1.0;
 	this.ctrl.zoomSpeed = 1.2;
 	this.ctrl.panSpeed = 0.8;
@@ -55,8 +55,9 @@ Tautology.Three.prototype.animate = function(){
 }
 
 Tautology.Three.prototype.init = function() {
-	this.initRenderer(window.document.body);
-	this.initControl();
+	this.initScene();
+	this.initRenderer($('#3DViewport').get(0));
+	this.initControl($('#3DViewport').get(0));
 	
 	this.render();
 	this.animate();
