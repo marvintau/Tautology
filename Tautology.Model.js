@@ -9,7 +9,7 @@ Tautology.Model.prototype.constructor = Tautology.Model;
 Tautology.Model.prototype.updateScene = function(scene) {
 	for(key in this.material.materials)
 		if(key == 'point')
-			scene.add(new THREE.PointCloud(this.geom));	
+			scene.add(new THREE.PointCloud(this.geom.geom));	
 		else 
-			scene.add(new THREE.Mesh(this.geom, this.material.materials[key]));
+			scene.add(new THREE.Mesh(this.geom.geom, this.material.materials[key]));
 }
