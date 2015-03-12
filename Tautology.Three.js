@@ -86,11 +86,9 @@ Tautology.Three.prototype.init = function() {
 }
 
 Tautology.Three.prototype.updateScene = function() {
-
 	for(key in material.materials)
 		if(key == 'point')
 			this.scene.add(new THREE.PointCloud(geometry.geom));	
 		else 
 			this.scene.add(new THREE.Mesh(geometry.geom, material.materials[key]));
-	// this.scene.add(new THREE.PointCloud(geometry.geom));
 }

@@ -6,6 +6,10 @@ Tautology.Model = function(model){
 
 Tautology.Model.prototype.constructor = Tautology.Model;
 
-Tautology.Model.prototype.updateScene = function(scene){
-	
+Tautology.Model.prototype.updateScene = function(scene) {
+	for(key in this.material.materials)
+		if(key == 'point')
+			scene.add(new THREE.PointCloud(this.geom));	
+		else 
+			scene.add(new THREE.Mesh(this.geom, this.material.materials[key]));
 }

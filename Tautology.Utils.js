@@ -5,21 +5,6 @@
 // Some very handy Array/List manipulating functions which are
 // very familiar in other popular FP languages. I LOVE FP.
 
-function r(i, r){ return (i >= 0) ? (i - 1) : (r + i);};
-
-function sq(x){
-	return x*x;
-}
-
-function bezier(a, b, c, d, t){
-	var trsq = sq( 1 - t ),
-		tsq = sq( t );
-	return a * trsq * ( 1 - t ) +
-		   b * 3 * trsq *t +
-		   c * 3 * tsq * ( 1 - t ) +
-		   d * tsq * t 
-}
-
 /**
  * const generates a array with specific length and constant
  * object, which can be further modified. Since only the
@@ -75,12 +60,6 @@ Array.prototype.outer = function(another, func){
 	})
 }
 
-/**
- * Permute generates the sparse-array-like indices with given
- * dimensions (a.k.a. shape).
- * @param  {Array} shape Given dimensions
- * @return {Array}       Array of indices
- */
 
 /**
  * Mesh generates an index array with hierarchical structure, that represents
