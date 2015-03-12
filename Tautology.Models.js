@@ -4,18 +4,20 @@ var BendyStraw = {};
 	// directly defined by user should be mentioned at first.
 BendyStraw.param = {};
 BendyStraw.param.geom = {
-	bellowLength: {min:0.75, max:1.5, val:0.8},
-	radius: {min: 2, max:4, val:3},
-	stubLength : {min:10, max:20, val:10},
-	bodyLength : {min:45, max:55, val:45},
-	lengthAngle: {min:0, max: Math.PI/50, val:Math.PI/80}
+	bellowLength: {min:0.75, max:1.5, val:0.8, name: '弯折单节长度'},
+	radius: {min: 2, max:4, val:3, name: '吸管半径'},
+	stubLength : {min:10, max:20, val:10, name : '管嘴半径'},
+	bodyLength : {min:45, max:55, val:45, name : '管身半径'},
+	lengthAngle: {min:0, max: Math.PI/50, val:Math.PI/80, name : '弯折角度'}
 };
 	// Define the shape of the vertex matrix, make sure to define
 	// the getter "shape".
 BendyStraw.param.material = {
 	mainType: 'lambert',
-	transparency: 'opaque',
-	color : 0xffffff,
+	transparent: true,
+	wireframed : true,
+	// point : true,
+	color : 0xf0f0f0,
 	opacity : {val: 0.5, min:0., max:1.}
 }
 

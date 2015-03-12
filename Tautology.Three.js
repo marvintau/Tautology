@@ -71,16 +71,15 @@ Tautology.Three.prototype.animate = function(){
 	requestAnimationFrame(function(){
 		that.animate();
 		that.ctrl.update();
-		// that.camera.lookAt(new THREE.Vector3(40, 0, 0));
+		that.render();
     });
-	that.render();
+	
 }
 
 Tautology.Three.prototype.init = function() {
 	this.initScene();
 	this.initRenderer(window.document.body);
 	this.initControl();
-	// this.initMaterials();
 	
 	this.render();
 	this.animate();
@@ -88,7 +87,10 @@ Tautology.Three.prototype.init = function() {
 
 Tautology.Three.prototype.updateScene = function() {
 
-	this.scene.add(new THREE.Mesh(geometry.geom, material.materials['inside']));
-	this.scene.add(new THREE.Mesh(geometry.geom, material.materials['outside']));
+	for(key in material.materials)
+		if(key == 'point')
+			this.scene.add(new THREE.PointCloud(geometry.geom));	
+		else 
+			this.scene.add(new THREE.Mesh(geometry.geom, material.materials[key]));
 	// this.scene.add(new THREE.PointCloud(geometry.geom));
 }

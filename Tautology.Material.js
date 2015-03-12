@@ -10,7 +10,7 @@ Tautology.Material = function(param){
 
 Tautology.Material.prototype.constructor = Tautology.Material;
 
-Tautology.Material.prototype.omittedValues = [ 'mainType', 'transparency', 'transparent', 'side', '_needsUpdate'];
+Tautology.Material.prototype.omittedValues = [ 'mainType', 'transparent', 'side', '_needsUpdate'];
 
 Tautology.Material.prototype.initMaterial = function(param){
 
@@ -18,11 +18,12 @@ Tautology.Material.prototype.initMaterial = function(param){
 		return ({
 			'basic' : 'MeshBasicMaterial',
 			'lambert' : 'MeshLambertMaterial',
-			'phong' : 'MeshPhongMaterial'
+			'phong' : 'MeshPhongMaterial',
+			'point' : 'PointCloudMaterial'
 		})[type]
 	};
 
-	if ( param.transparency == 'transparent' ){
+	if ( param.transparent ) {
 		this.materials.outside = new THREE[type(param.mainType)]({
 			transparent: true,
 			side: THREE.FrontSide,
@@ -35,14 +36,24 @@ Tautology.Material.prototype.initMaterial = function(param){
 			_needsUpdate: true
 		});
 
-	} else if ( param.transparency == 'opaque' ){
+	} else if (param.transparent == false){
 		this.materials.bothSide = new THREE[type(param.mainType)]({
 			transparent: false,
 			side: THREE.DoubleSide,
 			_needsUpdate: true
 		})
 	};
-	console.log(this);
+	
+	if ( param.point ) {
+		this.materials.point = new THREE[type('point')]();
+	};
+
+	if ( param.wireframed ) {
+		this.materials.wireframe = new THREE[type('basic')]({
+			wireframe : true
+		});
+	}
+
 };
 
 Tautology.Material.prototype.updateMaterial = function(param){
