@@ -15,7 +15,7 @@ BendyStraw.param.geom = {
 BendyStraw.param.material = {
 	mainType: 'lambert',
 	transparent: true,
-	wireframed : true,
+	// wireframed : true,
 	// point : true,
 	color : 0xf0f0f0,
 	opacity : {val: 0.5, min:0., max:1.}

@@ -8,27 +8,6 @@ Tautology.Three = function(){
 
 Tautology.Three.prototype.constructor = Tautology.Three;
 
-Tautology.Three.prototype.initMaterials = function(){
-	this.materials={};
-
-	this.materials['outside'] = new THREE.MeshLambertMaterial({
-    	color:0xffffff,
-		opacity: 0.5,
-		transparent: true,
-		side: THREE.FrontSide,
-		_needsUpdate: true
-	}); 
-
-    this.materials['inside'] = new THREE.MeshLambertMaterial({
-    	color:0xffffff,
-		opacity: 0.5,
-		transparent: true,
-		side: THREE.BackSide,
-		_needsUpdate: true
-	}); 	
-
-};
-
 Tautology.Three.prototype.initControl = function(){
 	this.ctrl = new THREE.TrackballControls(this.camera, window.document.querySelector('canvas'));
 	this.ctrl.rotateSpeed = 1.0;
@@ -72,24 +51,13 @@ Tautology.Three.prototype.animate = function(){
 		that.animate();
 		that.ctrl.update();
 		that.render();
-    });
-	
+    });	
 }
 
 Tautology.Three.prototype.init = function() {
-	this.initScene();
 	this.initRenderer(window.document.body);
 	this.initControl();
 	
 	this.render();
 	this.animate();
-}
-
-Tautology.Three.prototype.updateScene = function() {
-
-	for(key in material.materials)
-		if(key == 'point')
-			this.scene.add(new THREE.PointCloud(geometry.geom));	
-		else 
-			this.scene.add(new THREE.Mesh(geometry.geom, material.materials[key]));
 }
