@@ -12,8 +12,9 @@ Tautology.Canvas = function(elementName, width, height){
 		'height': height
 	});
 
-
-	this.canvas.setBackgroundColor('#f0f0f0');
+	// the div element with class canvas-container is automatically generated
+	// and automatically wrapped outside the original canvas element.
+	$('.canvas-container').ruler();
 
 	this.canvas.add(new fabric.Circle({
 		radius: 20, fill: 'green', left: 100, top: 100
