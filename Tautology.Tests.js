@@ -1,6 +1,6 @@
-model = new Tautology.Model(BendyStraw);
 
-draw = new Tautology.Canvas('2DViewport', 640, 320);
+
+model = new Tautology.Model(BendyStraw);
 
 var addSlider = function(parameter, params){
 	$('<input type="range">').appendTo($('body'))
@@ -11,7 +11,7 @@ var addSlider = function(parameter, params){
 			value:params[parameter]['val']*2000
 		}).on('input change', function(e){
 			params[parameter]['val'] = $(this).val()/2000;
-			geometry.updateGeom();
+			model.geom.updateGeom();
 		}).before('<br>').before(parameter);
 }
 
@@ -25,4 +25,4 @@ three = new Tautology.Three();
 three.init();
 model.updateScene(three.scene);
 
-// addSliders(BendyStraw.param.geom);
+addSliders(BendyStraw.param.geom);

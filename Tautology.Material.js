@@ -1,8 +1,9 @@
-Tautology.Material = function(param){
+Tautology.Material = function(param, texture){
 	// Get the parameters out of the uniformed parameter data structure
 	// subsequent modification of the parameter data structure will not
 	// involve further memory operation.
 	this.param = {};
+	this.texture = texture;
 	this.materials = {};
 	this.initMaterial(param);
 	this.updateMaterial(param);
@@ -11,6 +12,10 @@ Tautology.Material = function(param){
 Tautology.Material.prototype.constructor = Tautology.Material;
 
 Tautology.Material.prototype.omittedValues = [ 'mainType', 'transparent', 'side', '_needsUpdate'];
+
+Tautology.Material.prototype.initTexture = function(param){
+	
+}
 
 Tautology.Material.prototype.initMaterial = function(param){
 
@@ -25,12 +30,14 @@ Tautology.Material.prototype.initMaterial = function(param){
 
 	if ( param.transparent ) {
 		this.materials.outside = new THREE[type(param.mainType)]({
+			map : this.texture ? this.texture : null,
 			transparent: true,
 			side: THREE.FrontSide,
 			_needsUpdate: true
 		});
 
 		this.materials.inside = new THREE[type(param.mainType)]({
+			map : this.texture ? this.texture : null,
 			transparent: true,
 			side: THREE.BackSide,
 			_needsUpdate: true
@@ -38,6 +45,7 @@ Tautology.Material.prototype.initMaterial = function(param){
 
 	} else if (param.transparent == false){
 		this.materials.bothSide = new THREE[type(param.mainType)]({
+			map : this.texture ? this.texture : null,
 			transparent: false,
 			side: THREE.DoubleSide,
 			_needsUpdate: true
@@ -53,6 +61,8 @@ Tautology.Material.prototype.initMaterial = function(param){
 			wireframe : true
 		});
 	}
+
+	console.log(this.materials.outside);
 
 };
 

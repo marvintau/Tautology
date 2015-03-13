@@ -14,11 +14,13 @@ BendyStraw.param.geom = {
 	// the getter "shape".
 BendyStraw.param.material = {
 	mainType: 'lambert',
+	canvas : '2DViewport',
 	transparent: true,
 	// wireframed : true,
 	// point : true,
 	color : 0xf0f0f0,
-	opacity : {val: 0.5, min:0., max:1.}
+	opacity : {val: 0.5, min:0., max:1.},
+	texture : 'canvas.upper-canvas'
 }
 
 
@@ -26,8 +28,8 @@ BendyStraw.shape = [23, 40];
 
 BendyStraw.regions = {
 	all : ['all', 'all'],
-	stub : [ -1, 'all' ],
-	body : [ 0, 'all'],
+	stub : [ 0, 'all' ],
+	body : [ -1, 'all'],
 	ridge : [[2, -2, 2], 'all']
 };
 
@@ -36,21 +38,21 @@ BendyStraw.manuever = [
 		command : 'tran',
 		region : 'stub',
 		callback : function(){
-			this.v.set(-this.param.stubLength.val, 0, 0);
+			this.v.set(this.param.stubLength.val, 0, 0);
 		}
 	},
 	{
 		command : 'tran',
 		region : 'body',
 		callback : function(){
-			this.v.set(this.param.bodyLength.val, 0, 0);
+			this.v.set(-this.param.bodyLength.val, 0, 0);
 		}
 	},
 	{
 		command : 'tran',
 		region : 'ridge',
 		callback : function(){
-			this.v.set(0.8, 0, 0.5);
+			this.v.set(-0.8, 0, 0.5);
 		}
 	},
 	{
@@ -73,8 +75,24 @@ BendyStraw.manuever = [
 			this.matrices[0].setPosition(this.feed);
 		}
 	},
-	// {
-	// 	command : 'remap',
-	// 	region : 'all'
-	// }
+	{
+		command : 'uniformRemap',
+		region : 'all',
+		dimension : 1,
+		callback : function () {
+		}
+	},
+	{
+		command : 'remap',
+		region : 'all',
+		dimension : 0,
+		callback : function () {
+			this.stepArray.constUpdate(this.param.bellowLength.val);
+			this.stepArray[0] = -this.param.stubLength.val;
+			this.stepArray[this.shape[this.dim]-1] = this.param.bodyLength.val;
+			this.stepArray.accumUpdate();
+			this.stepArray.normalize();
+			console.log(this.stepArray);
+		}
+	}
 ];

@@ -164,16 +164,29 @@ Array.prototype.accum = function() {
 	return this.reduce(function(a, b){return a.concat(a.last()+b)},[0]).slice(1);
 };
 
-Array.prototype.accumInPlace = function(){
+Array.prototype.accumUpdate = function(){
 	for (var i = 1; i < this.length; i++){
 		this[i] += this[i-1];
 	}
 }
 
-Array.prototype.setClear = function(n){
+Array.prototype.constUpdate = function(n){
 	for (var i = 0; i < this.length; i++){
 		this[i] = n;
 	}	
+}
+
+/**
+ * Apply to monotone ascending numerical array
+ * @return {[type]} [description]
+ */
+Array.prototype.normalize = function(){
+	var first = this[0];
+	var range = this[this.length-1] - this[0];
+
+	for (var i = this.length - 1; i >= 0; i--) {
+		this[i] = ( this[i] - this[0] ) / range;
+	};
 }
 
 // Array.prototype.

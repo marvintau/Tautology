@@ -3,6 +3,7 @@ Tautology.Transform = function(geom, transSpec){
 	this.shape = geom.shape;
 	this.labels = geom.labels;
 	this.vertices = geom.vertices;
+	this.texels = geom.texels;
 	this.indices = geom.regions[transSpec.region].table;
 
 	this[transSpec.command](transSpec.callback, transSpec.dimension);
@@ -68,14 +69,36 @@ Tautology.Transform.prototype.bend = function(settingCallback,dimension){
 
 Tautology.Transform.prototype.uniformRemap = function(settingCallback, dimension){
 	this.step = 0;
-	this.accumArray = Array.const(this.shape[dimension], 0);
+	this.dim = dimension;
+	this.settingCallback = settingCallback;
+
 	this.update = function () {
 		this.settingCallback.call(this);
 		var l = this.labels,
-			d = ({0:x, 1:y})[dimension];
+			d = dimension,
+			dt = ({0:'x', 1:'y'})[d];
 
 		this.indices.forEach(function(i){
-			this.texels
-		})
+			this.texels[i][dt] = l[i][d] / (this.shape[d]-1);
+		}.bind(this));
+	}
+}
+
+Tautology.Transform.prototype.remap = function(settingCallback, dimension){
+	// stepArray should be modified by the settingCallback function
+	// and normalized within the callback.
+	this.stepArray = Array.const(this.shape[dimension], 0);
+	this.dim = dimension;
+	this.settingCallback = settingCallback;
+
+	this.update = function () {
+		this.settingCallback.call(this);
+		var l = this.labels,
+			d = dimension,
+			dt = ({0:'x', 1:'y'})[d];
+
+		this.indices.forEach(function(i){
+			this.texels[i][dt] = this.stepArray[l[i][d]];
+		}.bind(this));
 	}
 }
