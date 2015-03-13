@@ -72,5 +72,9 @@ BendyStraw.manuever = [
 			this.matrices[0].makeRotationAxis(this.bendAxis, 2*this.param.lengthAngle.val) ;
 			this.matrices[0].setPosition(this.feed);
 		}
-	}
+	},
+	// {
+	// 	command : 'remap',
+	// 	region : 'all'
+	// }
 ];

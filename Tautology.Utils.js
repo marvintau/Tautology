@@ -155,6 +155,10 @@ Array.prototype.tail = function(){
 	return [this[0], x.reverse()];
 }
 
+Array.prototype.last = function(){
+	return this[this.length-1];
+}
+
 /**
  * An instance method that returns a new array that combines
  * the reference of original object contained by the array,
