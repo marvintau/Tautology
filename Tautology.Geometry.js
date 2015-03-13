@@ -64,6 +64,7 @@ Tautology.Geometry.prototype.updateGeom = function(){
 		inst.update();
 	}.bind(this));
 	this.geom.verticesNeedUpdate = true;
+	this.geom.uvsNeedUpdate = true;
 	this.geom.computeFaceNormals();
 	this.geom.normalsNeedUpdate = true;
 

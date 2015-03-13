@@ -1,6 +1,9 @@
+draw = new Tautology.Canvas(BendyStraw.canvasName, 512, 256);
 
+model = new Tautology.Model(BendyStraw, draw.canvas);
 
-model = new Tautology.Model(BendyStraw);
+three = new Tautology.Three(BendyStraw.demoName);
+
 
 var addSlider = function(parameter, params){
 	$('<input type="range">').appendTo($('body'))
@@ -21,8 +24,7 @@ var addSliders = function(params){
 		.forEach(function(p){addSlider(p, params)});
 }
 
-three = new Tautology.Three();
-three.init();
+
 model.updateScene(three.scene);
 
 addSliders(BendyStraw.param.geom);

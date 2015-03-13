@@ -12,9 +12,13 @@ Tautology.Canvas = function(elementName, width, height){
 		'height': height
 	});
 
+	this.resize(width, height);
+
 	// the div element with class canvas-container is automatically generated
 	// and automatically wrapped outside the original canvas element.
-	$('.canvas-container').ruler();
+	$('.canvas-container').ruler({
+		showCrosshair : false
+	});
 
 	this.canvas.add(new fabric.Circle({
 		radius: 20, fill: 'green', left: 100, top: 100
@@ -43,7 +47,7 @@ Tautology.Canvas.prototype.resize = function(width, height){
 
 	this.canvas.backgroundColor = 'rgba(255,255,255, 1)';
 
-	$('.vRule').css({'height': height + 'px'});
+	// $('.vRule').css({'height': height + 'px'});
 
 	this.canvas.renderAll();
 

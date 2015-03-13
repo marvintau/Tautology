@@ -1,4 +1,9 @@
 var BendyStraw = {};
+
+BendyStraw.canvasName = '2DViewport';
+
+BendyStraw.demoName = '3DViewport';
+
 	// Adjustable parameters should include the min/max value and
 	// current value that modified by slider. The parameters that
 	// directly defined by user should be mentioned at first.
@@ -14,13 +19,11 @@ BendyStraw.param.geom = {
 	// the getter "shape".
 BendyStraw.param.material = {
 	mainType: 'lambert',
-	canvas : '2DViewport',
 	transparent: true,
 	// wireframed : true,
 	// point : true,
 	color : 0xf0f0f0,
-	opacity : {val: 0.5, min:0., max:1.},
-	texture : 'canvas.upper-canvas'
+	opacity : {val: 0.5, min:0., max:1.}
 }
 
 
@@ -92,7 +95,6 @@ BendyStraw.manuever = [
 			this.stepArray[this.shape[this.dim]-1] = this.param.bodyLength.val;
 			this.stepArray.accumUpdate();
 			this.stepArray.normalize();
-			console.log(this.stepArray);
 		}
 	}
 ];

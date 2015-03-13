@@ -1,15 +1,17 @@
-Tautology.Three = function(){
+Tautology.Three = function(demoName){
 	this.materials;
 	this.ctrl;
 	this.rndr;
 	this.scene;
 	this.camera;
+
+	this.init(demoName);
 }
 
 Tautology.Three.prototype.constructor = Tautology.Three;
 
-Tautology.Three.prototype.initControl = function(element){
-	this.ctrl = new THREE.TrackballControls(this.camera, element);
+Tautology.Three.prototype.initControl = function(demoName){
+	this.ctrl = new THREE.TrackballControls(this.camera, $("#"+demoName).get(0));
 	this.ctrl.rotateSpeed = 1.0;
 	this.ctrl.zoomSpeed = 1.2;
 	this.ctrl.panSpeed = 0.8;
@@ -20,15 +22,20 @@ Tautology.Three.prototype.initControl = function(element){
 	this.ctrl.dynamicDampingFactor = 0.3;	
 };
 
-Tautology.Three.prototype.initRenderer = function(element){
-	this.rndr = new THREE.WebGLRenderer({alpha:true, antialias: true });
-	element.appendChild( this.rndr.domElement );
-	this.rndr.setSize( 640, 320);
+Tautology.Three.prototype.initRenderer = function(demoName, width, height){
+	this.rndr = new THREE.WebGLRenderer({
+		alpha:true,
+		antialias: true
+	});
+	$("#"+demoName).get(0).appendChild( this.rndr.domElement );
+
+	this.rndr.setPixelRatio(window.devicePixelRatio);
+	this.rndr.setSize( width, height);
 	this.rndr.setClearColor( 0xfafafa, 1);
 }
 
 Tautology.Three.prototype.initScene = function(){
-	this.camera = new THREE.PerspectiveCamera( 30, 640 / 320, 1, 1000 );
+	this.camera = new THREE.PerspectiveCamera( 30, 512 / 256, 1, 1000 );
 	this.camera.position.set(0, 0, 100);
 
 	var light = new THREE.DirectionalLight( 0xe0e0e0, 1 );
@@ -54,10 +61,10 @@ Tautology.Three.prototype.animate = function(){
     });	
 }
 
-Tautology.Three.prototype.init = function() {
+Tautology.Three.prototype.init = function(demoName) {
 	this.initScene();
-	this.initRenderer($('#3DViewport').get(0));
-	this.initControl($('#3DViewport').get(0));
+	this.initRenderer(demoName, 512, 256);
+	this.initControl(demoName);
 	
 	this.render();
 	this.animate();

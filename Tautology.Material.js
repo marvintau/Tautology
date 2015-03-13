@@ -31,16 +31,18 @@ Tautology.Material.prototype.initMaterial = function(param){
 	if ( param.transparent ) {
 		this.materials.outside = new THREE[type(param.mainType)]({
 			map : this.texture ? this.texture : null,
+			// opacity : 0.5,
 			transparent: true,
 			side: THREE.FrontSide,
-			_needsUpdate: true
+			// _needsUpdate: true
 		});
 
 		this.materials.inside = new THREE[type(param.mainType)]({
 			map : this.texture ? this.texture : null,
-			transparent: true,
+			// opacity : 0.5,
+			transparent: false,
 			side: THREE.BackSide,
-			_needsUpdate: true
+			// _needsUpdate: true
 		});
 
 	} else if (param.transparent == false){
@@ -48,7 +50,7 @@ Tautology.Material.prototype.initMaterial = function(param){
 			map : this.texture ? this.texture : null,
 			transparent: false,
 			side: THREE.DoubleSide,
-			_needsUpdate: true
+			// _needsUpdate: true
 		})
 	};
 	
@@ -61,9 +63,6 @@ Tautology.Material.prototype.initMaterial = function(param){
 			wireframe : true
 		});
 	}
-
-	console.log(this.materials.outside);
-
 };
 
 Tautology.Material.prototype.updateMaterial = function(param){
