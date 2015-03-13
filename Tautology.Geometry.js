@@ -12,11 +12,23 @@
 Tautology.Geometry = function(param, shape, regions, manuever){
 	this.param = param;
 
-	this.shape = new Tautology.Shape(shape);
+	this.shape = shape;
+
+	this.labels = this.shape.reduce(function(perms, dim){
+		return Array.range(dim).outer(perms, function(d, perm){
+			return perm.concat(d);
+		}).flatten();
+	},[[]]);
+
+	this.vertices = this.labels.map(function(e){return new THREE.Vector3()});
+
+	this.texels = this.labels.map(function(e){return new THREE.Vector2()});
+
+	this.faces = Array.grid(this.shape);
 
 	this.regions = {};
 	for(key in regions){
-		this.regions[key] = new Tautology.Region(regions[key], shape);
+		this.regions[key] = new Tautology.Region(regions[key], this.shape);
 	}
 
 	this.instructions = [];
@@ -31,17 +43,20 @@ Tautology.Geometry = function(param, shape, regions, manuever){
 
 Tautology.Geometry.prototype.constructor = Tautology.Geometry;
 
-Tautology.Geometry.prototype.initGeom = function(shape){
+Tautology.Geometry.prototype.initGeom = function(){
 	this.geom = new THREE.Geometry();
-	this.geom.vertices = shape.vertices;
-	this.geom.faces = Array.grid(shape.shape);
-	this.geom.faceVertexUvs = shape.labels.map(function(e){return new THREE.Vector2()});
+	this.geom.vertices = this.vertices;
+	this.geom.faces = this.faces;
+	this.geom.faceVertexUvs = [];
+	this.geom.faceVertexUvs.push(this.faces.map(function(face){
+		return [this.texels[face.a], this.texels[face.b], this.texels[face.c]];
+	}.bind(this)));
 
 }
 
 Tautology.Geometry.prototype.updateGeom = function(){
 
-	this.shape.vertices.forEach(function(e){
+	this.vertices.forEach(function(e){
 		e.set(0, 0, 0);
 	})
 

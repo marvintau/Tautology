@@ -1,8 +1,8 @@
 Tautology.Transform = function(geom, transSpec){
 	this.param = geom.param;
-	this.shape = geom.shape.shape;
-	this.labels = geom.shape.labels;
-	this.vertices = geom.shape.vertices;
+	this.shape = geom.shape;
+	this.labels = geom.labels;
+	this.vertices = geom.vertices;
 	this.indices = geom.regions[transSpec.region].table;
 
 	this[transSpec.command](transSpec.callback, transSpec.dimension);
@@ -63,5 +63,19 @@ Tautology.Transform.prototype.bend = function(settingCallback,dimension){
 			this.vertices[i].applyMatrix4(this.matrices[l[i][d]]);
 		}.bind(this));
 
+	}
+}
+
+Tautology.Transform.prototype.uniformRemap = function(settingCallback, dimension){
+	this.step = 0;
+	this.accumArray = Array.const(this.shape[dimension], 0);
+	this.update = function () {
+		this.settingCallback.call(this);
+		var l = this.labels,
+			d = ({0:x, 1:y})[dimension];
+
+		this.indices.forEach(function(i){
+			this.texels
+		})
 	}
 }

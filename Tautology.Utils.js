@@ -159,6 +159,25 @@ Array.prototype.last = function(){
 	return this[this.length-1];
 }
 
+Array.prototype.accum = function() {
+	//Accumulate from a new array [0] and then remove the first element.
+	return this.reduce(function(a, b){return a.concat(a.last()+b)},[0]).slice(1);
+};
+
+Array.prototype.accumInPlace = function(){
+	for (var i = 1; i < this.length; i++){
+		this[i] += this[i-1];
+	}
+}
+
+Array.prototype.setClear = function(n){
+	for (var i = 0; i < this.length; i++){
+		this[i] = n;
+	}	
+}
+
+// Array.prototype.
+
 /**
  * An instance method that returns a new array that combines
  * the reference of original object contained by the array,
