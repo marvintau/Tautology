@@ -37,13 +37,13 @@ Tautology.Geometry = function(param, shape, regions, manuever){
 		this.instructions.push(new Tautology.Transform(this, step));
 	}.bind(this));
 
-	this.initGeom(this.shape);
-	this.updateGeom();
+	this.init(this.shape);
+	this.update();
 }
 
 Tautology.Geometry.prototype.constructor = Tautology.Geometry;
 
-Tautology.Geometry.prototype.initGeom = function(){
+Tautology.Geometry.prototype.init = function(){
 	this.geom = new THREE.Geometry();
 	this.geom.vertices = this.vertices;
 	this.geom.faces = this.faces;
@@ -54,7 +54,7 @@ Tautology.Geometry.prototype.initGeom = function(){
 
 }
 
-Tautology.Geometry.prototype.updateGeom = function(){
+Tautology.Geometry.prototype.update = function(){
 
 	this.vertices.forEach(function(e){
 		e.set(0, 0, 0);

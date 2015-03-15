@@ -19,8 +19,7 @@ BendyStraw.param.geom = {
 // Define the shape of the vertex matrix, make sure to define
 // the getter "shape".
 BendyStraw.param.material = {
-	mainType: 'lambert',
-	transparent: true,
+	mainType: 'phong',
 	color : 0xf0f0f0,
 	opacity : {val: 0.5, min:0., max:1.}
 }

@@ -2,22 +2,25 @@
 <html>
 <head>
 	<title>Tautology Framework</title>
-	<link rel="stylesheet" href="./navbar.css">
-	<link rel="stylesheet" href="./bootstrap.min.css">
+<!-- 	<link rel="stylesheet" href="./navbar.css">
+	<link rel="stylesheet" href="./bootstrap.min.css"> -->
 	<link rel="stylesheet" href='./ruler.css'>
 </head>
 <body>
-
+<!-- 
 <div id='toolbar' class='nav-side-menu'>
     <div class="brand">Brand Logo</div>
     <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
 </div>
-
+ -->
 <div id='canvas-wrapper' class='container pull-right'>
 	<canvas id='2DViewport'></canvas>
 	<div id='3DViewport'></div>
 </div>
 
+<div id='toolbar'>
+	
+</div>
     
 </body>
 <script src="./jquery-1.11.2.min.js"></script>
@@ -29,19 +32,14 @@
 <script src='./ruler.js'></script>
 
 
-<script src="./Tautology.js"></script>
-<script src="./Tautology.Utils.js"></script>
-<script src="./Tautology.Range.js"></script>
-<script src="./Tautology.Region.js"></script>
-<script src="./Tautology.Geometry.js"></script>
-<script src="./Tautology.Transform.js"></script>
-<script src="./Tautology.Model.js"></script>
-<script src="./Tautology.Material.js"></script>
-<script src="./Tautology.Three.js"></script>
+<script src="./Tautology.min.js"></script>
+
+<script src="./UI.js"></script>
+<script src="./UI.Three.js"></script>
+<script src="./UI.Two.js"></script>
 
 <script src="./models.js"></script>
-<script src="./Tautology.Canvas.js"></script>
 
-<script src="./Tautology.Tests.js"></script>
+<script src="./Tests.js"></script>
 
 </html>

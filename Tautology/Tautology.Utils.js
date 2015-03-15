@@ -139,7 +139,6 @@ Array.prototype.transpose = function(){
 Array.prototype.toFace3 = function(){
 	if (this.length !=3){
 		throw new Error('have to be length of 3');
-		return
 	}
 	return new THREE.Face3(this[0], this[1], this[2]);
 }

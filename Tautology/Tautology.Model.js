@@ -4,13 +4,14 @@ Tautology.Model = function(model, canvas){
 	this.texture = new THREE.Texture( canvas.getElement() );
 	this.texture.needsUpdate = true;
 
+	canvas.on('after:render', function(){
+		this.texture.needsUpdate = true;
+	}.bind(this));
+
+
 	this.geom = new Tautology.Geometry(this.model.param.geom, this.model.shape, this.model.regions, this.model.manuever);
 	this.material = new Tautology.Material(this.model.param.material, this.texture);
 
-	canvas.on('after:render', function(){
-	
-		this.texture.needsUpdate = true;
-	}.bind(this));
 }
 
 Tautology.Model.prototype.constructor = Tautology.Model;
