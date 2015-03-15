@@ -1,12 +1,12 @@
-draw = new Tautology.Canvas(BendyStraw.canvasName, 512, 256);
+draw = new Tautology.Canvas(BendyStraw.canvasName, 1024, 256);
 
 model = new Tautology.Model(BendyStraw, draw.canvas);
 
-three = new Tautology.Three(BendyStraw.demoName);
+three = new Tautology.Three(BendyStraw.demoName, 1024, 300);
 
 
-var addSlider = function(parameter, params){
-	$('<input type="range">').appendTo($('body'))
+var addSlider = function(parameter, params, id){
+	$('<input type="range">').appendTo($('#'+id))
 		.attr({
 			id: parameter,
 			min:params[parameter]['min']*2000,
@@ -18,13 +18,13 @@ var addSlider = function(parameter, params){
 		}).before('<br>').before(parameter);
 }
 
-var addSliders = function(params){
+var addSliders = function(params, id){
 	Object.keys(params)
 		.filter(function(p){return params[p]['val']})
-		.forEach(function(p){addSlider(p, params)});
+		.forEach(function(p){addSlider(p, params, id)});
 }
 
 
 model.updateScene(three.scene);
 
-addSliders(BendyStraw.param.geom);
+addSliders(BendyStraw.param.geom, 'toolbar');

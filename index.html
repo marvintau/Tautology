@@ -2,21 +2,32 @@
 <html>
 <head>
 	<title>Tautology Framework</title>
-	<link href='./ruler.css' rel='stylesheet'>
+	<link rel="stylesheet" href="./navbar.css">
+	<link rel="stylesheet" href="./bootstrap.min.css">
+	<link rel="stylesheet" href='./ruler.css'>
 </head>
 <body>
-<canvas id='2DViewport'></canvas>
-<div id='3DViewport'></div>
 
+<div id='toolbar' class='nav-side-menu'>
+    <div class="brand">Brand Logo</div>
+    <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+</div>
+
+<div id='canvas-wrapper' class='container pull-right'>
+	<canvas id='2DViewport'></canvas>
+	<div id='3DViewport'></div>
+</div>
 
     
 </body>
 <script src="./jquery-1.11.2.min.js"></script>
+<script src="./jquery.nav.min.js"></script>
 <script src="./three.min.js"></script>
 <script src='./TrackballControl.min.js'></script>
 <script src='./fabric.min.js'></script>
 <script src='./modernizr.js'></script>
 <script src='./ruler.js'></script>
+
 
 <script src="./Tautology.js"></script>
 <script src="./Tautology.Utils.js"></script>

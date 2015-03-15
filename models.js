@@ -4,9 +4,9 @@ BendyStraw.canvasName = '2DViewport';
 
 BendyStraw.demoName = '3DViewport';
 
-	// Adjustable parameters should include the min/max value and
-	// current value that modified by slider. The parameters that
-	// directly defined by user should be mentioned at first.
+// Adjustable parameters should include the min/max value and
+// current value that modified by slider. The parameters that
+// directly defined by user should be mentioned at first.
 BendyStraw.param = {};
 BendyStraw.param.geom = {
 	bellowLength: {min:0.75, max:1.5, val:0.8, name: '弯折单节长度'},
@@ -15,13 +15,12 @@ BendyStraw.param.geom = {
 	bodyLength : {min:45, max:55, val:45, name : '管身半径'},
 	lengthAngle: {min:0, max: Math.PI/50, val:Math.PI/80, name : '弯折角度'}
 };
-	// Define the shape of the vertex matrix, make sure to define
-	// the getter "shape".
+
+// Define the shape of the vertex matrix, make sure to define
+// the getter "shape".
 BendyStraw.param.material = {
 	mainType: 'lambert',
 	transparent: true,
-	// wireframed : true,
-	// point : true,
 	color : 0xf0f0f0,
 	opacity : {val: 0.5, min:0., max:1.}
 }
@@ -91,7 +90,7 @@ BendyStraw.manuever = [
 		dimension : 0,
 		callback : function () {
 			this.stepArray.constUpdate(this.param.bellowLength.val);
-			this.stepArray[0] = -this.param.stubLength.val;
+			this.stepArray[1] = this.param.stubLength.val;
 			this.stepArray[this.shape[this.dim]-1] = this.param.bodyLength.val;
 			this.stepArray.accumUpdate();
 			this.stepArray.normalize();

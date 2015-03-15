@@ -1,11 +1,11 @@
-Tautology.Three = function(demoName){
+Tautology.Three = function(demoName, width, height){
 	this.materials;
 	this.ctrl;
 	this.rndr;
 	this.scene;
 	this.camera;
 
-	this.init(demoName);
+	this.init(demoName, width, height);
 }
 
 Tautology.Three.prototype.constructor = Tautology.Three;
@@ -34,8 +34,8 @@ Tautology.Three.prototype.initRenderer = function(demoName, width, height){
 	this.rndr.setClearColor( 0xfafafa, 1);
 }
 
-Tautology.Three.prototype.initScene = function(){
-	this.camera = new THREE.PerspectiveCamera( 30, 512 / 256, 1, 1000 );
+Tautology.Three.prototype.initScene = function(width, height){
+	this.camera = new THREE.PerspectiveCamera( 20, width / height, 10, 1000 );
 	this.camera.position.set(0, 0, 100);
 
 	var light = new THREE.DirectionalLight( 0xe0e0e0, 1 );
@@ -61,10 +61,10 @@ Tautology.Three.prototype.animate = function(){
     });	
 }
 
-Tautology.Three.prototype.init = function(demoName) {
-	this.initScene();
-	this.initRenderer(demoName, 512, 256);
-	this.initControl(demoName);
+Tautology.Three.prototype.init = function(demoName, width, height) {
+	this.initScene(width, height);
+	this.initRenderer(demoName, width, height);
+	this.initControl(demoName, width, height);
 	
 	this.render();
 	this.animate();

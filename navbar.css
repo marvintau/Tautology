@@ -1,0 +1,85 @@
+.side-nav-left {
+  position: fixed;
+  top: 45px;
+  left: 225px;
+  width: 225px;
+  margin-left: -225px;
+  border: none;
+  border-radius: 0;
+  overflow-y: auto;
+  background-color: #222222;
+}
+
+.side-nav-left>li>a {
+  width: 225px;
+}
+
+.side-nav-left li a:hover,
+.side-nav-left li a:focus {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.side-nav-left>li>a {
+  border-bottom: 1px solid #171717;
+}
+
+.panel-second-list>ul {
+  padding: 0;
+}
+
+.panel-second-list>ul>li {
+  padding: 0;
+  border-bottom: 1px solid #303030;
+  background-color: #373737; /* Second level color */
+}
+
+.panel-second-list>ul>li>a {
+  display: block;
+  padding: 10px 15px 10px 30px;
+  text-decoration: none;
+  background-color: #3c3c3c; /* Second level panel color */
+  color: #9d9d9d; /* Second level text color */
+}
+
+.panel-second-list>ul>li>a:hover {
+  background-color: #555555 !important; /* Second level hover panel color */
+  color: #ffffff; /* hover text color */
+  font-weight: bold;
+}
+
+.panel-third-list>ul {
+  padding: 0;
+}
+
+.panel-third-list>ul>li {
+  padding: 0;
+  border-bottom: 1px solid #303030;
+}
+
+.panel-third-list>ul>li>a {
+  display: block;
+  padding: 10px 15px 10px 15px;
+  text-decoration: none;
+  background-color: #6f6f6f; /* third level panel color */
+  color: #9d9d9d; /* third level text color */
+}
+
+.side-nav-left .navbar-collapse {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.form-control-enter-text {
+  width: 100%;
+}
+
+.side-nav-left .arrow {
+  float: right;
+}
+.side-nav-left .fa.arrow:before {
+  content: "\f104";
+}
+.side-nav-left .a.active>a>.fa.arrow:before {
+  content: "\f107"; /* Not working now */
+}

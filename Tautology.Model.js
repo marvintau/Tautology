@@ -2,8 +2,6 @@ Tautology.Model = function(model, canvas){
 	this.model = model;
 
 	this.texture = new THREE.Texture( canvas.getElement() );
-	// this.texture.repeat.set(-1, -1);
-	// this.texture.offset.set(1,1);
 	this.texture.needsUpdate = true;
 
 	this.geom = new Tautology.Geometry(this.model.param.geom, this.model.shape, this.model.regions, this.model.manuever);

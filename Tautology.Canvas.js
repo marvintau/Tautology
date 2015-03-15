@@ -5,8 +5,6 @@
 Tautology.Canvas = function(elementName, width, height){
 	this.patterns = {};
 
-	$('#'+elementName).attr({'width': width, 'height': height}).css({'width':width, 'height':height});
-
 	this.canvas = new fabric.Canvas(elementName , {
 		'width' : width,
 		'height': height
@@ -14,18 +12,15 @@ Tautology.Canvas = function(elementName, width, height){
 
 	this.resize(width, height);
 
-	// the div element with class canvas-container is automatically generated
-	// and automatically wrapped outside the original canvas element.
 	$('.canvas-container').ruler({
 		showCrosshair : false
 	});
 
+	// $('.canvas-container').css({'padding' : 0, 'position' : 'absolute'});
+
 	this.canvas.add(new fabric.Circle({
 		radius: 20, fill: 'green', left: 100, top: 100
 	}));
-
-	// this.makePatterns();
-
 
 };
 
@@ -47,34 +42,9 @@ Tautology.Canvas.prototype.resize = function(width, height){
 
 	this.canvas.backgroundColor = 'rgba(255,255,255, 1)';
 
-	// $('.vRule').css({'height': height + 'px'});
-
 	this.canvas.renderAll();
 
 };
-
-/**
- * resize width individually
- * @param  {Number} width
- */
-Tautology.Canvas.prototype.resizeWidth = function(width){
-	this.canvas.setWidth(width);
-	var c = this.canvas.getElement();
-	c.setAttribute('width', width*window.devicePixelRatio);
-	c.getContext('2d').scale(window.devicePixelRatio, window.devicePixelRatio);		
-};
-
-/**
- * resize height individually
- * @param  {Number} height
- */
-Tautology.Canvas.prototype.resizeHeight = function(height){
-	this.canvas.setHeight(height);
-	var c = this.canvas.getElement();
-	c.setAttribute('width', width*window.devicePixelRatio);
-	c.getContext('2d').scale(window.devicePixelRatio, window.devicePixelRatio);		
-};
-
 
 /**
  * add image to canvas
@@ -85,9 +55,6 @@ Tautology.Canvas.prototype.addImage = function(url){
 	    if(img.height > this.canvas.height){
 	        img.scale(img.height/this.canvas.height * 0.1);
 	    }
-	    img.on('selected', function(e){
-	    	console.log(this);
-	    })
 	    this.canvas.add(img);
     }.bind(this)); 
 };
