@@ -5,12 +5,25 @@
 UI.Two = function(elementName, width, height){
 	this.patterns = {};
 
-	this.canvas = new fabric.Canvas(elementName , {
-		'width' : width,
-		'height': height
-	});
+	if(width) {	
+		this.canvas = new fabric.Canvas(elementName , {
+			'width' : width,
+			'height': height
+		});
+		this.resize(width, height);
+	} else {
+		var width = $('#'+elementName).width(),
+			height = $('#'+elementName).height();
+			
+		this.canvas = new fabric.Canvas(elementName , {
+			'width' : width,
+			'height': height
+		});
+		this.resize(width, height);		
+	}
 
-	this.resize(width, height);
+
+	
 
 	$('.canvas-container').ruler({
 		showCrosshair : false

@@ -1,4 +1,4 @@
-draw = new UI.Two(BendyStraw.canvasName, 1024, 300);
+draw = new UI.Two(BendyStraw.canvasName);
 
 model = new Tautology.Model(BendyStraw,draw.canvas);
 

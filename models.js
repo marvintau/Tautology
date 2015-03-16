@@ -94,5 +94,20 @@ BendyStraw.manuever = [
 			this.stepArray.accumUpdate();
 			this.stepArray.normalize();
 		}
-	}
+	},
+	{
+		command : 'rot',
+		region : 'all',
+		callback : function () {
+			this.r.setFromAxisAngle(new THREE.Vector3(0, 0, 1), -Math.PI/2);
+		}
+	},
+	{
+		command : 'tran',
+		region : 'all',
+		callback : function(){
+			this.v.set(30, 0, 0);
+		}
+	},
+
 ];

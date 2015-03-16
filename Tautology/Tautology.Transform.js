@@ -32,7 +32,7 @@ Tautology.Transform.prototype.rot = function(settingCallback){
 	this.update = function(){
 		this.indices.forEach(function(i){
 			this.settingCallback.call(this);
-			this.vertices[i].add(this.v);
+			this.vertices[i].applyQuaternion(this.r);
 		}.bind(this));
 	}
 };
