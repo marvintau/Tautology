@@ -22,6 +22,14 @@ UI.Three.prototype.initControl = function(demoName){
 	this.ctrl.dynamicDampingFactor = 0.3;	
 };
 
+UI.Three.prototype.resetControl = function(){
+	new TWEEN.Tween( camera.position ).to( {
+	        x: 0,
+	        y: 0,
+	        z: 200}, 600 )
+	    .easing( TWEEN.Easing.Sinusoidal.EaseInOut).start();
+}
+
 UI.Three.prototype.initRenderer = function(demoName, width, height){
 	this.rndr = new THREE.WebGLRenderer({
 		alpha:true,
@@ -36,7 +44,7 @@ UI.Three.prototype.initRenderer = function(demoName, width, height){
 
 UI.Three.prototype.initScene = function(width, height){
 	this.camera = new THREE.PerspectiveCamera( 20, width / height, 10, 1000 );
-	this.camera.position.set(0, 0, 100);
+	this.camera.position.set(0, 0, 200);
 
 	var light = new THREE.DirectionalLight( 0xe0e0e0, 1 );
     	light.position = this.camera.position;
@@ -62,9 +70,19 @@ UI.Three.prototype.animate = function(){
 }
 
 UI.Three.prototype.init = function(demoName, width, height) {
-	this.initScene(width, height);
-	this.initRenderer(demoName, width, height);
-	this.initControl(demoName, width, height);
+	if(width){
+		this.initScene(width, height);
+		this.initRenderer(demoName, width, height);
+		this.initControl(demoName, width, height);
+
+	} else {
+		var width = $('#'+demoName).width(),
+			height = $('#'+demoName).height();
+		this.initScene(width, height);
+		this.initRenderer(demoName, width, height);
+		this.initControl(demoName, width, height);
+	}
+
 	
 	this.render();
 	this.animate();

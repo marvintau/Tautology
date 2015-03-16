@@ -24,6 +24,20 @@ Tautology.Transform.prototype.tran = function(settingCallback){
 	}
 };
 
+Tautology.Transform.prototype.rot = function(settingCallback){
+
+	this.r = new THREE.Quaternion();
+	this.settingCallback = settingCallback;
+
+	this.update = function(){
+		this.indices.forEach(function(i){
+			this.settingCallback.call(this);
+			this.vertices[i].add(this.v);
+		}.bind(this));
+	}
+};
+
+
 Tautology.Transform.prototype.radiate = function(settingCallback,dimension){
 	this.v = new THREE.Vector3();
 	this.axis = new THREE.Vector3();

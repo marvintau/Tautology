@@ -22,6 +22,7 @@ Tautology.Material.prototype.initMaterial = function(param){
 		})[type]
 	};
 
+	(this.materials.outside) && this.materials.outside.dispose();
 	this.materials.outside = new THREE[type(param.mainType)]({
 		map : this.texture ? this.texture : null,
 		transparent: true,
@@ -29,6 +30,7 @@ Tautology.Material.prototype.initMaterial = function(param){
 		_needsUpdate: true
 	});
 
+	(this.materials.inside) && this.materials.inside.dispose();
 	this.materials.inside = new THREE[type(param.mainType)]({
 		map : this.texture ? this.texture : null,
 		transparent: true,

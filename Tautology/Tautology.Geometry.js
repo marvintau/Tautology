@@ -44,6 +44,8 @@ Tautology.Geometry = function(param, shape, regions, manuever){
 Tautology.Geometry.prototype.constructor = Tautology.Geometry;
 
 Tautology.Geometry.prototype.init = function(){
+	this.geom && this.geom.dispose();
+
 	this.geom = new THREE.Geometry();
 	this.geom.vertices = this.vertices;
 	this.geom.faces = this.faces;
@@ -66,6 +68,7 @@ Tautology.Geometry.prototype.update = function(){
 	this.geom.verticesNeedUpdate = true;
 	this.geom.uvsNeedUpdate = true;
 	this.geom.computeFaceNormals();
+	// this.geom.computeVertexNormals();
 	this.geom.normalsNeedUpdate = true;
 
 }

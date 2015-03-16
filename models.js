@@ -1,8 +1,8 @@
 var BendyStraw = {};
 
-BendyStraw.canvasName = '2DViewport';
+BendyStraw.canvasName = 'two-viewport';
 
-BendyStraw.demoName = '3DViewport';
+BendyStraw.demoName = 'three-viewport';
 
 // Adjustable parameters should include the min/max value and
 // current value that modified by slider. The parameters that
@@ -25,7 +25,7 @@ BendyStraw.param.material = {
 }
 
 
-BendyStraw.shape = [23, 40];
+BendyStraw.shape = [23, 60];
 
 BendyStraw.regions = {
 	all : ['all', 'all'],

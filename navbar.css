@@ -1,21 +1,60 @@
+
+/*!
+ * Marvin basic settting
+ */
+body {
+  background-color: #222222;
+}
+html, body {
+  height: 100%;
+}
+.fill-height {
+  min-height: 100%;
+  height:auto !important; /* cross-browser */
+  height: 100%; /* cross-browser */
+}
+canvas {
+  left: 0;
+  top: 0;
+  position: relative;
+  width: 100%;
+  height: 100%
+}
+
+#three-viewport {
+  height: 350px;
+}
+
+
+.wrapper {
+  padding-left: 250px; /* Define design area position, compare to left sidebar */
+  background-color: #333333;
+}
+.page-wrapper {
+  width: 100%;
+  padding: 10px;
+  background-color: #ffffff;
+}
+
 .side-nav-left {
   position: fixed;
-  top: 45px;
-  left: 225px;
-  width: 225px;
-  margin-left: -225px;
+  left: 250px;
+  width: 250px;
+  margin-left: -250px;
   border: none;
   border-radius: 0;
   overflow-y: auto;
-  background-color: #222222;
+  background-color: #222222; /* First level panel color */
 }
 
 .side-nav-left>li>a {
-  width: 225px;
+  width: 250px;
 }
 
 .side-nav-left li a:hover,
 .side-nav-left li a:focus {
+  /* outline: none; */
+  /* background-color: #111111 !important; /* First level hover and focus panel color */
   color: #ffffff;
   font-weight: bold;
 }
@@ -66,8 +105,8 @@
 }
 
 .side-nav-left .navbar-collapse {
-    padding-right: 0;
-    padding-left: 0;
+  padding-right: 0;
+  padding-left: 0;
 }
 
 .form-control-enter-text {
@@ -79,7 +118,4 @@
 }
 .side-nav-left .fa.arrow:before {
   content: "\f104";
-}
-.side-nav-left .a.active>a>.fa.arrow:before {
-  content: "\f107"; /* Not working now */
 }
