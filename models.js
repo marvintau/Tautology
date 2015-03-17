@@ -103,10 +103,17 @@ BendyStraw.manuever = [
 		}
 	},
 	{
+		command : 'rot',
+		region : 'all',
+		callback : function () {
+			this.r.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI);
+		}
+	},
+	{
 		command : 'tran',
 		region : 'all',
 		callback : function(){
-			this.v.set(30, 0, 0);
+			this.v.set(-30, 0, 0);
 		}
 	},
 

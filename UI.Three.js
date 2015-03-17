@@ -6,6 +6,14 @@ UI.Three = function(demoName, width, height){
 	this.camera;
 
 	this.init(demoName, width, height);
+
+	$(window).resize(function(){
+		var width = $('#'+demoName).width(),
+			height = $('#'+demoName).height();
+		this.rndr.setSize(width, height);
+		this.camera.aspect = width/height;
+		this.camera.updateProjectionMatrix();
+	}.bind(this));
 }
 
 UI.Three.prototype.constructor = UI.Three;
@@ -86,4 +94,14 @@ UI.Three.prototype.init = function(demoName, width, height) {
 	
 	this.render();
 	this.animate();
+}
+
+UI.Three.prototype.resize = function(demoName){
+	var width = $('#'+demoName).width(),
+		height = $('#'+demoName).height();
+	this.rndr.setSize(width, height);
+}
+
+UI.Three.prototype.update = function(model){
+
 }

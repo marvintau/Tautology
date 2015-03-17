@@ -3,7 +3,7 @@
  * Marvin basic settting
  */
 body {
-  background-color: #222222;
+  background-color: #f0f0f0;
 }
 html, body {
   height: 100%;
@@ -21,46 +21,50 @@ canvas {
   height: 100%
 }
 
+#two-viewport {
+  height : 350px;
+}
+
 #three-viewport {
   height: 350px;
 }
 
+input[type=range] {
+  /*display: block;*/
+  margin-left: 30px;
+  /*padding-left: 30px;*/
+  width: 40%;
+}
 
 .wrapper {
-  padding-left: 250px; /* Define design area position, compare to left sidebar */
-  background-color: #333333;
+  padding-left: 400px; /* Define design area position, compare to left sidebar */
+
 }
 .page-wrapper {
   width: 100%;
   padding: 10px;
-  background-color: #ffffff;
 }
 
 .side-nav-left {
   position: fixed;
-  left: 250px;
-  width: 250px;
-  margin-left: -250px;
+  left: 400px;
+  width: 400px;
+  margin-left: -400px;
   border: none;
   border-radius: 0;
   overflow-y: auto;
-  background-color: #222222; /* First level panel color */
 }
 
 .side-nav-left>li>a {
-  width: 250px;
+  width: 400px;
 }
 
 .side-nav-left li a:hover,
 .side-nav-left li a:focus {
-  /* outline: none; */
-  /* background-color: #111111 !important; /* First level hover and focus panel color */
-  color: #ffffff;
   font-weight: bold;
 }
 
 .side-nav-left>li>a {
-  border-bottom: 1px solid #171717;
 }
 
 .panel-second-list>ul {
@@ -68,22 +72,15 @@ canvas {
 }
 
 .panel-second-list>ul>li {
-  padding: 0;
-  border-bottom: 1px solid #303030;
-  background-color: #373737; /* Second level color */
 }
 
 .panel-second-list>ul>li>a {
   display: block;
   padding: 10px 15px 10px 30px;
   text-decoration: none;
-  background-color: #3c3c3c; /* Second level panel color */
-  color: #9d9d9d; /* Second level text color */
 }
 
 .panel-second-list>ul>li>a:hover {
-  background-color: #555555 !important; /* Second level hover panel color */
-  color: #ffffff; /* hover text color */
   font-weight: bold;
 }
 
@@ -100,7 +97,6 @@ canvas {
   display: block;
   padding: 10px 15px 10px 15px;
   text-decoration: none;
-  background-color: #6f6f6f; /* third level panel color */
   color: #9d9d9d; /* third level text color */
 }
 

@@ -4,18 +4,20 @@ model = new Tautology.Model(BendyStraw,draw.canvas);
 
 three = new UI.Three(BendyStraw.demoName);
 
+// var addCollpsableFolder = function()
 
-var addSlider = function(parameter, params, id){
-	$('<input type="range">').appendTo($('#'+id))
+
+var addSlider = function(name, params, containerID){
+	$('<input type="range">').appendTo($('#'+containerID))
 		.attr({
-			id: parameter,
-			min:params[parameter]['min']*2000,
-			max:params[parameter]['max']*2000,
-			value:params[parameter]['val']*2000
+			id: name,
+			min:params[name]['min']*2000,
+			max:params[name]['max']*2000,
+			value:params[name]['val']*2000
 		}).on('input change', function(e){
-			params[parameter]['val'] = $(this).val()/2000;
+			params[name]['val'] = $(this).val()/2000;
 			model.geom.update();
-		}).before('<br>').before(parameter);
+		}).wrap('<li>').before(name);
 }
 
 var addSliders = function(params, id){
@@ -26,6 +28,8 @@ var addSliders = function(params, id){
 
 
 model.updateScene(three.scene);
+
+addSliders(model.geom.param, 'parameters');
 
 //Loads the correct sidebar on window load,
 //collapses the sidebar on window resize.

@@ -20,21 +20,21 @@ UI.Two = function(elementName, width, height){
 			'height': height
 		});
 		this.resize(width, height);		
-	}
-
-
-	
+	}	
 
 	$('.canvas-container').ruler({
 		showCrosshair : false
 	});
 
-	// $('.canvas-container').css({'padding' : 0, 'position' : 'absolute'});
-
 	this.canvas.add(new fabric.Circle({
 		radius: 20, fill: 'green', left: 100, top: 100
 	}));
 
+	$(window).resize(function(){
+		var width = $('#'+elementName).width(),
+			height = $('#'+elementName).height();
+		// this.canvas.resize(width, height);
+	}.bind(this));
 };
 
 UI.Two.prototype.constructor = UI.Two;
