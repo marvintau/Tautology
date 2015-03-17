@@ -61,3 +61,6 @@ $(function() {
         element.addClass('active');
     }
 });
+
+$("#demo-rating").change(function(){ $("#demo-rating-source").val(this.value)} );
+$("#demo-rating-source").on('input change', function(){ $("#demo-rating").val(this.value)} );
