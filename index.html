@@ -5,108 +5,90 @@
 <!--[if (gte IE 9)|!(IE)]><!-->
 <!--<![endif]-->
 <html lang="en">
-
-<head>
-	<meta charset="utf-8">
-	<title>Tautology Framework</title>
-	<link rel="stylesheet" href="./bootstrap.min.css">
-	<link rel="stylesheet" href="./navbar.css">
-	<link rel="stylesheet" href="./midnight-blue.css">
-	<link rel="stylesheet" href='./ruler.css'>
-</head>
-<body>
-
-<!-- <div id="wrapper" class="wrapper"> -->
-<body>
-
-  <div id="wrapper" class="wrapper">
-    <!-- Navigation -->
-      <div class="collapse navbar-collapse">
-        <ul class="nav navbar-nav side-nav-left">
-          <!-- 产品目录 -->
-          <li>
-            <a href="#" data-toggle="collapse" data-target="#product-catalogue">Product Types</a>
-            <div id="product-catalogue" class="collapse panel-second-list">
-              <ul>
-                <li>
-<div class="input-group input-group-html5"><span class="input-group-addon">那啥</span><span class="input-group-addon addon-range"><input type="range" id="demo-rating-source" name="demo-rating-source" min="0" max="5"></span><input type="text" id="demo-rating" class="form-control" name="Demo[rating]" placeholder="Rate (0 - 5)..."></div>
-                </li>
-                <li>
-                  <a href="#"> Disposal Cup </a>
-                </li>
-                <li>
-                  <a href="#"> Others... </a>
-                </li>
-              </ul>
-            </div>
-          </li>
-          <!-- 产品模型 -->
-          <li>
-            <a href="#" data-toggle="collapse" data-target="#product-model">Parameters</a>
-            <div id="product-model" class="collapse panel-second-list">
-              <ul id='parameters'>
-              </ul>
-            </div>
-          </li>
-        </ul>
-      </div>
-
-
-    <div id="page-wrapper" class="page-wrapper">
-
-      <div class="container-fluid">
-
-        <!-- Page Heading -->
-        <div class="row">
-          <div class="col-lg-12">
-            <div id="three-viewport" class="panel panel-default"></div>
-
-            <div id="viewContainer" height="200" class="panel panel-default">
-              <div id="scrollView">
-                <canvas id="two-viewport" class="container-fluid"></canvas>
+  <head>
+    <meta charset="utf-8">
+    <title>Tautology Framework</title>
+    <link rel="stylesheet" href="./bootstrap.min.css">
+    <link rel="stylesheet" href="./navbar.css">
+    <link rel="stylesheet" href="./range-input.css">
+    <link rel="stylesheet" href='./ruler.css'>
+  </head>
+  <body>
+    <!-- <div id="wrapper" class="wrapper"> -->
+    <body>
+      <div id="wrapper" class="wrapper">
+        <!-- Navigation -->
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav side-nav-left">
+            <!-- 产品目录 -->
+            <li>
+              <a href="#" data-toggle="collapse" data-target="#product-catalogue">Product Types</a>
+              <div id="product-catalogue" class="collapse panel-second-list">
+                <ul>
+                  <li>
+<!--                     <div class="input-group input-group-html5">
+                      <span class="input-group-addon">那啥</span>
+                      <span class="input-group-addon addon-range">
+                        <input type="range" id="demo-rating-source" name="demo-rating-source" min="0" max="5">
+                      </span>
+                      <input type="text" id="demo-rating" class="form-control" name="Demo[rating]" placeholder="Rate (0 - 5)...">
+                    </div>
+ -->                  </li>
+                  <li>
+                    <a href="#"> Disposal Cup </a>
+                  </li>
+                  <li>
+                    <a href="#"> Others... </a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <!-- 产品模型 -->
+            <li>
+              <a href="#" data-toggle="collapse" data-target="#product-model">Parameters</a>
+              <div id="product-model" class="collapse panel-second-list">
+                <ul id='parameters'>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div id="page-wrapper" class="page-wrapper">
+          <div class="container-fluid">
+            <!-- Page Heading -->
+            <div class="row">
+              <div class="col-lg-12">
+                <div id="three-viewport" class="panel panel-default"></div>
+                <div id="viewContainer" height="200" class="panel panel-default">
+                  <div id="scrollView">
+                    <canvas id="two-viewport" class="container-fluid"></canvas>
+                  </div>
+                </div>
+                <p></p>
               </div>
             </div>
-            <p></p>
-
+            <!-- /.row -->
           </div>
+          <!-- /.container-fluid -->
         </div>
-        <!-- /.row -->
-
+        <!-- /#page-wrapper -->
       </div>
-      <!-- /.container-fluid -->
-    </div>
-    <!-- /#page-wrapper -->
-
-  </div>
-
-
-<!-- </div> -->
-
-		
-</body>
-<script src="./jquery-1.11.2.min.js"></script>
-<script src="./jquery.nav.min.js"></script>
-<script src="./bootstrap.min.js"></script>
-
-<script src="./three.min.js"></script>
-<script src="./tween.min.js"></script>
-<script src='./TrackballControl.min.js'></script>
-
-<script src="./Tautology.min.js"></script>
-
-<script src="./UI.js"></script>
-<script src="./UI.Three.js"></script>
-<script src="./UI.Two.js"></script>
-
-<script src="./models.js"></script>
-
-
-<script src='./fabric.min.js'></script>
-<script src='./modernizr.js'></script>
-<script src='./ruler.js'></script>
-
-
-
-<script src="./Tests.js"></script>
-
-</html>
+      <!-- </div> -->
+      
+    </body>
+    <script src="./jquery-1.11.2.min.js"></script>
+    <script src="./jquery.nav.min.js"></script>
+    <script src="./bootstrap.min.js"></script>
+    <script src="./three.min.js"></script>
+    <script src="./tween.min.js"></script>
+    <script src='./TrackballControl.min.js'></script>
+    <script src="./Tautology.min.js"></script>
+    <script src="./UI.js"></script>
+    <script src="./UI.Three.js"></script>
+    <script src="./UI.Two.js"></script>
+    <script src="./models.js"></script>
+    <script src='./fabric.min.js'></script>
+    <script src='./modernizr.js'></script>
+    <script src='./ruler.js'></script>
+    <script src="./Tests.js"></script>
+  </html>

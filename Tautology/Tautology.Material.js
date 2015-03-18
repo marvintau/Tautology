@@ -2,16 +2,16 @@ Tautology.Material = function(param, texture){
 	// Get the parameters out of the uniformed parameter data structure
 	// subsequent modification of the parameter data structure will not
 	// involve further memory operation.
-	this.param = {};
+	this.param = param;
 	this.texture = texture;
 	this.materials = {};
-	this.initMaterial(param);
-	this.updateMaterial(param);
+	this.init();
+	this.update();
 }
 
 Tautology.Material.prototype.constructor = Tautology.Material;
 
-Tautology.Material.prototype.initMaterial = function(param){
+Tautology.Material.prototype.init = function(){
 
 	var type = function(type){
 		return ({
@@ -23,28 +23,28 @@ Tautology.Material.prototype.initMaterial = function(param){
 	};
 
 	(this.materials.outside) && this.materials.outside.dispose();
-	this.materials.outside = new THREE[type(param.mainType)]({
+	this.materials.outside = new THREE[type(this.param.mainType)]({
 		map : this.texture ? this.texture : null,
+		opacity : this.param.opacity.val,
 		transparent: true,
 		side: THREE.FrontSide,
 		_needsUpdate: true
 	});
 
 	(this.materials.inside) && this.materials.inside.dispose();
-	this.materials.inside = new THREE[type(param.mainType)]({
+	this.materials.inside = new THREE[type(this.param.mainType)]({
 		map : this.texture ? this.texture : null,
+		opacity : this.param.opacity.val,
 		transparent: true,
 		side: THREE.BackSide,
 		_needsUpdate: true
 	});
 };
 
-Tautology.Material.prototype.updateMaterial = function(param){
-	for (key in param) {
-		this.param[key] = param[key].val ? param[key].val : param[key];
-	}
+Tautology.Material.prototype.update = function(){
+	this.materials.outside.color.setHex(this.param.color);
+	this.materials.inside.color.setHex(this.param.color);
 
-	for (key in this.materials){
-		this.materials[key].setValues(this.param);		
-	}
+	this.materials.outside.opacity = this.param.opacity.val;
+	this.materials.inside.opacity = this.param.opacity.val;
 }

@@ -9,10 +9,10 @@ BendyStraw.demoName = 'three-viewport';
 // directly defined by user should be mentioned at first.
 BendyStraw.param = {};
 BendyStraw.param.geom = {
-	bellowLength: {min:0.75, max:1.5, val:0.8, name: '弯折单节长度'},
+	bellowLength: {min:0.75, max:1.5, val:0.8, name: '弯折长度'},
 	radius: {min: 2, max:4, val:3, name: '吸管半径'},
-	stubLength : {min:10, max:20, val:10, name : '管嘴半径'},
-	bodyLength : {min:45, max:55, val:45, name : '管身半径'},
+	stubLength : {min:10, max:20, val:10, name : '管嘴长度'},
+	bodyLength : {min:45, max:55, val:45, name : '管身长度'},
 	lengthAngle: {min:0, max: Math.PI/50, val:Math.PI/80, name : '弯折角度'}
 };
 
@@ -21,7 +21,7 @@ BendyStraw.param.geom = {
 BendyStraw.param.material = {
 	mainType: 'phong',
 	color : 0xf0f0f0,
-	opacity : {val: 0.5, min:0., max:1.}
+	opacity : {val: 0.5, min:0., max:1., name: '透明度'}
 }
 
 

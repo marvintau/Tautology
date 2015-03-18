@@ -7,60 +7,38 @@ three = new UI.Three(BendyStraw.demoName);
 // var addCollpsableFolder = function()
 
 
-var addSlider = function(name, params, containerID){
-	$('<input type="range">').appendTo($('#'+containerID))
-		.attr({
-			id: name,
-			min:params[name]['min']*2000,
-			max:params[name]['max']*2000,
-			value:params[name]['val']*2000
-		}).on('input change', function(e){
-			params[name]['val'] = $(this).val()/2000;
-			model.geom.update();
-		}).wrap('<li>').before(name);
+var addSlider = function(key, params, containerID, who_updates, method){
+	$('<li>').appendTo($('#'+containerID)).append(
+        '<div class="input-group input-group-html5">'+
+            '<span class="input-group-addon">'+params[key].name+'</span>'+
+            '<span class="input-group-addon addon-range">'+
+            '<input type="range" id="'+key+'-range" name="'+key+'-range" min="'+params[key].min*2000+'" max="'+params[key].max*2000+'"></span>'+
+            '<input type="text" id="'+key+'-text" class="form-control" name="'+key+'-text">'+
+        '</div>');
+
+    $('#'+key+'-text').val($('#'+key+'-range').val()/2000);
+    $('#'+key+'-text').on('change', function(){
+
+        $('#'+key+'-range').val(this.value*2000);
+        who_updates.update();
+    })
+
+    $('#'+key+'-range').on('input change', function(){
+        $('#'+key+'-text').val(this.value/2000);
+        params[key].val = this.value/2000;
+        // console.log(who_updates['init']);
+        who_updates.update();
+    })
 }
 
-var addSliders = function(params, id){
+var addSliders = function(params, id, who_updates){
 	Object.keys(params)
-		.filter(function(p){return params[p]['val']})
-		.forEach(function(p){addSlider(p, params, id)});
+		.filter(function(p){console.log(params[p]); return params[p]['val']})
+		.forEach(function(p){addSlider(p, params, id, who_updates)});
 }
 
 
 model.updateScene(three.scene);
 
-addSliders(model.geom.param, 'parameters');
-
-//Loads the correct sidebar on window load,
-//collapses the sidebar on window resize.
-// Sets the min-height of #page-wrapper to window size
-$(function() {
-    $(window).bind("load resize", function() {
-        topOffset = 50;
-        width = (this.window.innerWidth > 0) ? this.window.innerWidth : this.screen.width;
-        if (width < 768) {
-            $('div.navbar-collapse').addClass('collapse');
-            topOffset = 100; // 2-row-menu
-        } else {
-            $('div.navbar-collapse').removeClass('collapse');
-        }
-
-        height = ((this.window.innerHeight > 0) ? this.window.innerHeight : this.screen.height) - 1;
-        height = height - topOffset;
-        if (height < 1) height = 1;
-        if (height > topOffset) {
-            $("#page-wrapper").css("min-height", (height) + "px");
-        }
-    });
-
-    var url = window.location;
-    var element = $('ul.nav a').filter(function() {
-        return this.href == url || url.href.indexOf(this.href) == 0;
-    }).addClass('active').parent().parent().addClass('in').parent();
-    if (element.is('li')) {
-        element.addClass('active');
-    }
-});
-
-$("#demo-rating").change(function(){ $("#demo-rating-source").val(this.value)} );
-$("#demo-rating-source").on('input change', function(){ $("#demo-rating").val(this.value)} );
+// addSliders(model.geom.param, 'parameters', model.geom);
+addSliders(model.material.param, 'parameters', model.material, 'update');
