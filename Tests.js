@@ -6,39 +6,41 @@ three = new UI.Three(BendyStraw.demoName);
 
 // var addCollpsableFolder = function()
 
+var addColorPicker = function(){
 
-var addSlider = function(key, params, containerID, who_updates, method){
+}
+
+var addSlider = function(containerID, changedParam, who_updates){
 	$('<li>').appendTo($('#'+containerID)).append(
         '<div class="input-group input-group-html5">'+
-            '<span class="input-group-addon">'+params[key].name+'</span>'+
+            '<span class="input-group-addon">'+changedParam.name+'</span>'+
             '<span class="input-group-addon addon-range">'+
-            '<input type="range" id="'+key+'-range" name="'+key+'-range" min="'+params[key].min*2000+'" max="'+params[key].max*2000+'"></span>'+
-            '<input type="text" id="'+key+'-text" class="form-control" name="'+key+'-text">'+
+            '<input type="range" id="'+changedParam.name+'-range" name="'+changedParam.name+'-range" min="'+changedParam.min*2000+'" max="'+changedParam.max*2000+'" value="'+changedParam.val*2000+'"></span>'+
+            '<input type="text" id="'+changedParam.name+'-text" class="form-control" name="'+changedParam.name+'-text">'+
         '</div>');
 
-    $('#'+key+'-text').val($('#'+key+'-range').val()/2000);
-    $('#'+key+'-text').on('change', function(){
+    $('#'+changedParam.name+'-text').val($('#'+changedParam.name+'-range').val()/2000);
 
-        $('#'+key+'-range').val(this.value*2000);
+    $('#'+changedParam.name+'-text').on('change', function(){
+        $('#'+changedParam.name+'-range').val(this.value*2000);
         who_updates.update();
     })
 
-    $('#'+key+'-range').on('input change', function(){
-        $('#'+key+'-text').val(this.value/2000);
-        params[key].val = this.value/2000;
-        // console.log(who_updates['init']);
+    $('#'+changedParam.name+'-range').on('input change', function(){
+        $('#'+changedParam.name+'-text').val(this.value/2000);
+        changedParam.val = this.value/2000;
         who_updates.update();
     })
 }
 
-var addSliders = function(params, id, who_updates){
+var addSliders = function(containerID, params, who_updates){
 	Object.keys(params)
-		.filter(function(p){console.log(params[p]); return params[p]['val']})
-		.forEach(function(p){addSlider(p, params, id, who_updates)});
+		.filter(function(p){return params[p]['val']})
+		.forEach(function(p){console.log(params[p]); addSlider(containerID, params[p], who_updates)});
 }
 
 
 model.updateScene(three.scene);
 
-// addSliders(model.geom.param, 'parameters', model.geom);
-addSliders(model.material.param, 'parameters', model.material, 'update');
+addSliders('parameters', model.geom.param, model.geom);
+addSliders('parameters', model.material.param, model.material);
