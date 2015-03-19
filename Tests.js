@@ -1,11 +1,17 @@
-draw = new UI.Two(BendyStraw.canvasName);
+draw = new UI.Two('two-viewport');
 
-model = new Tautology.Model(BendyStraw,draw.canvas);
+model = new Tautology.Model(PlainStraw, draw.canvas);
 
-three = new UI.Three(BendyStraw.demoName);
+three = new UI.Three('three-viewport');
+
+
+var modelSelector = function(containerID, model){
+    $('<li>').appendTo($('#'+containerID)).append($('<div id="model-selector" class="btn-group" data-toggle="buttons"></div>'));
+    
+}
 
 var picker = function(containerID, changedParam, who_updates){
-    $('<li>').appendTo($('#'+containerID)).append($('<a id='+changedParam.name+'-color href=# class=btn btn-primary cp-background>'+changedParam.name+'</a>'));
+    $('<li>').appendTo($('#'+containerID)).append($('<button id='+changedParam.name+'-color href=# class=btn btn-primary>'+changedParam.name+'</button>'));
     $('#'+changedParam.name+'-color').colorPicker({
         colorformat : '0x',
         alignment : 'br',

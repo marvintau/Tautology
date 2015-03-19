@@ -1,8 +1,81 @@
+var models = {
+	PlainStraw : PlainStraw,
+	BendyStraw : BendyStraw
+};
+
+var PlainStraw = {};
+
+PlainStraw.param = {};
+PlainStraw.param.geom = {
+	length : {min:45, max:55, val:45, name : '管身长度', type: 'slider'},
+	radius: {min: 2, max:4, val:3, name: '吸管半径', type: 'slider'}
+}
+
+PlainStraw.param.material = {
+	mainType: 'phong',
+	color : {val: 0xf0f0f0, type: 'picker', name: '吸管颜色'},
+	opacity : {val: 0.5, min:0., max:1., name: '透明度', type: 'slider'}
+}
+
+PlainStraw.shape = [2, 60];
+
+PlainStraw.regions = {
+	all : ['all', 'all'],
+	left : [ 0, 'all' ],
+	right : [ -1, 'all']
+};
+
+PlainStraw.manuever = [
+	{
+		command : 'tran',
+		region : 'left',
+		callback : function(){
+			this.v.set(this.param.length.val, 0, 0);
+		}
+	},
+	{
+		command : 'tran',
+		region : 'right',
+		callback : function(){
+			this.v.set(-this.param.length.val, 0, 0);
+		}
+	},
+	{
+		command : 'radiate',
+		region : 'all',
+		dimension: 1,
+		callback : function(){
+			this.v.set(0, 0, this.param.radius.val);
+			this.axis.set(1, 0, 0);
+		}
+	},
+	{
+		command : 'rot',
+		region : 'all',
+		callback : function () {
+			this.r.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI);
+		}
+	},
+
+	{
+		command : 'uniformRemap',
+		region : 'all',
+		dimension : 1,
+		callback : function () {
+		}
+	},
+	{
+		command : 'uniformRemap',
+		region : 'all',
+		dimension : 0,
+		callback : function () {
+		}
+	}
+
+];
+
+
 var BendyStraw = {};
-
-BendyStraw.canvasName = 'two-viewport';
-
-BendyStraw.demoName = 'three-viewport';
 
 // Adjustable parameters should include the min/max value and
 // current value that modified by slider. The parameters that
@@ -10,7 +83,7 @@ BendyStraw.demoName = 'three-viewport';
 BendyStraw.param = {};
 BendyStraw.param.geom = {
 	bellowLength: {min:0.75, max:1.5, val:0.8, name: '弯折长度', type: 'slider'},
-	radius: {min: 2, max:4, val:3, name: '吸管半径'},
+	radius: {min: 2, max:4, val:3, name: '吸管半径', type: 'slider'},
 	stubLength : {min:10, max:20, val:10, name : '管嘴长度', type: 'slider'},
 	bodyLength : {min:45, max:55, val:45, name : '管身长度', type: 'slider'},
 	lengthAngle: {min:0, max: Math.PI/50, val:Math.PI/80, name : '弯折角度', type: 'slider'}

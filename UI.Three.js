@@ -54,6 +54,8 @@ UI.Three.prototype.initScene = function(width, height){
 	this.camera = new THREE.PerspectiveCamera( 20, width / height, 10, 1000 );
 	this.camera.position.set(0, 0, 200);
 
+	var ambient = new THREE.AmbientLight(0x202020);
+
 	var light = new THREE.DirectionalLight( 0xe0e0e0, 1 );
     	light.position = this.camera.position;
     
@@ -61,6 +63,7 @@ UI.Three.prototype.initScene = function(width, height){
 
 	this.scene = new THREE.Scene();
 	this.scene.add(this.camera);
+	this.scene.add(ambient);
 
 }
 
