@@ -1,8 +1,3 @@
-var models = {
-	PlainStraw : PlainStraw,
-	BendyStraw : BendyStraw
-};
-
 var PlainStraw = {};
 
 PlainStraw.param = {};
@@ -189,5 +184,9 @@ BendyStraw.manuever = [
 			this.v.set(-30, 0, 0);
 		}
 	},
-
 ];
+
+var models = {
+	PlainStraw : {name : '直吸管', model: PlainStraw},
+	BendyStraw : {name : '弯吸管', model : BendyStraw}
+};

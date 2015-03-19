@@ -9,14 +9,15 @@ Tautology.ModelManager = function(models, canvas){
 	}.bind(this));
 
 	for (key in models){
-		this.models[key] = new Tautology.Model(models[key], this.texture);
+		console.log(models[key].model);
+		this.models[key] = new Tautology.Model(models[key].model, this.texture);
 	}
 	this.currentModelKey = (Object.keys(models))[0];
 }
 
-Tautology.Model.prototype.constructor = Tautology.Model;
+Tautology.ModelManager.prototype.constructor = Tautology.Model;
 
-Tautology.Model.prototype.update = function(scene) {
+Tautology.ModelManager.prototype.update = function(scene) {
 	for(var i = 0; i < scene.children.length; i++){
 		if(scene.children[i].type == "Mesh"){
 			scene.remove(scene.children[i]);

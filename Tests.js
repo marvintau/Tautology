@@ -1,13 +1,13 @@
 draw = new UI.Two('two-viewport');
-
-model = new Tautology.Model(PlainStraw, draw.canvas);
-
 three = new UI.Three('three-viewport');
 
+modelManager = new Tautology.ModelManager(models, draw.canvas);
+
+modelManager.update(three.scene);
 
 var modelSelector = function(containerID, model){
     $('<li>').appendTo($('#'+containerID)).append($('<div id="model-selector" class="btn-group" data-toggle="buttons"></div>'));
-    
+    $('#model-selector').append(Object.keys(model).map())
 }
 
 var picker = function(containerID, changedParam, who_updates){
@@ -55,7 +55,7 @@ var addSliders = function(containerID, params, who_updates){
 }
 
 
-model.updateScene(three.scene);
+// model.updateScene(three.scene);
 // $(document).
-addSliders('parameters', model.geom.param, model.geom);
-addSliders('parameters', model.material.param, model.material);
+// addSliders('parameters', model.geom.param, model.geom);
+// addSliders('parameters', model.material.param, model.material);
