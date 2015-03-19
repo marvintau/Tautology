@@ -42,8 +42,9 @@ Tautology.Material.prototype.init = function(){
 };
 
 Tautology.Material.prototype.update = function(){
-	this.materials.outside.color.setHex(this.param.color);
-	this.materials.inside.color.setHex(this.param.color);
+	console.log(this.param.color.val);
+	this.materials.outside.color.setHex(this.param.color.val);
+	this.materials.inside.color.setHex(this.param.color.val);
 
 	this.materials.outside.opacity = this.param.opacity.val;
 	this.materials.inside.opacity = this.param.opacity.val;

@@ -4,13 +4,19 @@ model = new Tautology.Model(BendyStraw,draw.canvas);
 
 three = new UI.Three(BendyStraw.demoName);
 
-// var addCollpsableFolder = function()
-
-var addColorPicker = function(){
-
+var picker = function(containerID, changedParam, who_updates){
+    $('<li>').appendTo($('#'+containerID)).append($('<a id='+changedParam.name+'-color href=# class=btn btn-primary cp-background>'+changedParam.name+'</a>'));
+    $('#'+changedParam.name+'-color').colorPicker({
+        colorformat : '0x',
+        alignment : 'br',
+        onSelect : function(ui, color){
+            changedParam.val = color;
+            who_updates.update();
+        }
+    });
 }
 
-var addSlider = function(containerID, changedParam, who_updates){
+var slider = function(containerID, changedParam, who_updates){
 	$('<li>').appendTo($('#'+containerID)).append(
         '<div class="input-group input-group-html5">'+
             '<span class="input-group-addon">'+changedParam.name+'</span>'+
@@ -35,12 +41,15 @@ var addSlider = function(containerID, changedParam, who_updates){
 
 var addSliders = function(containerID, params, who_updates){
 	Object.keys(params)
-		.filter(function(p){return params[p]['val']})
-		.forEach(function(p){console.log(params[p]); addSlider(containerID, params[p], who_updates)});
+		.forEach(function(p){
+            console.log(params[p]);
+            if(params[p].type)
+                this[params[p].type](containerID, params[p], who_updates);
+        });
 }
 
 
 model.updateScene(three.scene);
-
+// $(document).
 addSliders('parameters', model.geom.param, model.geom);
 addSliders('parameters', model.material.param, model.material);
