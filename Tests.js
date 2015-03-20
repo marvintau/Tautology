@@ -1,17 +1,33 @@
 draw = new UI.Two('two-viewport');
 three = new UI.Three('three-viewport');
 
-modelManager = new Tautology.ModelManager(models, draw.canvas);
+modelManager = new Tautology.ModelManager(models, material, draw.canvas);
 
 modelManager.update(three.scene);
 
-var modelSelector = function(containerID, model){
+var modelSelector = function(containerID, modifierContainerID, models, who_reinits){
     $('<li>').appendTo($('#'+containerID)).append($('<div id="model-selector" class="btn-group" data-toggle="buttons"></div>'));
-    $('#model-selector').append(Object.keys(model).map())
+    Object.keys(models).forEach(function(key){
+        $('<label id='+ key +' class="btn btn-default">')
+            .appendTo($('#model-selector'))
+            .append($('<input type="radio" autocomplete="off">'))
+            .append($('<span>'+models[key].name+'</span>'));
+
+        $('#'+key).on('click', function(){
+            modelManager.currentModelKey = key;
+            modelManager.update(three.scene);
+            console.log(modelManager.models[key].geom.param);
+            $('#'+modifierContainerID).empty();
+            addModifiers(modifierContainerID, modelManager.models[key].geom.param, modelManager.models[key].geom);
+            addModifiers(modifierContainerID, modelManager.material.param, modelManager.material);
+        });
+
+    });
+
 }
 
 var picker = function(containerID, changedParam, who_updates){
-    $('<li>').appendTo($('#'+containerID)).append($('<button id='+changedParam.name+'-color href=# class=btn btn-primary>'+changedParam.name+'</button>'));
+    $('<li>').appendTo($('#'+containerID)).append($('<button id='+changedParam.name+'-color href=# class=btn btn-default>'+changedParam.name+'</button>'));
     $('#'+changedParam.name+'-color').colorPicker({
         colorformat : '0x',
         alignment : 'br',
@@ -35,6 +51,7 @@ var slider = function(containerID, changedParam, who_updates){
 
     $('#'+changedParam.name+'-text').on('change', function(){
         $('#'+changedParam.name+'-range').val(this.value*2000);
+        changedParam.val = this.value;
         who_updates.update();
     })
 
@@ -45,17 +62,13 @@ var slider = function(containerID, changedParam, who_updates){
     })
 }
 
-var addSliders = function(containerID, params, who_updates){
+var addModifiers = function(containerID, params, who_updates){
+    
 	Object.keys(params)
 		.forEach(function(p){
-            console.log(params[p]);
             if(params[p].type)
                 this[params[p].type](containerID, params[p], who_updates);
         });
 }
 
-
-// model.updateScene(three.scene);
-// $(document).
-// addSliders('parameters', model.geom.param, model.geom);
-// addSliders('parameters', model.material.param, model.material);
+modelSelector('type-list', 'parameters', models);

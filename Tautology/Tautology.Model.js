@@ -1,13 +1,12 @@
-Tautology.Model = function(model, texture){
+Tautology.Model = function(model, material, texture){
 	this.model = model;
 
 	this.texture = texture;
 
-	this.geom = new Tautology.Geometry(this.model.param.geom, this.model.shape, this.model.regions, this.model.manuever);
-	this.material = new Tautology.Material(this.model.param.material, this.texture);
+	this.geom = new Tautology.Geometry(this.model.param, this.model.shape, this.model.regions, this.model.manuever);
 	this.meshes = new THREE.Object3D();
-	this.meshes.add(new THREE.Mesh(this.geom.geom, this.material.materials.outside));
-	this.meshes.add(new THREE.Mesh(this.geom.geom, this.material.materials.inside));
+	this.meshes.add(new THREE.Mesh(this.geom.geom, material.materials.outside));
+	this.meshes.add(new THREE.Mesh(this.geom.geom, material.materials.inside));
 }
 
 Tautology.Model.prototype.constructor = Tautology.Model;

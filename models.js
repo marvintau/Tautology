@@ -1,15 +1,13 @@
-var PlainStraw = {};
-
-PlainStraw.param = {};
-PlainStraw.param.geom = {
-	length : {min:45, max:55, val:45, name : '管身长度', type: 'slider'},
-	radius: {min: 2, max:4, val:3, name: '吸管半径', type: 'slider'}
+var material = {
+	mainType: 'phong',
+	opacity : {val: 0.5, min:0., max:1., name: '透明度', type: 'slider'}
 }
 
-PlainStraw.param.material = {
-	mainType: 'phong',
-	color : {val: 0xf0f0f0, type: 'picker', name: '吸管颜色'},
-	opacity : {val: 0.5, min:0., max:1., name: '透明度', type: 'slider'}
+var PlainStraw = {};
+
+PlainStraw.param = {
+	length : {min:45, max:55, val:45, name : '管身长度', type: 'slider'},
+	radius: {min: 2, max:4, val:3, name: '吸管半径', type: 'slider'}
 }
 
 PlainStraw.shape = [2, 60];
@@ -75,23 +73,13 @@ var BendyStraw = {};
 // Adjustable parameters should include the min/max value and
 // current value that modified by slider. The parameters that
 // directly defined by user should be mentioned at first.
-BendyStraw.param = {};
-BendyStraw.param.geom = {
+BendyStraw.param = {
 	bellowLength: {min:0.75, max:1.5, val:0.8, name: '弯折长度', type: 'slider'},
 	radius: {min: 2, max:4, val:3, name: '吸管半径', type: 'slider'},
 	stubLength : {min:10, max:20, val:10, name : '管嘴长度', type: 'slider'},
 	bodyLength : {min:45, max:55, val:45, name : '管身长度', type: 'slider'},
 	lengthAngle: {min:0, max: Math.PI/50, val:Math.PI/80, name : '弯折角度', type: 'slider'}
 };
-
-// Define the shape of the vertex matrix, make sure to define
-// the getter "shape".
-BendyStraw.param.material = {
-	mainType: 'phong',
-	color : {val: 0xf0f0f0, type: 'picker', name: '吸管颜色'},
-	opacity : {val: 0.5, min:0., max:1., name: '透明度', type: 'slider'}
-}
-
 
 BendyStraw.shape = [23, 60];
 
