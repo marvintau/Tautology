@@ -68,7 +68,6 @@ Tautology.Geometry.prototype.update = function(){
 	this.geom.verticesNeedUpdate = true;
 	this.geom.uvsNeedUpdate = true;
 	this.geom.computeFaceNormals();
-	// this.geom.computeVertexNormals();
 	this.geom.normalsNeedUpdate = true;
 
 }

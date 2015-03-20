@@ -39,6 +39,10 @@ UI.Two = function(elementName, width, height){
 
 UI.Two.prototype.constructor = UI.Two;
 
+UI.Two.prototype.setBackgroundColor = function(){
+
+}
+
 /**
  * resize the canvas according to the resizing of geometric model 
  * @param  {Number} width
@@ -64,10 +68,14 @@ UI.Two.prototype.resize = function(width, height){
  * @param {String} url
  */
 UI.Two.prototype.addImage = function(url){
+    console.log(url);	
     fabric.Image.fromURL(url, function(img) {
-	    if(img.height > this.canvas.height){
-	        img.scale(img.height/this.canvas.height * 0.1);
-	    }
+
+	    // if(img.height > this.canvas.height){
+	    //     img.scale(img.height/this.canvas.height * 0.1);
+	    // }
+	    console.log(img);
+	    img._element.crossOrigin = "Anonymous";
 	    this.canvas.add(img);
     }.bind(this)); 
 };

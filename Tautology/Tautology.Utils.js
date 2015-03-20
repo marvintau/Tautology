@@ -94,7 +94,7 @@ Array.grid = function(shape){
  * @return {Array}   Array to be returned
  */
 Array.prototype.partition = function(n){
-	return Array.range(Math.ceil(this.length/n)).map(function(e){return e*n})
+	return Array.range(~~this.length/n).map(function(e){return e*n})
 				// starting point of each slice, slice including not-enough items will be kept also.
 				.map(function(e){return this.slice(e, e+n)}, this)
 }

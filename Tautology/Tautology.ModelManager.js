@@ -13,12 +13,12 @@ Tautology.ModelManager = function(models, materialParam, canvas){
 	for (key in models){
 		this.models[key] = new Tautology.Model(models[key].model, this.material, this.texture);
 	}
-	this.currentModelKey = (Object.keys(models))[0];
 }
 
 Tautology.ModelManager.prototype.constructor = Tautology.Model;
 
-Tautology.ModelManager.prototype.update = function(scene) {
+Tautology.ModelManager.prototype.update = function(key, scene) {
+
 	for(var i = 0; i < scene.children.length; i++){
 		if(scene.children[i].type == "Object3D"){
 			console.log('found');
@@ -26,5 +26,5 @@ Tautology.ModelManager.prototype.update = function(scene) {
 		}
 	}
 
-	scene.add(this.models[this.currentModelKey].meshes);
+	scene.add(this.models[key].meshes);
 }

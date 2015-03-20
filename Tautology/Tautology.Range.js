@@ -32,6 +32,6 @@ Tautology.Range.prototype.interval = function(length){
 	var start = this.neg(this.range[0], length),
 		end = this.neg(this.range[1], length),
 		step = this.range[2] ? this.range[2] : 1;
-	return Array.range(Math.ceil((end - start + 1)/step))
+	return Array.range(~~(end - start + 1)/step)
 				.map(function(e){return e*step + start});
 }
