@@ -1,6 +1,6 @@
 Tautology.Transform = function(geom, transSpec){
-	this.param = geom.param;
-	this.shape = geom.shape;
+	this.param = geom.model.param;
+	this.shape = geom.model.shape;
 	this.labels = geom.labels;
 	this.vertices = geom.vertices;
 	this.texels = geom.texels;
@@ -82,7 +82,6 @@ Tautology.Transform.prototype.bend = function(settingCallback,dimension){
 }
 
 Tautology.Transform.prototype.uniformRemap = function(settingCallback, dimension){
-	this.step = 0;
 	this.dim = dimension;
 	this.settingCallback = settingCallback;
 

@@ -68,25 +68,38 @@ UI.Controller.prototype.modal = function(param){
     $('#'+param.id+'.modal-body').append(param.content);
 }
 
-UI.Controller.prototype.slider = function(containerID, changedParam, whoever_updates){
-	$('<li>').appendTo($('#'+containerID)).append(
-        '<div class="input-group input-group-html5">'+
-            '<span class="input-group-addon">'+changedParam.name+'</span>'+
+UI.Controller.prototype.slider = function(param, containerID){
+    $('<li>').appendTo($('#'+containerID)).append(
+        '<div id="'+param.name+'" class="input-group input-group-html5">'+
+            '<span class="input-group-addon">'+param.name+'</span>'+
             '<span class="input-group-addon addon-range">'+
-            '<input type="range" id="'+changedParam.name+'-range" name="'+changedParam.name+'-range" min="'+changedParam.min*2000+'" max="'+changedParam.max*2000+'" value="'+changedParam.val*2000+'"></span>'+
-            '<input type="text" id="'+changedParam.name+'-text" class="form-control" name="'+changedParam.name+'-text">'+
+            '<input type="range" id="'+param.name+'-range" name="'+param.name+'-range" min="'+param.min*2000+'" max="'+param.max*2000+'" value="'+param.val*2000+'"></span>'+
+            '<input type="text" id="'+param.name+'-text" class="form-control" name="'+param.name+'-text" value="'+param.val+'"">'+
         '</div>');
+
+    $('#'+param.name+'-text').on('change', function(){
+        $('#'+param.name+'-range').val(this.value*2000);
+    })
+
+    $('#'+param.name+'-range').on('input change', function(){
+        $('#'+param.name+'-text').val(this.value/2000);
+        
+    })
+
+}
+
+UI.Controller.prototype.paramSlider = function(containerID, changedParam, whoever_updates){
+
+    this.slider(changedParam, containerID);
 
     $('#'+changedParam.name+'-text').val($('#'+changedParam.name+'-range').val()/2000);
 
     $('#'+changedParam.name+'-text').on('change', function(){
-        $('#'+changedParam.name+'-range').val(this.value*2000);
         changedParam.val = this.value;
         whoever_updates.update();
     })
 
     $('#'+changedParam.name+'-range').on('input change', function(){
-        $('#'+changedParam.name+'-text').val(this.value/2000);
         changedParam.val = this.value/2000;
         whoever_updates.update();
     })
@@ -95,7 +108,7 @@ UI.Controller.prototype.slider = function(containerID, changedParam, whoever_upd
 UI.Controller.prototype.addModifiers = function(containerID, params, whoever_updates){
 	Object.keys(params).forEach(function(p){
         if(params[p].type)
-        	this[params[p].type](containerID, params[p], whoever_updates);
+        	this.paramSlider(containerID, params[p], whoever_updates);
     }.bind(this));
 }
 
@@ -136,12 +149,45 @@ UI.Controller.prototype.insertImage = function(containerID){
 }
 
 UI.Controller.prototype.insertText = function(containerID){
+    var text = $('<form><div class="form-group">'+
+                    '<textarea id="text" class="form-control"></textarea>'+
+                    '</div>'+
+                '</form>'
+        );
+
     this.modal({
         container : containerID,
         id : 'text',
         buttonText : '插點文字？',
-        title: '想個合適的廣告語吧'
-    })
+        title: '想個合適的廣告語吧',
+        content : text
+    });
+
+    this.slider({
+        name : '字号',
+        min : 10,
+        max : 30,
+        val : 20
+    }, 'text.modal-body');
+
+    this.slider({
+        name : '字符间距',
+        min : -5,
+        max : 5,
+        val : 0
+    }, 'text.modal-body');
+
+    $('#字号').unwrap().wrap('<div class="form-group">');
+
+    $('#字符间距').unwrap().wrap('<div class="form-group">');
+
+    $('#text.modal-body').append('<button id="confirm-text" href=# class="btn btn-primary">插入文字</button>')
+
+    $('#confirm-text').on('click', function(){
+        console.log($('#字号-text').val());
+        this.two.addText($('textarea#text').val(), 'Helvetica normal', parseFloat($('#字号-text').val()), parseFloat($('#字符间距-text').val()));
+        this.two
+    }.bind(this))
 }
 
 UI.Controller.prototype.insertPattern = function(containerID){
@@ -151,6 +197,7 @@ UI.Controller.prototype.insertPattern = function(containerID){
         buttonText : '插點图案？',
         title: '花花绿绿的多好看～'
     })
+
 
 }
 

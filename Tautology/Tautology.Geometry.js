@@ -9,12 +9,10 @@
  * @param {Array}  codes  The list of operations that will seuqentially
  *                        applied on the objects.
  */
-Tautology.Geometry = function(param, shape, regions, manuever){
-	this.param = param;
+Tautology.Geometry = function(model){
+	this.model = model;
 
-	this.shape = shape;
-
-	this.labels = this.shape.reduce(function(perms, dim){
+	this.labels = this.model.shape.reduce(function(perms, dim){
 		return Array.range(dim).outer(perms, function(d, perm){
 			return perm.concat(d);
 		}).flatten();
@@ -24,20 +22,19 @@ Tautology.Geometry = function(param, shape, regions, manuever){
 
 	this.texels = this.labels.map(function(e){return new THREE.Vector2()});
 
-	this.faces = Array.grid(this.shape);
+	this.faces = Array.grid(this.model.shape);
 
 	this.regions = {};
-	for(key in regions){
-		this.regions[key] = new Tautology.Region(regions[key], this.shape);
+	for(key in this.model.regions){
+		this.regions[key] = new Tautology.Region(this.model.regions[key], this.model.shape);
 	}
 
 	this.instructions = [];
-	
-	manuever.forEach(function(step){
+	this.model.manuever.forEach(function(step){
 		this.instructions.push(new Tautology.Transform(this, step));
 	}.bind(this));
 
-	this.init(this.shape);
+	this.init(this.model.shape);
 	this.update();
 }
 

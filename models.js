@@ -6,11 +6,15 @@ var material = {
 var PlainStraw = {};
 
 PlainStraw.param = {
-	length : {min:45, max:55, val:45, name : '管身长度', type: 'slider'},
+	length : {min:55, max:65, val:55, name : '管身长度', type: 'slider'},
 	radius: {min: 2, max:4, val:3, name: '吸管半径', type: 'slider'}
 }
 
 PlainStraw.shape = [2, 60];
+
+PlainStraw.ratio = function(){
+	return new Vector2(this.length.val, this.radius.val*Math.PI*2);
+}
 
 PlainStraw.regions = {
 	all : ['all', 'all'],
@@ -77,7 +81,7 @@ BendyStraw.param = {
 	bellowLength: {min:0.75, max:1.5, val:0.8, name: '弯折长度', type: 'slider'},
 	radius: {min: 2, max:4, val:3, name: '吸管半径', type: 'slider'},
 	stubLength : {min:10, max:20, val:10, name : '管嘴长度', type: 'slider'},
-	bodyLength : {min:45, max:55, val:45, name : '管身长度', type: 'slider'},
+	bodyLength : {min:55, max:75, val:65, name : '管身长度', type: 'slider'},
 	lengthAngle: {min:0, max: Math.PI/50, val:Math.PI/80, name : '弯折角度', type: 'slider'}
 };
 
@@ -89,6 +93,10 @@ BendyStraw.regions = {
 	body : [ -1, 'all'],
 	ridge : [[2, -2, 2], 'all']
 };
+
+BendyStraw.ratio = function(){
+	return new Vector2(this.bodyLength.val+this.bellowLength*22+this.stubLength.val, this.radius.val*Math.PI*2);
+}
 
 BendyStraw.manuever = [
 	{

@@ -5,6 +5,8 @@
 UI.Two = function(elementName, width, height){
 	this.patterns = {};
 
+	this.mapRange = new fabric.Rect
+
 	if(width) {	
 		this.canvas = new fabric.Canvas(elementName , {
 			'width' : width,
@@ -26,9 +28,7 @@ UI.Two = function(elementName, width, height){
 		showCrosshair : false
 	});
 
-	this.canvas.add(new fabric.Circle({
-		radius: 20, fill: 'green', left: 100, top: 100
-	}));
+	// this.canvas.add();
 
 	$(window).resize(function(){
 		var width = $('#'+elementName).width(),
@@ -85,7 +85,7 @@ UI.Two.prototype.addImage = function(url){
  * @param {String} text to be input
  * @param {Array} style a list of styles regarding text
  */
-UI.Two.prototype.addText = function(text, style, kerning){
+UI.Two.prototype.addText = function(text, style, size, kerning){
 	var style_str = style.split(' ');
 	if (text.length != 0){
 		var textArray = text.split('').map(function(c){
@@ -93,15 +93,17 @@ UI.Two.prototype.addText = function(text, style, kerning){
 				left: 0,
 				top: 100,
 				fontFamily : style_str[0],
-				fontWeight : style_str[1]
+				fontWeight : style_str[1],
+				fontSize : size
 			});
 		})
 
 		for(i = 1; i < text.length; i++){
 			textArray[i].left += textArray[i-1].left + textArray[i-1].getWidth() + kerning;
 		}
-
+		console.log(textArray.map(function(e){return e.left}));
 		this.canvas.add(new fabric.Group(textArray, {left:100}));
+		this.canvas.renderAll();
 	}
 };
 
