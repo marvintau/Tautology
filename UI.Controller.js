@@ -36,7 +36,7 @@ UI.Controller.prototype.modelSelector = function(containerID, modifierContainerI
 }
 
 UI.Controller.prototype.picker = function(name, containerID, func){
-    $('<li>').appendTo($('#'+containerID)).append($('<button id='+name+'-color href=# class=btn btn-default>'+name+'</button>'));
+    $('<li>').appendTo($('#'+containerID)).append($('<button id='+name+'-color href=# class="btn btn-default">'+name+'</button>'));
     $('#'+name+'-color').colorPicker({
         colorformat : 'rgba',
         alignment : 'br',
@@ -44,7 +44,31 @@ UI.Controller.prototype.picker = function(name, containerID, func){
     });
 }
 
-UI.Controller.prototype.slider = function(containerID, changedParam, who_updates){
+UI.Controller.prototype.modal = function(param){
+    $('<li>').appendTo('#'+param.container)
+        .append($('<button type="button" class="btn btn-default" data-toggle="modal" data-target="#'+param.id+'">').text(param.buttonText));
+
+    $('body').append(
+        $('<div id="'+param.id+'" class="modal fade" tabindex="-1" role="dialog">').append(
+            $('<div class="modal-dialog modal-lg">').append(
+                '<div class="modal-content">'+
+                    '<div class="modal-header">'+
+                        '<button type="button" class="close" data-dismiss="modal" aria-label="Close">'+
+                            '<span aria-hidden="true">&times;</span>'+
+                        '</button>'+
+                        '<h4 class="modal-title" id="myLargeModalLabel">'+param.title+'</h4>'+
+                    '</div>'+
+                    '<div id="'+param.id+'" class="modal-body">'+
+                    '</div>'+
+                '</div>'
+            )
+        )
+    );
+
+    $('#'+param.id+'.modal-body').append(param.content);
+}
+
+UI.Controller.prototype.slider = function(containerID, changedParam, whoever_updates){
 	$('<li>').appendTo($('#'+containerID)).append(
         '<div class="input-group input-group-html5">'+
             '<span class="input-group-addon">'+changedParam.name+'</span>'+
@@ -58,66 +82,78 @@ UI.Controller.prototype.slider = function(containerID, changedParam, who_updates
     $('#'+changedParam.name+'-text').on('change', function(){
         $('#'+changedParam.name+'-range').val(this.value*2000);
         changedParam.val = this.value;
-        who_updates.update();
+        whoever_updates.update();
     })
 
     $('#'+changedParam.name+'-range').on('input change', function(){
         $('#'+changedParam.name+'-text').val(this.value/2000);
         changedParam.val = this.value/2000;
-        who_updates.update();
+        whoever_updates.update();
     })
 }
 
-UI.Controller.prototype.addModifiers = function(containerID, params, who_updates){
+UI.Controller.prototype.addModifiers = function(containerID, params, whoever_updates){
 	Object.keys(params).forEach(function(p){
         if(params[p].type)
-            this[params[p].type](containerID, params[p], who_updates);
-    });
+        	this[params[p].type](containerID, params[p], whoever_updates);
+    }.bind(this));
 }
 
-UI.Controller.prototype.imageInput = function(containerID){
-    $('<li>').appendTo('#'+containerID)
-        .append($('<button type="button" class="btn btn-default" data-toggle="modal" data-target="#gallery">').text('插个图片？'));
-
-    $('body').append(
-        $('<div id="gallery" class="modal fade" tabindex="-1" role="dialog">').append(
-            $('<div class="modal-dialog modal-lg">').append(
-                '<div class="modal-content">'+
-                    '<div class="modal-header">'+
-                        '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                        '<h4 class="modal-title" id="myLargeModalLabel">是的，图片们都在这里了</h4>'+
-                    '</div>'+
-                    '<div class="modal-body">'+
-	                        '<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/126543l.jpg"></a>'+
-							'<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/128618l.jpg"></a>'+
-							'<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/136024l.jpg"></a>'+
-							'<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/127745l.jpg"></a>'+
-							'<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/132919l.jpg"></a>'+
-							'<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/133976l.jpg"></a>'+
-							'<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/126347l.jpg"></a>'+
-							'<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/128638l.jpg"></a>'+
-							'<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/130091l.jpg"></a>'+
-							'<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/132687l.jpg"></a>'+
-							'<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/128665l.jpg"></a>'+
-							'<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/132899l.jpg"></a>'+
-							'<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/132882l.jpg"></a>'+
-							'<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/132729l.jpg"></a>'+
-							'<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/132852l.jpg"></a>'+
-							'<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/129980l.jpg"></a>'+
-							'<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/129542l.jpg"></a>'+
-							'<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/137747l.jpg"></a>'+
-							'<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/129859l.jpg"></a>'+
-							'<a href=# class="select"><img src="http://idxing.com.cn/wine_gallery/131406l.jpg"></a>'+
-                    '</div>'+
-                '</div>'
-            )
+UI.Controller.prototype.insertImage = function(containerID){
+    this.modal({
+        container : containerID,
+        id : 'gallery',
+        buttonText : '插點图片？',
+        title: '图片都在这儿了',
+        content : $(
+            '<a href=# class="select"><img src="./images/126543l.jpg"></a>'+
+            '<a href=# class="select"><img src="./images/128618l.jpg"></a>'+
+            '<a href=# class="select"><img src="./images/136024l.jpg"></a>'+
+            '<a href=# class="select"><img src="./images/127745l.jpg"></a>'+
+            '<a href=# class="select"><img src="./images/132919l.jpg"></a>'+
+            '<a href=# class="select"><img src="./images/133976l.jpg"></a>'+
+            '<a href=# class="select"><img src="./images/126347l.jpg"></a>'+
+            '<a href=# class="select"><img src="./images/128638l.jpg"></a>'+
+            '<a href=# class="select"><img src="./images/130091l.jpg"></a>'+
+            '<a href=# class="select"><img src="./images/132687l.jpg"></a>'+
+            '<a href=# class="select"><img src="./images/128665l.jpg"></a>'+
+            '<a href=# class="select"><img src="./images/132899l.jpg"></a>'+
+            '<a href=# class="select"><img src="./images/132882l.jpg"></a>'+
+            '<a href=# class="select"><img src="./images/132729l.jpg"></a>'+
+            '<a href=# class="select"><img src="./images/132852l.jpg"></a>'+
+            '<a href=# class="select"><img src="./images/129980l.jpg"></a>'+
+            '<a href=# class="select"><img src="./images/129542l.jpg"></a>'+
+            '<a href=# class="select"><img src="./images/137747l.jpg"></a>'+
+            '<a href=# class="select"><img src="./images/129859l.jpg"></a>'+
+            '<a href=# class="select"><img src="./images/131406l.jpg"></a>'
         )
-    );
+    })
 	
 	$('.select').on('click', function(e){
 		this.two.addImage(e.target.getAttribute('src'));
+        $('#gallery').modal('toggle');
 	}.bind(this))
 }
+
+UI.Controller.prototype.insertText = function(containerID){
+    this.modal({
+        container : containerID,
+        id : 'text',
+        buttonText : '插點文字？',
+        title: '想個合適的廣告語吧'
+    })
+}
+
+UI.Controller.prototype.insertPattern = function(containerID){
+    this.modal({
+        container : containerID,
+        id : 'pattern',
+        buttonText : '插點图案？',
+        title: '花花绿绿的多好看～'
+    })
+
+}
+
 
 UI.Controller.prototype.canvasEditor = function(containerID){
     this.picker('吸管儿底色', containerID, function(ui, color){
@@ -125,5 +161,7 @@ UI.Controller.prototype.canvasEditor = function(containerID){
         this.two.canvas.renderAll();
     }.bind(this));
 
-    this.imageInput(containerID);
+    this.insertImage(containerID);
+    this.insertText(containerID);
+    this.insertPattern(containerID);
 }
