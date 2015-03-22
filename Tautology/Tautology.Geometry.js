@@ -10,9 +10,7 @@
  *                        applied on the objects.
  */
 Tautology.Geometry = function(model){
-	this.model = model;
-
-	this.labels = this.model.shape.reduce(function(perms, dim){
+	this.labels = model.shape.reduce(function(perms, dim){
 		return Array.range(dim).outer(perms, function(d, perm){
 			return perm.concat(d);
 		}).flatten();
@@ -22,19 +20,20 @@ Tautology.Geometry = function(model){
 
 	this.texels = this.labels.map(function(e){return new THREE.Vector2()});
 
-	this.faces = Array.grid(this.model.shape);
+	this.faces = Array.grid(model.shape);
 
 	this.regions = {};
-	for(key in this.model.regions){
-		this.regions[key] = new Tautology.Region(this.model.regions[key], this.model.shape);
+	for(key in model.regions){
+		this.regions[key] = new Tautology.Region(model.regions[key], model.shape);
 	}
 
 	this.instructions = [];
-	this.model.manuever.forEach(function(step){
+
+	model.manuever.forEach(function(step){
 		this.instructions.push(new Tautology.Transform(this, step));
 	}.bind(this));
 
-	this.init(this.model.shape);
+	this.init();
 	this.update();
 }
 

@@ -12,8 +12,8 @@ PlainStraw.param = {
 
 PlainStraw.shape = [2, 60];
 
-PlainStraw.ratio = function(){
-	return new Vector2(this.length.val, this.radius.val*Math.PI*2);
+PlainStraw.ratio = function(param){
+	this.set(param.length.val, param.radius.val*Math.PI*2);
 }
 
 PlainStraw.regions = {
@@ -94,8 +94,8 @@ BendyStraw.regions = {
 	ridge : [[2, -2, 2], 'all']
 };
 
-BendyStraw.ratio = function(){
-	return new Vector2(this.bodyLength.val+this.bellowLength*22+this.stubLength.val, this.radius.val*Math.PI*2);
+BendyStraw.ratio = function(param){
+	this.set(param.bodyLength.val+param.bellowLength*22+param.stubLength.val, param.radius.val*Math.PI*2);
 }
 
 BendyStraw.manuever = [

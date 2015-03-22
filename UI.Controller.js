@@ -7,7 +7,7 @@ UI.Controller = function(models, material){
 
 	this.modelManager = new Tautology.ModelManager(this.models, this.material, this.two.canvas);
 
-	this.modelManager.update((Object.keys(this.models))[0], this.three.scene);
+	this.modelManager.select((Object.keys(this.models))[0], this.three.scene);
 
 	this.modelSelector('type-list', 'parameters');
 
@@ -25,7 +25,7 @@ UI.Controller.prototype.modelSelector = function(containerID, modifierContainerI
             .append($('<span>'+models[key].name+'</span>'));
 
         $('#'+key).on('click', function(){
-            this.modelManager.update(key, this.three.scene);
+            this.modelManager.select(key, this.three.scene);
 
             $('#'+modifierContainerID).empty();
 
@@ -197,7 +197,9 @@ UI.Controller.prototype.insertPattern = function(containerID){
         buttonText : '插點图案？',
         title: '花花绿绿的多好看～'
     })
+}
 
+UI.Controller.prototype.deleteButton = function(containerID){
 
 }
 
