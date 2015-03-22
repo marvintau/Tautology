@@ -19,7 +19,6 @@ Tautology.ModelManager.prototype.init = function(){
 	Object.keys(models).forEach(function(key){
 		this.models[key] = {};
 		this.models[key].geom = new Tautology.Geometry(models[key].model);
-		console.log(key);
 		this.models[key].meshes = new THREE.Object3D();
 		this.models[key].meshes.add(new THREE.Mesh(this.models[key].geom.geom, this.material.materials.outside));
 		this.models[key].meshes.add(new THREE.Mesh(this.models[key].geom.geom, this.material.materials.inside));		

@@ -184,9 +184,8 @@ UI.Controller.prototype.insertText = function(containerID){
     $('#text.modal-body').append('<button id="confirm-text" href=# class="btn btn-primary">插入文字</button>')
 
     $('#confirm-text').on('click', function(){
-        console.log($('#字号-text').val());
         this.two.addText($('textarea#text').val(), 'Helvetica normal', parseFloat($('#字号-text').val()), parseFloat($('#字符间距-text').val()));
-        this.two
+        $('#text').modal('toggle');
     }.bind(this))
 }
 
@@ -200,8 +199,15 @@ UI.Controller.prototype.insertPattern = function(containerID){
 }
 
 UI.Controller.prototype.deleteButton = function(containerID){
+    $('<li>').appendTo($('#'+containerID)).append($('<button id="deleteButton" href=# class="btn btn-primary">删掉点选的文字或图片</button>'));
 
+    $('#deleteButton').on('click', function(){
+        console.log('here');
+        this.two.removeSelectedObject();
+        this.two.canvas.renderAll();
+    }.bind(this));
 }
+
 
 
 UI.Controller.prototype.canvasEditor = function(containerID){
@@ -213,4 +219,5 @@ UI.Controller.prototype.canvasEditor = function(containerID){
     this.insertImage(containerID);
     this.insertText(containerID);
     this.insertPattern(containerID);
+    this.deleteButton(containerID);
 }

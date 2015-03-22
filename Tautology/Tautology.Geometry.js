@@ -30,7 +30,7 @@ Tautology.Geometry = function(model){
 	this.instructions = [];
 
 	model.manuever.forEach(function(step){
-		this.instructions.push(new Tautology.Transform(this, step));
+		this.instructions.push(new Tautology.Transform(this, model, step));
 	}.bind(this));
 
 	this.init();

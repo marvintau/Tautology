@@ -101,7 +101,7 @@ UI.Two.prototype.addText = function(text, style, size, kerning){
 		for(i = 1; i < text.length; i++){
 			textArray[i].left += textArray[i-1].left + textArray[i-1].getWidth() + kerning;
 		}
-		console.log(textArray.map(function(e){return e.left}));
+		
 		this.canvas.add(new fabric.Group(textArray, {left:100}));
 		this.canvas.renderAll();
 	}
